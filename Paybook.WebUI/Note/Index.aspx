@@ -7,21 +7,25 @@
     <asp:HiddenField ID="hfLogInUser" runat="server" ClientIDMode="Static" />
     <asp:HiddenField ID="hfDataID" runat="server" ClientIDMode="Static" />
     <asp:HiddenField ID="hfDailyNotesGridPageNumber" runat="server" ClientIDMode="Static" />
-    <div class="fwt-container fwt-light-grey">
-        <div class="fwt-row">
-            <div class="fwt-col l2 ">
+    <div class="container-fluid">
+        <div class="row bg-secondary">
+            <div class="col-lg-2">
                 <h2>Daily Notes</h2>
             </div>
-            <div class="fwt-right-align">
-                <button clientidmode="Static" class="fwt-btn fwt-round fwt-dark-grey fwt-hover-green fwt-btn-height" title="Sync" onclick="location.href=location.href;">
-                    &nbsp;<i class="fa fa-refresh fwt-large"></i>&nbsp;</button>
-                <button clientidmode="Static" class="fwt-btn fwt-round fwt-dark-grey fwt-hover-green fwt-btn-height" title="Add a Note" onclick="return OpenPartialPagePopup('notes/create','ADD NOTE');">
-                    &nbsp;<i class="fa fa-plus fwt-large"></i>&nbsp; ADD A NOTE&nbsp;</button>
+            <div class="col-lg-10 text-right">
+                <div class="btn-group" role="group">
+                    <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Setting" onclick="">
+                        &nbsp;<i class="fa fa-ellipsis-h fwt-large"></i>&nbsp;</button>
+                    <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Sync" onclick="location.href=location.href;">
+                        &nbsp;<i class="fa fa-refresh fwt-large"></i>&nbsp;</button>
+                    <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Add a Note" onclick="return OpenPartialPagePopup('notes/create','CREATE NOTE');">
+                        &nbsp;<i class="fa fa-plus fwt-large"></i>&nbsp; CREATE NOTE&nbsp;</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="fwt-container">
+    <div class="container-fluid pt-3">
         <div class="fwt-padding-4 " id="idPageNumber">
             <div class="fwt-col l6 m12 s12">
                 &nbsp;

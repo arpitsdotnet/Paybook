@@ -89,25 +89,21 @@
                     </div>
                     <div class="fwt-clear"></div>
                 </div>
-                <div class="fwt-clear fwt-padding-8 fwt-bottombar fwt-border-grey">
-                </div>
             </div>
-            <div>
-                <div class="fwt-col l5 m12 s12">
-                    <div class="fwt-container-small">
+            <div class="row">
+                <div class="col-lg-5 col-sm-12">
+                    <div class="fwt-container-small bg-secondary fwt-round">
                         <h4 class="fwt-bold fwt-text-deep-orange">Summary of last 7 days</h4>
                         <div id="idInvoicePaymentCount_Chart"></div>
                     </div>
                 </div>
-                <div class="fwt-col l7 m12 s12" style="border-left: 1px solid #ccc;">
-                    <div class="fwt-container-small">
+                <div class="col-lg-7 col-sm-12">
+                    <div class="fwt-container-small bg-secondary fwt-round">
                         <h4 class="fwt-bold fwt-text-deep-orange">Amount of Invoice / Payment</h4>
                         <div id="idIPaymentAgainstInvoice_Chart"></div>
                     </div>
                 </div>
                 <div class="fwt-clear"></div>
-            </div>
-            <div class="fwt-clear fwt-padding-12 fwt-bottombar fwt-border-grey">
             </div>
         </div>
         <div class="fwt-col l3 m3 s12">
@@ -220,6 +216,7 @@
                             console.log(sData);
                             var chartdata = new google.visualization.arrayToDataTable(sData);
                             var options = {
+                                backgroundColor: 'transparent',
                                 title: '',
                                 pieHole: 0.4,
                                 height: 300,
@@ -260,6 +257,7 @@
                             console.log(">>>" + sData);
                             var chartdata = new google.visualization.arrayToDataTable(sData);
                             var options = {
+                                backgroundColor: 'transparent',
                                 title: '',
                                 vAxis: { format: '₹#,###.##', title: 'Amount' },
                                 height: 300,

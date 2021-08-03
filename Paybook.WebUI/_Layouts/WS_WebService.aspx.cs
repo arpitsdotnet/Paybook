@@ -87,15 +87,15 @@ namespace Paybook.WebUI._Layouts
         {
             IAgentProcessor _processor = new AgentProcessor();
 
-            return _processor.Agent_SelectName();
+            return _processor.GetAllActiveIdAndName();
         }
 
         [WebMethod]
-        public static AgentModel[] Agents_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive)
+        public static AgentModel[] Agent_GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive)
         {
             IAgentProcessor _processor = new AgentProcessor();
 
-            return _processor.Agents_SelectAll(sOrderBy, sGridPageNumber, sUserName, sIsActive);
+            return _processor.GetAllByPage(sOrderBy, sGridPageNumber, sUserName, sIsActive);
         }
 
 
@@ -104,7 +104,7 @@ namespace Paybook.WebUI._Layouts
         {
             IAgentProcessor _processor = new AgentProcessor();
 
-            return _processor.Agent_UpdateIsActive(sAgent_ID, sIsActive, sCreatedBY, sReason);
+            return _processor.Activate(sAgent_ID, sIsActive, sCreatedBY, sReason);
         }
         //Invoice
         [WebMethod]

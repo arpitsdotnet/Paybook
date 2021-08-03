@@ -21,40 +21,6 @@ namespace Paybook.WebUI.Agent
                 ExceptionMessage(ExceptionType.ERROR, "Error Found: " + ex.Message);
             }
         }
-        protected void btnAgentCreate_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Response.Redirect("agent/create", false);
-            }
-            catch (Exception ex)
-            {
-                ExceptionMessage(ExceptionType.ERROR, "Error Found: " + ex.Message);
-            }
-        }
-        protected void btnAgentEdit_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (hfAgent_ID.Value == "")
-                {
-
-                    string sMessage = XmlProcessor.ReadXmlFile("AGW201");
-                    ExceptionMessage(ExceptionType.WARNING, sMessage);
-
-                    return;
-                    // return;
-                }
-                else
-                {
-                    Response.Redirect("agent/update/" + hfAgent_ID.Value, false);
-                }
-            }
-            catch (Exception ex)
-            {
-                ExceptionMessage(ExceptionType.ERROR, "Error Found: " + ex.Message);
-            }
-        }
 
         protected void ExceptionMessage(ExceptionType sType, string sMessage)
         {

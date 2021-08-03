@@ -168,7 +168,7 @@ namespace Paybook.WebUI.Agent
         {
             try
             {
-                DataTable dtAgent = _agent.Agent_Select(hfAgent_ID.Value);
+                DataTable dtAgent = _agent.GetByAgentID(hfAgent_ID.Value);
                 if (dtAgent.Rows.Count > 0)
                 {
 
@@ -237,7 +237,7 @@ namespace Paybook.WebUI.Agent
                     {
                         //Insert New Agent  
                         agentModel.CreatedBY = hfCreatedBy.Value.Trim();
-                        string message = _agent.Agent_Insert(agentModel);
+                        string message = _agent.Create(agentModel);
 
                         if (!string.IsNullOrWhiteSpace(message))
                         {
@@ -251,7 +251,7 @@ namespace Paybook.WebUI.Agent
                     {
                         agentModel.ModifiedBY = hfCreatedBy.Value.Trim();
                         ////Update Customer                           
-                        string message = _agent.Agent_Update(agentModel);
+                        string message = _agent.Update(agentModel);
                         ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + sMessage + "');});", true);
 
                     }

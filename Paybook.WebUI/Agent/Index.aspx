@@ -5,40 +5,26 @@
 
     <asp:HiddenField ID="hfAgentsGridPageNumber" runat="server" ClientIDMode="Static" />
     <asp:HiddenField ID="hfAgent_ID" runat="server" ClientIDMode="Static" />
-    <div class="fwt-container">
-        <h4 class="fwt-bold fwt-text-deep-orange">Agents
-        </h4>
-        <div id="idLabelError" runat="server" clientidmode="Static" class="fwt-container fwt-padding-16 fwt-pale-yellow fwt-border fwt-border-yellow"
-            style="display: none">
-        </div>
-        <div class="fwt-padding-12 ">
-            <div class="fwt-col l6 m6 s12">
-                <div class="">
-                    <button class="fwt-btn fwt-ripple fwt-dropdown-click fwt-amber" onclick="return OpenExportNavigations()">
-                        <i class="fa fa-bars"></i>&nbsp;Export Table Data</button>
-                    <div id="idExportNavigations" class="fwt-dropdown-content fwt-hide">
-                        <a href="#" onclick="$('#divAgents .table-main').tableExport({type:'xml',escape:'false',ignoreColumn:'[0]'});">
-                            <img src='_Layouts/IMG/export-icons/xml.png' width='24px' alt="" />
-                            XML</a> <a href="#" onclick="$('#divAgents .table-main').tableExport({type:'excel',escape:'false',ignoreColumn:'[0]'});">
-                                <img src='_Layouts/IMG/export-icons/xls.png' width='24px' alt="" />
-                                XLS</a><a href="#" onclick="$('#divAgents .table-main').tableExport({type:'pdf',pdfFontSize:'7',escape:'false',ignoreColumn:'[0]'});">
-                                    <img src='_Layouts/IMG/export-icons/pdf.png' width='24px' alt="" />
-                                    PDF</a>
-                    </div>
+    <div class="container-fluid">
+        <div class="row bg-secondary">
+            <div class="col-lg-2">
+                <h2>Agents</h2>
+            </div>
+            <div class="col-lg-10 text-right">
+                <div class="btn-group" role="group">
+                    <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Setting" onclick="">
+                        &nbsp;<i class="fa fa-ellipsis-h fwt-large"></i>&nbsp;</button>
+                    <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Sync" onclick="location.href=location.href;">
+                        &nbsp;<i class="fa fa-refresh fwt-large"></i>&nbsp;</button>
+                    <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Add a Note" onclick="return OpenPartialPagePopup('agent/create','CREATE AGENT');">
+                        &nbsp;<i class="fa fa-plus fwt-large"></i>&nbsp; CREATE AGENT&nbsp;</button>
                 </div>
             </div>
-            <div class="fwt-right-align fwt-col l6 m6 s12">
-                <button runat="server" id="btnAgentEdit" class="fwt-btn fwt-hover-indigo" onserverclick="btnAgentEdit_Click"
-                    title="Edit Agent" style="background-color: #3a4f63;">
-                    > Edit Agent
-                </button>
-                <button runat="server" id="btnAgentCreate" class="fwt-btn fwt-hover-indigo" onserverclick="btnAgentCreate_Click"
-                    title="Add Agent" style="background-color: #3a4f63;">
-                    > Add Agent
-                </button>
-            </div>
-            <div class="fwt-clear ">
-            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div id="idLabelError" runat="server" clientidmode="Static" class="fwt-container fwt-padding-16 fwt-pale-yellow fwt-border fwt-border-yellow"
+            style="display: none">
         </div>
         <div class="fwt-padding-12" id="idPageNumber">
             <div class="fwt-col l2 m2 s12">
@@ -46,8 +32,8 @@
             </div>
             <div class="fwt-col l10 m10 s12">
                 <asp:RadioButtonList ID="rbtnIsActive" runat="server" ClientIDMode="Static" RepeatDirection="Horizontal">
-                    <asp:ListItem Value="1" Selected="True">Active</asp:ListItem>
-                    <asp:ListItem Value="0">In Active</asp:ListItem>
+                    <asp:ListItem Value="1" Selected="True">&nbsp;Active&nbsp;</asp:ListItem>
+                    <asp:ListItem Value="0">&nbsp;Inactive&nbsp;</asp:ListItem>
                 </asp:RadioButtonList>
             </div>
             <div class="fwt-clear ">

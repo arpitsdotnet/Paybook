@@ -42,24 +42,6 @@ namespace Paybook.WebUI.Agent
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl idLabelError;
 
         /// <summary>
-        /// btnAgentEdit control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlButton btnAgentEdit;
-
-        /// <summary>
-        /// btnAgentCreate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlButton btnAgentCreate;
-
-        /// <summary>
         /// lblAgentsPageNumber control.
         /// </summary>
         /// <remarks>

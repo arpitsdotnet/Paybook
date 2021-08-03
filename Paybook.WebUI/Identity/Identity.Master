@@ -7,6 +7,7 @@
     <title>FWT E-Pay Book</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="ICON" href="/_Layouts/IMG/Logo-02.png" type="image/ico" />
+    <link href="/_Layouts/LIB/bootstrap-3.4.1/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/_Layouts/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="/_Layouts/CSS/jquery-ui.min.css" rel="stylesheet" type="text/css" />
     <link href="/_Layouts/CSS/Site.css" rel="stylesheet" type="text/css" />
@@ -14,41 +15,41 @@
 
     <asp:ContentPlaceHolder ID="headLogin" runat="server">
     </asp:ContentPlaceHolder>
+    <style>
+        .navbar-header { width: 100% !important; }
+        .navbar-brand { float: none !important; }
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="page">
-            <div class="header">
-                <%--  <div class="title">
-             <h1> FWT E-Pay Book  </h1>              
-            </div>    --%>
-                <div class="fwt-clear"></div>
-                <div id="LoginHeading" style="background-color: #3A4F63;">
-                    <asp:Image ID="imgLogo" ImageUrl="/_Documents/IMG_CompanyLogo/FWTLogo.png" runat="server" AlternateText="FWTepaylogo" ClientIDMode="Static" />
-                    <span class="ePaybook_VersionNo" style="color: Yellow; font-size: small">v6.0</span>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="navbar-header">
+                <div class="navbar-brand">
+                    <img src="/_Documents/IMG_CompanyLogo/FWTLogo.png" alt="Paybook Logo" class="text-center m-auto" />
                 </div>
             </div>
+        </nav>
+        <div style="height: 60px;"></div>
+        <div style="height: 5px; background-color: #52687E;"></div>
+        <div style="height: 60px;"></div>
+        <div class="">
             <div class="">
                 <asp:ContentPlaceHolder ID="MainLoginContent" runat="server" />
 
             </div>
-            <div class="clear">
-            </div>
-
         </div>
         <div class="footer">
-
             <div class="fwt-padding-8" style="text-align: center">
                 <div style="color: #2196F4; font-size: 12px">Powered By:</div>
                 <div>
                     <a href="http://www.floydwebtech.com/">
-                        <asp:Image ID="Image1" ImageUrl="~/_Layouts/IMG/FWT_Logo.png" Height="40px" runat="server" AlternateText="FWTepaylogo" ClientIDMode="Static" /></a>
+                        <img src="/_Layouts/IMG/FWT_Logo.png" height="40" alt="Floyd Web Techsoft Logo" /></a>
                 </div>
             </div>
             <%--Copyright & Developed by : Floyd Web Techsoft--%>
         </div>
     </form>
-    
+
     <script src="/_Layouts/JS/jquery.min.js" type="text/javascript"></script>
     <script src="/_Layouts/JS/jquery-ui.min.js" type="text/javascript"></script>
     <script src="/_Layouts/JS/jquery.floatThead.js" type="text/javascript"></script>

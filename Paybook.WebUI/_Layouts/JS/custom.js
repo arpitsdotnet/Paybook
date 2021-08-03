@@ -311,18 +311,18 @@ function GetAllAgents(sOrderBy) {
         //alert('sSiteUrl' + sSiteUrl + '\nsTabSelected' + sTabName + '\nsOrderBy' + sOrderBy + '\nsOrderByAsc' + sOrderByAsc + '\nsGridPageNumber' + sGridPageNumber + '\nsUserNameEmail' + sUserNameEmail);
         var jsonVar = { 'sOrderBy': sOrderBy, 'sGridPageNumber': sAgentsGridPageNumberValue, 'sUserName': "", 'sIsActive': sIsActive };
 
-        CallAjaxMethod("Agents_SelectAll", jsonVar, "Agents_SelectAll_Complete");
+        CallAjaxMethod("Agent_GetAllByPage", jsonVar, "Agent_GetAllByPage_Complete");
 
     }
     catch (err) {
         alert("Error occured in  function(GetAllAgents) " + err);
     }
 }
-function Agents_SelectAll_Complete(data) {
+function Agent_GetAllByPage_Complete(data) {
 
     try {
         if (data.d.length > 0) {
-            if (data.d[0].ERROR != "") {
+            if (data.d[0].ERROR != null && data.d[0].ERROR != "") {
                 $('#divAgents .table-message').html(data.d[0].ERROR);
                 $('#hfAgentsGridPageNumber').val("End");
             }
@@ -342,41 +342,31 @@ function Agents_SelectAll_Complete(data) {
                 $("#lblAgentsPageNumber").html("Search Result: <b class=\"fwt-text-red\">" + sDisplayRowCount + "</b> of <b class=\"fwt-text-red\">" + sRowCount + "</b>");
                 //        
 
-                var sCssClass = "background:#D5E990;", sCssClassAgent_ID = "", sCssClassAgentName = "", sCssClassPrefix_Disp = "";
-                var sCssClassAddress1 = "", sCssClassAddress2 = "", sCssClassCity = "", sCssClassState_Disp = "", sCssClassCountry_Core = "",
-                    sCssClassEMail = "", sCssClassPhoneNumber1 = "", sCssClassPhoneNumber2 = "";
-                if (sOrderBy == "Customer_ID") sCssClassAgent_ID = sCssClass;
-                else if (sOrderBy == "AgentName") sCssClassAgentName = sCssClass;
-                else if (sOrderBy == "Address1") sCssClassAddress1 = sCssClass;
-                else if (sOrderBy == "Address2") sCssClassAddress2 = sCssClass;
-                else if (sOrderBy == "City") sCssClassCity = sCssClass;
-                else if (sOrderBy == "State_Disp") sCssClassState_Disp = sCssClass;
-                else if (sOrderBy == "Country_Core") sCssClassCountry_Core = sCssClass;
-                else if (sOrderBy == "EMail") sCssClassEMail = sCssClass;
-                else if (sOrderBy == "PhoneNumber1") sCssClassPhoneNumber1 = sCssClass;
-                else if (sOrderBy == "PhoneNumber2") sCssClassPhoneNumber2 = sCssClass;
-
                 for (var i = 0; i < data.d.length; i++) {
-                    $("#divAgents .table-main tbody").append("<tr class='rowHover'><td align='center' style='width:2%;'><input id='RadioButton1' type='radio' name='RadioButton1' value='RadioButton1' onclick=\"javascript:SelectAgentsSingleRadiobutton('" + data.d[i].Agent_ID + "');\" /></td>" +
-                        "<td align='center' style='" + sCssClassAgent_ID + "' title=\"View All Documents\">" + data.d[i].Agent_ID + "</td>" +
-                        "<td  class='Cursor_Point fwt-center' style='" + sCssClassAgentName + "'>" + data.d[i].AgentName + "</td>" +
-                        "<td align='center' style='" + sCssClassPhoneNumber1 + "'>" + data.d[i].PhoneNumber1 + "</td>" +
-                        "<td align='center' style='" + sCssClassEMail + "'>" + data.d[i].EMail + "</td>" +
-                        "<td align='center' style='" + sCssClassCity + "'>" + data.d[i].City + "</td>" +
-                        "<td align='center' style='" + sCssClassState_Disp + "'>" + data.d[i].State_Disp + "</td>" +
-                        "<td align='center' style='" + sCssClassCountry_Core + "'>" + data.d[i].Country_Core + "</td></tr>");
+                    $("#divAgents .table-main tbody").append("<tr class='rowHover'>" +                        
+                        "<td align='center' >" + data.d[i].Agent_ID + "</td>" +
+                        "<td class='fwt-center' >" + data.d[i].AgentName + "</td>" +
+                        "<td align='center' >" + data.d[i].PhoneNumber1 + "</td>" +
+                        "<td align='center' >" + data.d[i].EMail + "</td>" +
+                        "<td align='center' >" + data.d[i].City + "</td>" +
+                        "<td align='center' >" + data.d[i].State_Disp + "</td>" +
+                        "<td align='center' >" + data.d[i].Country_Core + "</td>" +
+                        "<td align='center' style='width:2%;'><input id='RadioButton1' type='radio' name='RadioButton1' value='RadioButton1' onclick=\"javascript:SelectAgentsSingleRadiobutton('" + data.d[i].Agent_ID + "');\" /></td>" +
+                        "</tr > ");
                 }
 
                 //var sAgentsGridPageNumberValue = $('#hfAgentsGridPageNumber').val();
                 if (sAgentsGridPageNumberValue == "0") {
-                    $("#divAgents .table-main thead").append("<tr class='rowHead'><th class='rowHeadColumn' style='width:2%;' title=\"Edit Agent\"><i class=\"fa fa-pencil\"></i></th>" +
-                        "<th onclick='SetAgentsGridPageNumberBlank(); Agents_SelectAll(\"Agent_ID\");' class='rowHeadColumn LinkHeader' style='width:10%;' align='center'>Agent ID</th>" +
-                        "<th onclick='SetAgentsGridPageNumberBlank(); Agents_SelectAll(\"AgentName\");' class='rowHeadColumn LinkHeader' style='width:20%;' align='center'>Agent Name</th>" +
-                        "<th onclick='SetAgentsGridPageNumberBlank(); Agents_SelectAll(\"PhoneNumber1\");' class='rowHeadColumn LinkHeader' align='center' style='width:10%;'>Phone Number1 </th>" +
-                        "<th onclick='SetAgentsGridPageNumberBlank(); Agents_SelectAll(\"EMail\");' class='rowHeadColumn LinkHeader' align='center' style='width:14%;'>Email</th>" +
-                        "<th onclick='SetAgentsGridPageNumberBlank(); Agents_SelectAll(\"City\");' class='rowHeadColumn LinkHeader' align='center' style='width:13%;'>City</th>" +
-                        "<th onclick='SetAgentsGridPageNumberBlank(); Agents_SelectAll(\"State_Disp\");' class='rowHeadColumn LinkHeader' align='center' style='width:10%;'>State</th>" +
-                        "<th onclick='SetAgentsGridPageNumberBlank(); Agents_SelectAll(\"Country_Core\");' class='rowHeadColumn LinkHeader' align='center' style='width:10%;'>Country</th></tr>");
+                    $("#divAgents .table-main thead").append("<tr class='rowHead'>"+
+                        "<th class='rowHeadColumn' style='width:10%;' align='center'>AGENT ID</th>" +
+                        "<th class='rowHeadColumn' style='width:20%;' align='center'>AGENT NAME</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:10%;'>PHONE NUMBER1 </th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:14%;'>EMAIL</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:13%;'>CITY</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:10%;'>STATE</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:10%;'>COUNTRY</th>" +
+                        "<th class='' style='width:2%;' title=\"Edit Agent\">ACTION</th>" +
+                        "</tr > ");
                     $('#divAgents .table-main').floatThead();
 
                 }
@@ -401,7 +391,7 @@ function Agents_SelectAll_Complete(data) {
         IsProcessingHomeGrid = false;
 
     }
-    catch (err) { alert("Error occured in  function(Agents_SelectAll_Complete) " + err); }
+    catch (err) { alert("Error occured in  function(Agent_GetAllByPage_Complete) " + err); }
 }
 function SetAgentsGridPageNumberBlank() {
     try {

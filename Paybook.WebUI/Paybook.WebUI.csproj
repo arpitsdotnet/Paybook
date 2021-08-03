@@ -473,7 +473,6 @@
     <Content Include="_Layouts\JS\jquery.min.js" />
     <Content Include="_Layouts\JS\jquery.slimscroll.min.js" />
     <Content Include="_Layouts\JS\jquery.timeago.js" />
-    <Content Include="_Layouts\JS\tableExport.js" />
     <Content Include="_Layouts\LIB\bootstrap-3.4.1-dist.backup\bootstrap-3.4.1-dist\css\bootstrap-theme.css" />
     <Content Include="_Layouts\LIB\bootstrap-3.4.1-dist.backup\bootstrap-3.4.1-dist\css\bootstrap-theme.min.css" />
     <Content Include="_Layouts\LIB\bootstrap-3.4.1-dist.backup\bootstrap-3.4.1-dist\css\bootstrap.css" />
