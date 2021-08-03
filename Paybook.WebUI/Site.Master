@@ -1,0 +1,238 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Paybook.WebUI.Site" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <title>FWT E-Pay Book</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="ICON" href="_Layouts/IMG/Logo-02.png" type="image/ico" />
+    <link href="/_Layouts/LIB/bootstrap-3.4.1/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/_Layouts/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/_Layouts/CSS/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="/_Layouts/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="/_Layouts/CSS/Site.css" rel="stylesheet" type="text/css" />
+    <link href="/_Layouts/CSS/custom.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form runat="server">
+        <asp:HiddenField ID="hfLogin_ID" runat="server" ClientIDMode="Static" />
+        <asp:HiddenField ID="hfWindowWidth" runat="server" ClientIDMode="Static" />
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="navbar-brand">
+                        <img src="/_Documents/IMG_CompanyLogo/FWTLogo.png" alt="Paybook Logo" />
+                    </div>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="/dashboard">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="fa fa-user-md"></i>&nbsp; Agents <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/agent/search">Agent List</a></li>
+                                <li><a onclick="return OpenPartialPagePopup('agent/create','CREATE NOTE');" href="#">Create a Agent</a></li>
+                                <li class="divider"></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="fa fa-user-circle"></i>&nbsp; Clients <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/client/search">Client List</a></li>
+                                <li><a onclick="return OpenPartialPagePopup('client/create','CREATE CLIENT');" href="#">Create a Client</a></li>
+                                <li class="divider"></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="fa fa-credit-card"></i>&nbsp; Invoices <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/invoice/search">Invoice List</a></li>
+                                <li><a onclick="return OpenPartialPagePopup('invoice/create','CREATE INVOICE');" href="#">Create a Invoice</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/payment/search">Payment List</a></li>
+                                <li><a onclick="return OpenPartialPagePopup('payment/create','CREATE NOTE');" href="#">Create a Payment</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="fa fa-sticky-note-o"></i>&nbsp; Notes <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/notes">Note List</a></li>
+                                <li><a onclick="return OpenPartialPagePopup('notes/create','CREATE NOTE');" href="#">Create a Note</a></li>
+                                <li class="divider"></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="fa fa-gears"></i>&nbsp; Settings <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/category">Category List</a></li>
+                                <li><a href="/business/profile">Business Profile</a></li>
+                                <li><a href="/agency">Agency List</a></li>
+                                <li><a onclick="return OpenPartialPagePopup('agency/create','CREATE AGENCY');" href="#">Create a Agency</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <div id="idDateTimeShow" class="">
+                                <div class='time fwt-left fwt-padding-4 fwt-xxlarge'></div>
+                                <div class='fwt-left fwt-tiny'>
+                                    <div class="apm"></div>
+                                    <div class="seconds fwt-small"></div>
+                                    <div class="fwt-clear"></div>
+                                </div>
+                                <div class="day fwt-left fwt-small fwt-text-red" style="margin-left: 10px"></div>
+                                <div class="fwt-clear"></div>
+                            </div>
+                        </li>
+                        <li class="dropdown">
+                            <div class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <div class="chip">
+                                    <asp:Image ID="hlLoggedInControlsProfile" runat="server"
+                                        AlternateText="Person" ClientIDMode="Static" CssClass="fwt-pointer" Style="position: relative;" />
+                                    <asp:Label ID="lblUsername" runat="server" Text="Guest User" ClientIDMode="Static"> </asp:Label>
+                                    <span class="closebtn" title="Logout">
+                                        <a href="/identity/logout" class="" title="Logout">x</a>
+                                    </span>
+                                </div>
+                            </div>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/business/profile">Business Profile</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/identity/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div style="height: 60px"></div>
+
+        <div class="page">
+            <div class="header">
+                <div class="add-new-items">
+                    <ul>
+                        <li><a href="/invoice/create">Add Invoice</a></li>
+                        <li><a href="/payment/create">Add Payment</a></li>
+                        <li><a href="/client/create">Add Client</a></li>
+                        <li><a href="/agency/create">Add Agency</a></li>
+                        <li><a href="/category">Add Category</a></li>
+                        <li><a href="/business/profile">View Profile</a></li>
+                        <li><a href="/note">Daily Note</a></li>
+                        <li class="w3-padding-top">.</li>
+                        <li><a href="/identity/logout">Logout</a></li>
+
+                    </ul>
+                </div>
+
+                <div class="fwt-clear">
+                </div>
+                <div class="clear hideSkiplink">
+                    <div class="fwt-col l9 m9 s12">
+                        <%-- <asp:Menu ID="Menu" runat="server" CssClass="menu" EnableViewState="false" IncludeStyleBlock="false"
+                            Orientation="Horizontal">
+                            <Items>
+                                <asp:MenuItem NavigateUrl="~/home" Text="Home" />
+                                <asp:MenuItem NavigateUrl="~/add_invoice" Text="Create Invoices" />
+                                <asp:MenuItem NavigateUrl="~/search_invoice" Text="Search Invoice" />                               
+                                <asp:MenuItem NavigateUrl="~/search_customer" Text="Customers" />                               
+                                <asp:MenuItem NavigateUrl="~/categories" Text="Categories" />                              
+                            </Items>                             
+                        </asp:Menu>--%>
+                        <div class="topnav" id="Menu_MobileView">
+                            <a href="/dashboard">Home</a>
+                            <a href="/invoice/create">Create Invoices</a>
+                            <a href="/invoice/search">Invoices</a>
+                            <a href="/client/search">Clients</a>
+                            <a href="/notes">Notes</a>
+                            <a href="/category">Categories</a>
+                            <a href="javascript:void(0);" style="font-size: 15px;" class="menuicon" onclick="ShowMenu();return false">
+                                <i class="fa fa-bars"></i></a>
+                        </div>
+                    </div>
+                    <div class="fwt-clear">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="main">
+                <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+                <div id="divMessage" runat="server" clientidmode="Static" style="display: block;">
+                    <div id="divMessageLabel"></div>
+                </div>
+                <div id="divPartialPagePopup" style="display: block;">
+                </div>
+            </div>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="footer">
+            <div class="fwt-padding-8" style="text-align: center">
+                <div style="color: #2196F4; font-size: 12px">Powered By:</div>
+                <div>
+                    <a href="http://www.floydwebtech.com/">
+                        <asp:Image ID="Image1" ImageUrl="_Layouts/IMG/FWT_Logo.png" Height="40px" runat="server" AlternateText="FWTepaylogo" ClientIDMode="Static" /></a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <script src="/_Layouts/JS/jquery.min.js" type="text/javascript"></script>
+    <script src="/_Layouts/LIB/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+    <script src="/_Layouts/JS/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/_Layouts/JS/jquery.floatThead.js" type="text/javascript"></script>
+    <script src="/_Layouts/JS/jquery.floatThead._.js" type="text/javascript"></script>
+    <script src="/_Layouts/select2/js/select2.min.js" type="text/javascript"></script>
+    <script src="/_Layouts/JS/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <script src="/_Layouts/JS/tableExport.js" type="text/javascript"></script>
+    <script src="/_Layouts/JS/jquery.timeago.js" type="text/javascript"></script>
+    <script src="/_Layouts/JS/custom.js" type="text/javascript"></script>
+    <asp:ContentPlaceHolder ID="Scripts" runat="server">
+    </asp:ContentPlaceHolder>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //$("#hlLoggedInControlsProfile").click(function (e) {
+            //   // window.location = "agent_add.aspx?agent_id=" + $("#hfLogin_ID").val();
+
+            //});       
+            //Request.Browser.ScreenPixelsWidth
+            startTime();
+
+            if ($(window).width() < 600) {
+
+                var sUsername = $("#lblUsername").val();
+                sUsername = (sUsername.length > 10) ? sUsername.substring(0, 6) + ".." : sUsername;
+                $("#hfWindowWidth").val(sUsername);
+            }
+        });
+        function ShowMenu() {
+
+            var oMenuID = document.getElementById("Menu_MobileView");
+
+            if (oMenuID.className == "topnav") {
+
+                oMenuID.className += " responsive";
+            } else {
+
+                oMenuID.className = "topnav";
+            }
+        }
+
+    </script>
+</body>
+</html>

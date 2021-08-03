@@ -1,0 +1,579 @@
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F96CF560-7E8A-4EE2-A399-C0D556EF4FFB}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Paybook.WebUI</RootNamespace>
+    <AssemblyName>Paybook.WebUI</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MySql.Data, Version=6.9.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>packages\MySql.Data.6.9.12\lib\net40\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".user.ini" />
+    <None Include="App_Code\dsInvoicePayment.xsd" />
+    <Content Include="App_Code\dsInvoicePayment.xss">
+      <DependentUpon>dsInvoicePayment.xsd</DependentUpon>
+    </Content>
+    <Content Include="loginmaster.Master" />
+    <None Include="packages.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <Content Include="_Layouts\CSS\images\Thumbs.db" />
+    <Content Include="_Layouts\font-awesome-4.7.0\fonts\fontawesome-webfont.eot" />
+    <Content Include="_Layouts\font-awesome-4.7.0\fonts\fontawesome-webfont.ttf" />
+    <Content Include="_Layouts\font-awesome-4.7.0\fonts\fontawesome-webfont.woff" />
+    <Content Include="_Layouts\font-awesome-4.7.0\fonts\fontawesome-webfont.woff2" />
+    <Content Include="_Layouts\font-awesome-4.7.0\fonts\FontAwesome.otf" />
+    <Content Include="_Layouts\IMG\export-icons\Thumbs.db" />
+    <Content Include="_Layouts\IMG\Thumbs.db" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\package.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="agents.aspx" />
+    <Content Include="agent_add.aspx" />
+    <Content Include="ageny_add.aspx" />
+    <Content Include="categories.aspx" />
+    <Content Include="company_profile.aspx" />
+    <Content Include="customers.aspx" />
+    <Content Include="customer_add.aspx" />
+    <Content Include="daily_notes.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="index.aspx" />
+    <Content Include="invoices.aspx" />
+    <Content Include="invoice_add.aspx" />
+    <Content Include="login.aspx" />
+    <Content Include="logout.aspx" />
+    <Content Include="particular.aspx" />
+    <Content Include="payment_add.aspx" />
+    <Content Include="Web.config" />
+    <Content Include="_Documents\AC20170002_v1_20170401_20171104.html" />
+    <Content Include="_Documents\AC20170002_v1_20171001_20171110.html" />
+    <Content Include="_Documents\AC20170002_v1_20171001_20171218.html" />
+    <Content Include="_Documents\AC20170002_v1_20171004_20171104.html" />
+    <Content Include="_Documents\AC20170002_v1_20171010_20171110.html" />
+    <Content Include="_Documents\AC20170002_v1_20171111_20171211.html" />
+    <Content Include="_Documents\AC20170002_v1_20171113_20171213.html" />
+    <Content Include="_Documents\AC20170002_v2_20171118_20171218.html" />
+    <Content Include="_Documents\AC20170002_v3_20170901_20171218.html" />
+    <Content Include="_Documents\AC20170002_v4_20170901_20171219.html" />
+    <Content Include="_Documents\AC20170002_v5_20170901_20171225.html" />
+    <Content Include="_Documents\AC20170002_v6_20171001_20171230.html" />
+    <Content Include="_Documents\AC20170002_v7_20171203_20180103.html" />
+    <Content Include="_Documents\AC20170003_v1_20170501_20171109.html" />
+    <Content Include="_Documents\AC20170003_v1_20170901_20171219.html" />
+    <Content Include="_Documents\AC20170003_v1_20171111_20171211.html" />
+    <Content Include="_Documents\AC20170003_v2_20171130_20171231.html" />
+    <Content Include="_Documents\AC20170004_v1_20170401_20171104.html" />
+    <Content Include="_Documents\AC20170004_v1_20170501_20171109.html" />
+    <Content Include="_Documents\AC20170004_v1_20170801_20171106.html" />
+    <Content Include="_Documents\AC20170004_v1_20171111_20171211.html" />
+    <Content Include="_Documents\AC20170006_v1_20170901_20171108.html" />
+    <Content Include="_Documents\AC20170006_v1_20171004_20171104.html" />
+    <Content Include="_Documents\AC20170008_v1_20171005_20171105.html" />
+    <Content Include="_Documents\AC20170008_v2_20171008_20171108.html" />
+    <Content Include="_Documents\AC20170008_v3_20170501_20171109.html" />
+    <Content Include="_Documents\AC20170009_v10_20171006_20171106.html" />
+    <Content Include="_Documents\AC20170009_v11_20171105_20171106.html" />
+    <Content Include="_Documents\AC20170009_v12_20171106_20171106.html" />
+    <Content Include="_Documents\AC20170009_v13_20171104_20171106.html" />
+    <Content Include="_Documents\AC20170009_v14_20171101_20171106.html" />
+    <Content Include="_Documents\AC20170009_v15_20170101_20171107.html" />
+    <Content Include="_Documents\AC20170009_v16_20170901_20171108.html" />
+    <Content Include="_Documents\AC20170009_v17_20171027_20171127.html" />
+    <Content Include="_Documents\AC20170009_v1_20171004_20171104.html" />
+    <Content Include="_Documents\AC20170009_v2_20171005_20171105.html" />
+    <Content Include="_Documents\AC20170009_v3_20170611_20171105.html" />
+    <Content Include="_Documents\AC20170009_v4_20171104_20171104.html" />
+    <Content Include="_Documents\AC20170009_v5_20171101_20171103.html" />
+    <Content Include="_Documents\AC20170009_v6_20171101_20171104.html" />
+    <Content Include="_Documents\AC20170009_v7_20171001_20171105.html" />
+    <Content Include="_Documents\AC20170009_v8_20171105_20171105.html" />
+    <Content Include="_Documents\AC20170009_v9_20171101_20171105.html" />
+    <Content Include="_Documents\AC20170010_v10_20171001_20171110.html" />
+    <Content Include="_Documents\AC20170010_v11_20171010_20171110.html" />
+    <Content Include="_Documents\AC20170010_v12_20171111_20171211.html" />
+    <Content Include="_Documents\AC20170010_v13_20171112_20171212.html" />
+    <Content Include="_Documents\AC20170010_v1_20171004_20171104.html" />
+    <Content Include="_Documents\AC20170010_v2_20171005_20171105.html" />
+    <Content Include="_Documents\AC20170010_v3_20171006_20171106.html" />
+    <Content Include="_Documents\AC20170010_v4_20171004_20171106.html" />
+    <Content Include="_Documents\AC20170010_v5_20171103_20171106.html" />
+    <Content Include="_Documents\AC20170010_v6_20171103_20171104.html" />
+    <Content Include="_Documents\AC20170010_v7_20171103_20171105.html" />
+    <Content Include="_Documents\AC20170010_v8_20171008_20171108.html" />
+    <Content Include="_Documents\AC20170010_v9_20170501_20171109.html" />
+    <Content Include="_Documents\AC20170011_v1_20171005_20171105.html" />
+    <Content Include="_Documents\AC20170012_v1_20171102_20171202.html" />
+    <Content Include="_Documents\AC20170013_v1_20171010_20171110.html" />
+    <Content Include="_Documents\AC20170013_v2_20171014_20171114.html" />
+    <Content Include="_Documents\AC20170013_v3_20171027_20171127.html" />
+    <Content Include="_Documents\AC20170013_v4_20170901_20171211.html" />
+    <Content Include="_Documents\AC20170013_v5_20170701_20171211.html" />
+    <Content Include="_Documents\AC20170014_v1_20171027_20171127.html" />
+    <Content Include="_Documents\AC20170014_v2_20171102_20171202.html" />
+    <Content Include="_Documents\AC20170014_v3_20170901_20171212.html" />
+    <Content Include="_Documents\AC20170015_v1_20171027_20171127.html" />
+    <Content Include="_Documents\AC20170015_v2_20171102_20171202.html" />
+    <Content Include="_Documents\AC20170015_v3_20171001_20171202.html" />
+    <Content Include="_Documents\AC20170016_v1_20171102_20171202.html" />
+    <Content Include="_Documents\AC20170016_v2_20171103_20171203.html" />
+    <Content Include="_Documents\AC20170016_v3_20171001_20171209.html" />
+    <Content Include="_Documents\AC20170016_v4_20171109_20171209.html" />
+    <Content Include="_Documents\AC20170016_v5_20171111_20171211.html" />
+    <Content Include="_Documents\AC20170017_v1_20171115_20171215.html" />
+    <Content Include="_Documents\AC20170017_v2_20171116_20171216.html" />
+    <Content Include="_Documents\AC20170018_v1_20171116_20171216.html" />
+    <Content Include="_Documents\AC20170018_v2_20170901_20171216.html" />
+    <Content Include="_Documents\AC20190001_v1_20190402_20190502.html" />
+    <Content Include="_Documents\AC20190001_v2_20190406_20190506.html" />
+    <Content Include="_Documents\AC20190001_v3_20190429_20190529.html" />
+    <Content Include="_Documents\AC20190002_v10_20190412_20190512.html" />
+    <Content Include="_Documents\AC20190002_v11_20190415_20190515.html" />
+    <Content Include="_Documents\AC20190002_v12_20190417_20190517.html" />
+    <Content Include="_Documents\AC20190002_v13_20190418_20190518.html" />
+    <Content Include="_Documents\AC20190002_v14_20190421_20190521.html" />
+    <Content Include="_Documents\AC20190002_v15_20190423_20190523.html" />
+    <Content Include="_Documents\AC20190002_v16_20190428_20190528.html" />
+    <Content Include="_Documents\AC20190002_v17_20190429_20190529.html" />
+    <Content Include="_Documents\AC20190002_v18_20190430_20190530.html" />
+    <Content Include="_Documents\AC20190002_v19_20190430_20190531.html" />
+    <Content Include="_Documents\AC20190002_v1_20190402_20190502.html" />
+    <Content Include="_Documents\AC20190002_v20_20190507_20190607.html" />
+    <Content Include="_Documents\AC20190002_v21_20190401_20190609.html" />
+    <Content Include="_Documents\AC20190002_v2_20190403_20190503.html" />
+    <Content Include="_Documents\AC20190002_v3_20190404_20190504.html" />
+    <Content Include="_Documents\AC20190002_v4_20190407_20190507.html" />
+    <Content Include="_Documents\AC20190002_v5_20190408_20190508.html" />
+    <Content Include="_Documents\AC20190002_v6_20190409_20190509.html" />
+    <Content Include="_Documents\AC20190002_v7_20190410_20190510.html" />
+    <Content Include="_Documents\AC20190002_v8_20190411_20190510.html" />
+    <Content Include="_Documents\AC20190002_v9_20190411_20190511.html" />
+    <Content Include="_Documents\AC20190003_v1_20190403_20190503.html" />
+    <Content Include="_Documents\AC20190003_v2_20190404_20190504.html" />
+    <Content Include="_Documents\AC20190003_v3_20190410_20190510.html" />
+    <Content Include="_Documents\AC20190003_v4_20190418_20190518.html" />
+    <Content Include="_Documents\AC20190003_v5_20190502_20190602.html" />
+    <Content Include="_Documents\AC20190004_v10_20190423_20190523.html" />
+    <Content Include="_Documents\AC20190004_v11_20190427_20190527.html" />
+    <Content Include="_Documents\AC20190004_v12_20190428_20190528.html" />
+    <Content Include="_Documents\AC20190004_v13_20190427_20190528.html" />
+    <Content Include="_Documents\AC20190004_v14_20190429_20190529.html" />
+    <Content Include="_Documents\AC20190004_v15_20190507_20190607.html" />
+    <Content Include="_Documents\AC20190004_v16_20190508_20190608.html" />
+    <Content Include="_Documents\AC20190004_v17_20190509_20190609.html" />
+    <Content Include="_Documents\AC20190004_v18_20190401_20190609.html" />
+    <Content Include="_Documents\AC20190004_v1_20190403_20190503.html" />
+    <Content Include="_Documents\AC20190004_v2_20190404_20190504.html" />
+    <Content Include="_Documents\AC20190004_v3_20190406_20190506.html" />
+    <Content Include="_Documents\AC20190004_v4_20190407_20190507.html" />
+    <Content Include="_Documents\AC20190004_v5_20190409_20190509.html" />
+    <Content Include="_Documents\AC20190004_v6_20190410_20190510.html" />
+    <Content Include="_Documents\AC20190004_v7_20190411_20190511.html" />
+    <Content Include="_Documents\AC20190004_v8_20190415_20190515.html" />
+    <Content Include="_Documents\AC20190004_v9_20190418_20190518.html" />
+    <Content Include="_Documents\AC20190005_v1_20190404_20190504.html" />
+    <Content Include="_Documents\AC20190006_v1_20190428_20190528.html" />
+    <Content Include="_Documents\AC20190007_v1_20190802_20190902.html" />
+    <Content Include="_Documents\AC20190007_v2_20200807_20200907.html" />
+    <Content Include="_Documents\CU20170002_v10_20170819_20170919.html" />
+    <Content Include="_Documents\CU20170002_v1_20170819_20170919.html" />
+    <Content Include="_Documents\CU20170002_v1_20170823_20170923.html" />
+    <Content Include="_Documents\CU20170002_v2_20170718_20170818.html" />
+    <Content Include="_Documents\CU20170002_v2_20170827_20170927.html" />
+    <Content Include="_Documents\CU20170002_v3_20170904_20171004.html" />
+    <Content Include="_Documents\CU20170002_v40_20170718_20170818.html" />
+    <Content Include="_Documents\CU20170002_v4_20170905_20171005.html" />
+    <Content Include="_Documents\CU20170002_v5_20170301_20171010.html" />
+    <Content Include="_Documents\CU20170002_v5_20170719_20170819.html" />
+    <Content Include="_Documents\CU20170002_v6_20170925_20171025.html" />
+    <Content Include="_Documents\CU20170002_v7_20170729_20170829.html" />
+    <Content Include="_Documents\CU20170002_v7_20171002_20171102.html" />
+    <Content Include="_Documents\CU20170002_v9_20170811_20170911.html" />
+    <Content Include="_Documents\CU20170003_v10_20170819_20170919.html" />
+    <Content Include="_Documents\CU20170003_v10_20171111_20171211.html" />
+    <Content Include="_Documents\CU20170003_v11_20171112_20171212.html" />
+    <Content Include="_Documents\CU20170003_v12_20171114_20171214.html" />
+    <Content Include="_Documents\CU20170003_v1_20170819_20170919.html" />
+    <Content Include="_Documents\CU20170003_v1_20170910_20171010.html" />
+    <Content Include="_Documents\CU20170003_v2_20170301_20171010.html" />
+    <Content Include="_Documents\CU20170003_v3_20170912_20171012.html" />
+    <Content Include="_Documents\CU20170003_v4_20170718_20170818.html" />
+    <Content Include="_Documents\CU20170003_v4_20170917_20171017.html" />
+    <Content Include="_Documents\CU20170003_v5_20170924_20171024.html" />
+    <Content Include="_Documents\CU20170003_v6_20170926_20171026.html" />
+    <Content Include="_Documents\CU20170003_v7_20170501_20171109.html" />
+    <Content Include="_Documents\CU20170003_v8_20171110_20171210.html" />
+    <Content Include="_Documents\CU20170003_v9_20170811_20170911.html" />
+    <Content Include="_Documents\CU20170003_v9_20171101_20171211.html" />
+    <Content Include="_Documents\CU20170005_v10_20170819_20170919.html" />
+    <Content Include="_Documents\CU20170005_v11_20170819_20170918.html" />
+    <Content Include="_Documents\CU20170005_v12_20170818_20170919.html" />
+    <Content Include="_Documents\CU20170005_v13_20170817_20170919.html" />
+    <Content Include="_Documents\CU20170005_v1_20170926_20171026.html" />
+    <Content Include="_Documents\CU20170005_v2_20171010_20171110.html" />
+    <Content Include="_Documents\CU20170005_v3_20171110_20171210.html" />
+    <Content Include="_Documents\CU20170005_v4_20171111_20171211.html" />
+    <Content Include="_Documents\CU20170005_v5_20171101_20171211.html" />
+    <Content Include="_Documents\CU20170005_v6_20171115_20171215.html" />
+    <Content Include="_Documents\CU20170005_v9_20170811_20170911.html" />
+    <Content Include="_Documents\CU20170006_v10_20170812_20170912.html" />
+    <Content Include="_Documents\CU20170006_v3_20170718_20170818.html" />
+    <Content Include="_Documents\CU20170006_v9_20170811_20170911.html" />
+    <Content Include="_Documents\CU20170007_v1_20170926_20171026.html" />
+    <Content Include="_Documents\CU20170007_v2_20170501_20171109.html" />
+    <Content Include="_Documents\CU20170007_v3_20171010_20171110.html" />
+    <Content Include="_Documents\CU20170009_v9_20170818_20170918.html" />
+    <Content Include="_Documents\CU20170010_v1_20170801_20171106.html" />
+    <Content Include="_Documents\CU20170010_v6_20170719_20170819.html" />
+    <Content Include="_Documents\CU20170012_v7_20170801_20170901.html" />
+    <Content Include="_Documents\CU20170013_v2_20170804_20170903.html" />
+    <Content Include="_Documents\CU20170013_v3_20170804_20170902.html" />
+    <Content Include="_Documents\CU20170013_v4_20170811_20170904.html" />
+    <Content Include="_Documents\CU20170013_v8_20170804_20170904.html" />
+    <Content Include="_Documents\CU20170016_v1_20170901_20171001.html" />
+    <Content Include="_Documents\CU20170017_v1_20170920_20171020.html" />
+    <Content Include="_Documents\CU20170023_v1_20171004_20171104.html" />
+    <Content Include="_Documents\CU20170023_v1_20171130_20171231.html" />
+    <Content Include="_Documents\CU20170024_v1_20171130_20171231.html" />
+    <Content Include="_Documents\CU20170025_v1_20170920_20171020.html" />
+    <Content Include="_Documents\CU20170025_v1_20171130_20171231.html" />
+    <Content Include="_Documents\CU20170025_v2_20170401_20171104.html" />
+    <Content Include="_Documents\CU20170026_v1_20170401_20171104.html" />
+    <Content Include="_Documents\CU20170027_v1_20170913_20171013.html" />
+    <Content Include="_Documents\CU20170032_v1_20170908_20171008.html" />
+    <Content Include="_Documents\CU20170032_v2_20170301_20171010.html" />
+    <Content Include="_Documents\CU20170032_v3_20170401_20171104.html" />
+    <Content Include="_Documents\CU20170033_v1_20170908_20171008.html" />
+    <Content Include="_Documents\CU20170038_v1_20171115_20171215.html" />
+    <Content Include="_Documents\CU20170038_v2_20170901_20171215.html" />
+    <Content Include="_Documents\CU20170039_v1_20171010_20171110.html" />
+    <Content Include="_Documents\CU20170039_v2_20171102_20171202.html" />
+    <Content Include="_Documents\CU20170039_v3_20171109_20171209.html" />
+    <Content Include="_Documents\CU20170041_v1_20170920_20171020.html" />
+    <Content Include="_Documents\CU20170043_v1_20170924_20171024.html" />
+    <Content Include="_Documents\CU20170047_v1_20170202_20171020.html" />
+    <Content Include="_Documents\CU20170047_v2_20170101_20171020.html" />
+    <Content Include="_Documents\CU20170047_v3_20170920_20171020.html" />
+    <Content Include="_Documents\CU20170047_v4_20161001_20171020.html" />
+    <Content Include="_Documents\CU20170047_v5_20160110_20171020.html" />
+    <Content Include="_Documents\CU20170047_v6_20160101_20171021.html" />
+    <Content Include="_Documents\CU20170047_v7_20170101_20171107.html" />
+    <Content Include="_Documents\CU20170047_v8_20171024_20171124.html" />
+    <Content Include="_Documents\CU20170047_v9_20171111_20171211.html" />
+    <Content Include="_Documents\CU20170048_v10_20170101_20171124.html" />
+    <Content Include="_Documents\CU20170048_v11_20151201_20171124.html" />
+    <Content Include="_Documents\CU20170048_v1_20170920_20171020.html" />
+    <Content Include="_Documents\CU20170048_v2_20160301_20171020.html" />
+    <Content Include="_Documents\CU20170048_v3_20160103_20171020.html" />
+    <Content Include="_Documents\CU20170048_v4_20170922_20171020.html" />
+    <Content Include="_Documents\CU20170048_v5_20160103_20171021.html" />
+    <Content Include="_Documents\CU20170048_v6_20160101_20171021.html" />
+    <Content Include="_Documents\CU20170048_v7_20170929_20171029.html" />
+    <Content Include="_Documents\CU20170048_v8_20170930_20171030.html" />
+    <Content Include="_Documents\CU20170048_v9_20171024_20171124.html" />
+    <Content Include="_Documents\CU20170050_v1_20170103_20171024.html" />
+    <Content Include="_Documents\CU20170050_v2_20170103_20171025.html" />
+    <Content Include="_Documents\CU20170050_v3_20170929_20171029.html" />
+    <Content Include="_Documents\CU20170050_v4_20170930_20171030.html" />
+    <Content Include="_Documents\CU20170050_v5_20160101_20171031.html" />
+    <Content Include="_Documents\CU20170050_v6_20171005_20171105.html" />
+    <Content Include="_Documents\CU20170050_v7_20171007_20171107.html" />
+    <Content Include="_Documents\CU20170050_v8_20170201_20171107.html" />
+    <Content Include="_Documents\CU20170050_v9_20171001_20171110.html" />
+    <Content Include="_Documents\CU20170051_v1_20170926_20171026.html" />
+    <Content Include="_Documents\CU20170051_v2_20170501_20171029.html" />
+    <Content Include="_Documents\CU20170052_v1_20170926_20171026.html" />
+    <Content Include="_Documents\CU20170052_v2_20170929_20171029.html" />
+    <Content Include="_Documents\CU20170052_v3_20171004_20171104.html" />
+    <Content Include="_Documents\CU20170055_v1_20170929_20171029.html" />
+    <Content Include="_Documents\CU20170066_v1_20171008_20171108.html" />
+    <Content Include="_Documents\CU20170071_v1_20170611_20171105.html" />
+    <Content Include="_Documents\CU20170072_v1_20170611_20171105.html" />
+    <Content Include="_Documents\CU20170073_v1_20171004_20171104.html" />
+    <Content Include="_Documents\CU20170083_v1_20171006_20171106.html" />
+    <Content Include="_Documents\CU20170089_v1_20171005_20171105.html" />
+    <Content Include="_Documents\CU20170091_v1_20171005_20171105.html" />
+    <Content Include="_Documents\CU20170115_v1_20171014_20171114.html" />
+    <Content Include="_Documents\CU20170122_v1_20171111_20171211.html" />
+    <Content Include="_Documents\CU20170134_v1_20171102_20171202.html" />
+    <Content Include="_Documents\CU20170135_v1_20171102_20171202.html" />
+    <Content Include="_Documents\CU20170143_v1_20171103_20171203.html" />
+    <Content Include="_Documents\CU20170143_v2_20171115_20171215.html" />
+    <Content Include="_Documents\CU20170144_v1_20171109_20171209.html" />
+    <Content Include="_Documents\CU20170145_v1_20171109_20171209.html" />
+    <Content Include="_Documents\CU20190013_v1_20190802_20190903.html" />
+    <Content Include="_Documents\CU20190013_v2_20190802_20190902.html" />
+    <Content Include="_Documents\CU20190014_v1_20190802_20190902.html" />
+    <Content Include="_Documents\html\report.html" />
+    <Content Include="_Documents\html\report_agency.html" />
+    <Content Include="_Documents\IMG_CompanyLogo\1.png" />
+    <Content Include="_Documents\IMG_CompanyLogo\6.jpg" />
+    <Content Include="_Documents\IMG_CompanyLogo\companylogo.jpg" />
+    <Content Include="_Documents\IMG_CompanyLogo\download %281%29.jpg" />
+    <Content Include="_Documents\IMG_CompanyLogo\FWTLogo.png" />
+    <Content Include="_Documents\IMG_CompanyLogo\images %281%29.jpg" />
+    <Content Include="_Documents\IMG_CompanyLogo\images.jpg" />
+    <Content Include="_Documents\IMG_CompanyLogo\img_avatar.png" />
+    <Content Include="_Documents\IMG_CompanyLogo\loading.gif" />
+    <Content Include="_Documents\IMG_CompanyLogo\MPPKVVCL.jpg" />
+    <Content Include="_Documents\IMG_CompanyLogo\Road_Safety_Logo.jpg" />
+    <Content Include="_Documents\IMG_CompanyLogo\th.jpg" />
+    <Content Include="_Documents\report.html" />
+    <Content Include="_Layouts\CSS\chosen.css" />
+    <Content Include="_Layouts\CSS\custom.css" />
+    <Content Include="_Layouts\CSS\images\animated-overlay.gif" />
+    <Content Include="_Layouts\CSS\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="_Layouts\CSS\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="_Layouts\CSS\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="_Layouts\CSS\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="_Layouts\CSS\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="_Layouts\CSS\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="_Layouts\CSS\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="_Layouts\CSS\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="_Layouts\CSS\images\ui-icons_222222_256x240.png" />
+    <Content Include="_Layouts\CSS\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="_Layouts\CSS\images\ui-icons_454545_256x240.png" />
+    <Content Include="_Layouts\CSS\images\ui-icons_888888_256x240.png" />
+    <Content Include="_Layouts\CSS\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="_Layouts\CSS\jquery-ui.css" />
+    <Content Include="_Layouts\CSS\jquery-ui.min.css" />
+    <Content Include="_Layouts\CSS\jquery-ui.structure.css" />
+    <Content Include="_Layouts\CSS\jquery-ui.structure.min.css" />
+    <Content Include="_Layouts\CSS\jquery-ui.theme.css" />
+    <Content Include="_Layouts\CSS\jquery-ui.theme.min.css" />
+    <Content Include="_Layouts\CSS\login.css" />
+    <Content Include="_Layouts\CSS\Site.css" />
+    <Content Include="_Layouts\font-awesome-4.7.0\css\font-awesome.css" />
+    <Content Include="_Layouts\font-awesome-4.7.0\css\font-awesome.min.css" />
+    <Content Include="_Layouts\font-awesome-4.7.0\fonts\fontawesome-webfont.svg" />
+    <Content Include="_Layouts\IMG\close.png" />
+    <Content Include="_Layouts\IMG\dot.jpg" />
+    <Content Include="_Layouts\IMG\dot.png" />
+    <Content Include="_Layouts\IMG\export-icons\csv.png" />
+    <Content Include="_Layouts\IMG\export-icons\json.png" />
+    <Content Include="_Layouts\IMG\export-icons\pdf.png" />
+    <Content Include="_Layouts\IMG\export-icons\png.png" />
+    <Content Include="_Layouts\IMG\export-icons\ppt.png" />
+    <Content Include="_Layouts\IMG\export-icons\sql.png" />
+    <Content Include="_Layouts\IMG\export-icons\txt.png" />
+    <Content Include="_Layouts\IMG\export-icons\word.png" />
+    <Content Include="_Layouts\IMG\export-icons\xls.png" />
+    <Content Include="_Layouts\IMG\export-icons\xml.png" />
+    <Content Include="_Layouts\IMG\FWT_Logo.png" />
+    <Content Include="_Layouts\IMG\FWT_Logo_New_CS3-02.png" />
+    <Content Include="_Layouts\IMG\img_avatar.png" />
+    <Content Include="_Layouts\IMG\img_avatar2.png" />
+    <Content Include="_Layouts\IMG\Logo-02.png" />
+    <Content Include="_Layouts\IMG\searchicon.png" />
+    <Content Include="_Layouts\IMG\tick.png" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\AUTHORS.txt" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\external\jquery\jquery.js" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\images\ui-icons_444444_256x240.png" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\images\ui-icons_555555_256x240.png" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\images\ui-icons_777620_256x240.png" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\images\ui-icons_777777_256x240.png" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\index.html" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\jquery-ui.css" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\jquery-ui.js" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\jquery-ui.min.css" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\jquery-ui.min.js" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\jquery-ui.structure.css" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\jquery-ui.structure.min.css" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\jquery-ui.theme.css" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\jquery-ui.theme.min.css" />
+    <Content Include="_Layouts\jquery-ui-1.12.1\jquery-ui-1.12.1\LICENSE.txt" />
+    <Content Include="_Layouts\JS\chosen.jquery.js" />
+    <Content Include="_Layouts\JS\custom.js" />
+    <Content Include="_Layouts\JS\custom_category.js" />
+    <Content Include="_Layouts\JS\custom_customer.js" />
+    <Content Include="_Layouts\JS\custom_dailynotes.js" />
+    <Content Include="_Layouts\JS\custom_invoice.js" />
+    <Content Include="_Layouts\JS\custom_payment.js" />
+    <Content Include="_Layouts\JS\jquery-ui.js" />
+    <Content Include="_Layouts\JS\jquery-ui.min.js" />
+    <Content Include="_Layouts\JS\jquery.floatThead.js" />
+    <Content Include="_Layouts\JS\jquery.floatThead._.js" />
+    <Content Include="_Layouts\JS\jquery.js" />
+    <Content Include="_Layouts\JS\jquery.min.js" />
+    <Content Include="_Layouts\JS\jquery.slimscroll.min.js" />
+    <Content Include="_Layouts\JS\jquery.timeago.js" />
+    <Content Include="_Layouts\JS\tableExport.js" />
+    <Content Include="_Layouts\messages.xml" />
+    <Content Include="_Layouts\select2\css\select2.min.css" />
+    <Content Include="_Layouts\select2\js\select2.min.js" />
+    <Content Include="_Layouts\WS_WebService.aspx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="agents.aspx.cs">
+      <DependentUpon>agents.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="agent_add.aspx.cs">
+      <DependentUpon>agent_add.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ageny_add.aspx.cs">
+      <DependentUpon>ageny_add.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="categories.aspx.cs">
+      <DependentUpon>categories.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="company_profile.aspx.cs">
+      <DependentUpon>company_profile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="customers.aspx.cs">
+      <DependentUpon>customers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="customer_add.aspx.cs">
+      <DependentUpon>customer_add.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="daily_notes.aspx.cs">
+      <DependentUpon>daily_notes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="invoices.aspx.cs">
+      <DependentUpon>invoices.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="invoice_add.aspx.cs">
+      <DependentUpon>invoice_add.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="login.aspx.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="loginmaster.Master.cs">
+      <DependentUpon>loginmaster.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="logout.aspx.cs">
+      <DependentUpon>logout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="particular.aspx.cs">
+      <DependentUpon>particular.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="payment_add.aspx.cs">
+      <DependentUpon>payment_add.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="_Layouts\WS_WebService.aspx.cs">
+      <DependentUpon>WS_WebService.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="_Layouts\WS_WebService.aspx.designer.cs">
+      <DependentUpon>WS_WebService.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Paybook.BusinessLayer\Paybook.BusinessLayer.csproj">
+      <Project>{8506c2ca-1eaa-4b7f-92d0-fd5e97613678}</Project>
+      <Name>Paybook.BusinessLayer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>63084</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:63084/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

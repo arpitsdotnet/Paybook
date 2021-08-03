@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="../_Layouts/CSS/custom.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="idReportHeader" style="padding:8px 8px ; border:2px solid black;border-radius:10px 10px 0px 0px;">
+          <div>
+            <div style="text-align:center;font-size:18px;color:blue">Invoice/Payment Report</div>
+            <div style="text-align:center;">
+                <div>RTO & Insurance consultant</div>
+                <div>RTO,Forms Fitness, Permit, Transfer, Licence </div>
+            </div>
+        </div>
+        <div class="fwt-padding-2">
+            <div class="fwt-col l4 m4 s4">
+                #COMPANY_LOGO#
+            </div>
+            <div class="fwt-col l8 m8 s8" style="text-align:right">
+                <div style="font-size:18px;font-weight:bold;font-style:italic">
+                    #COMPANY_NAME#
+                </div>
+                <div>
+                    #ADDRESS#
+                </div>
+                <div>
+                    #EMAIL#
+                </div>
+                <div>
+                    #PHONE_NUMBER#
+                </div>
+                <div>
+                    #FAX_NUMBER#
+                </div>
+                 <!--<div>
+                    #GSTIN#
+                </div>-->
+            </div>
+            <div class="fwt-clear"></div>
+        </div>
+        <hr class="HrLine" />
+        <div>           
+            <div>
+                #AGENCY_NAME#
+            </div>
+            <div>
+                <div class="fwt-col l6 m6 s6">
+                    #AGENCY_ADDRESS#
+                    &nbsp;
+                </div>
+                <div class="fwt-col l6 m6 s6" style="text-align:right">
+                    #DATE_FROM_TO#
+                </div>
+            </div>
+            <div style="text-align:right;padding:4px 0px 4px 0px">
+                #REMAINING_BALANCE#
+            </div>
+        </div>
+
+        <div id="idReportParticular">
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="width: 12%;">
+                            Date
+                        </th>
+                        <th style="width:27%;">
+                            Particular
+                        </th>
+                        <th style="width:14%;">
+                           Customer Name
+                        </th>
+                        <th style="width:14%;">
+                            Work Type
+                        </th>
+                        <th style="width: 15%;">
+                            Entity
+                        </th>
+                        <!--<th style="width: 8%">
+                            Basic Amount
+                        </th>-->
+                        <th style="width: 8%">
+                            Tax
+                        </th>
+                        <th style="width: 10%">
+                            Basic (&#8377;)<br />
+                            Tax (&#8377;)<br />
+                            Total (&#8377;)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    #idPayment#
+                    <tr>
+                        <td colspan="5" style="text-align: right;">
+                            <b>Total Balance :</b>
+                        </td>
+                        <td colspan="2" style="text-align: right; font-weight:bold;">
+                            #TOTAL_BALANCE#
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: right;">
+                            <b>Total Payment :</b>
+                        </td>
+                        <td colspan="2" style="text-align: right; font-weight:bold;">
+                            #TOTAL_PAYMENT#
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: right;">
+                            <b>Total Remaining Balance :</b>
+                        </td>
+                        <td colspan="2" style="text-align: right; font-weight:bold;">
+                            #TOTAL_REMAINING_AMOUNT#
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

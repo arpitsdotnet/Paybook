@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Messages>
+  <Message type="Basic">
+    <MsgText id="BSS001">Login information has been inserted successfully</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSS002">Password has been updated successfully</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSS003">New subCategory has been inserted successfully</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSS004">SubCategory has been updated successfully</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW005">Enter valid user id</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW006">Invalid user and password</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW007">Username and password fields cannot be blank, please fill valid values</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW008">Please fill the required fields</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW009">Please enter primary mobile number</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW010">Please enter correct mobile number</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW011">Please enter email address</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW012">Please enter valid email address</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW013">Reason for change active status</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW014"> Enter correct password.</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW015"> Invalid Captcha.</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW016"> Daily note should not be blank</MsgText>
+  </Message>
+  <Message type="Basic">
+    <MsgText id="BSW017">Please select type</MsgText>
+  </Message>
+  
+  <Message type="Customer">
+    <MsgText id="CU101">"Please enter customer name"</MsgText>
+  </Message>
+  <Message type="Customer">
+    <MsgText id="CUW102">Given customer not available</MsgText>
+  </Message>
+  <Message type="Customer">
+    <MsgText id="CUS103">New customer has been inserted successfully</MsgText>
+  </Message>
+  <Message type="Customer">
+    <MsgText id="CUS104">Customer information has been updated successfully</MsgText>
+  </Message>
+  <Message type="Customer">
+    <MsgText id="CUW105">Please select atleast one customer</MsgText>
+  </Message>
+  <Message type="Customer">
+    <MsgText id="CUS106">Customer status has been updated successfully</MsgText>
+  </Message>
+  <Message type="Customer">
+    <MsgText id="CUS107">Please select customer name</MsgText>
+  </Message>
+  <Message type="Customer">
+    <MsgText id="CUW108">Please select sepecific customer for create invoice</MsgText>
+  </Message>
+  <Message type="Customer">
+    <MsgText id="CUW109">Please select sepecific customer for payment </MsgText>
+  </Message>
+  <Message type="Customer">
+    <MsgText id="CUW110">Customer already exist</MsgText>
+  </Message>
+  
+  <Message type="Agency">
+    <MsgText id="AGE101">"Please enter agency name"</MsgText>
+  </Message>
+  <Message type="Agency">
+    <MsgText id="AGEW102">Given customer not available</MsgText>
+  </Message>
+  <Message type="Agency">
+    <MsgText id="AGES103">New Agency has been inserted successfully</MsgText>
+  </Message>
+  <Message type="Agency">
+    <MsgText id="AGES104">Agency information has been updated successfully</MsgText>
+  </Message>
+  <Message type="Agency">
+    <MsgText id="AGES107">Please select agency name</MsgText>
+  </Message>
+
+  <Message type="Agent">
+    <MsgText id="AGW201">Given agent not available</MsgText>
+  </Message>
+  <Message type="Agent">
+    <MsgText id="AGW205">Please select atleast one agent</MsgText>
+  </Message>
+  <Message type="Agent">
+    <MsgText id="AGS203">New agent has been inserted successfully</MsgText>
+  </Message>
+  <Message type="Agent">
+    <MsgText id="AGS204">Agent information has been updated successfully</MsgText>
+  </Message>
+  <Message type="Agent">
+    <MsgText id="AGS206">Agent status has been updated successfully</MsgText>
+  </Message>
+
+  <Message type="Invoice">
+    <MsgText id="INW301">This report already exist</MsgText>
+  </Message>
+  <Message type="Invoice">
+    <MsgText id="INS302">has been inserted successfully</MsgText>
+  </Message>
+  <Message type="Invoice">
+    <MsgText id="INS303">Invoice status has been updated successfully</MsgText>
+  </Message>
+ <Message type="Invoice">
+    <MsgText id="INS304">No particular found</MsgText>
+  </Message>
+  <Message type="Invoice">
+    <MsgText id="INS305">Remark update successfully</MsgText>
+  </Message>
+
+  
+  <Message type="CompanyProfile">
+    <MsgText id="CPS401">Company profile has been inserted successfully</MsgText>
+  </Message>
+  <Message type="CompanyProfile">
+    <MsgText id="CPS402">Company profile has been updated successfully"</MsgText>
+  </Message>
+    <Message type="CompanyProfile">
+    <MsgText id="CPS403">No company profile available"</MsgText>
+  </Message>
+  <Message Type="Payment">
+    <MsgText id="PTS501">Payment has been done successfully"</MsgText>
+  </Message>
+  <Message Type="Payment">
+    <MsgText id="PTS502">Payment should't be zero</MsgText>
+  </Message>
+  <Message Type="Payment">
+    <MsgText id="PTS503">Enter correct amount</MsgText>
+  </Message>
+  <Message Type="Payment">
+    <MsgText id="PTS504">Advance has been inserted successfully</MsgText>
+  </Message>
+  <Message type="Particular">
+    <MsgText id="PAW601">Given particular not available</MsgText>
+  </Message>
+  <Message type="Report">
+    <MsgText id="REW701"> To date and From date is necessary for genrating report</MsgText>
+  </Message>
+
+  <Message type="Category">
+    <MsgText id="CAW801">Subcategory already exists</MsgText>
+  </Message>
+  <Message type="Category">
+    <MsgText id="CAW802">Please enter Order By Value</MsgText>
+  </Message>
+  <Message type="Category">
+    <MsgText id="CAW803">Select category Type</MsgText>
+  </Message>
+  <Message type="Category">
+    <MsgText id="CAW804">Please enter Category Name</MsgText>
+  </Message>
+  <Message type="Category">
+    <MsgText id="CAW805">  Categoryhas been inactived successfully</MsgText>
+  </Message>
+
+
+  <Message type="Others">
+    <MsgText id="OTW901">Internal error</MsgText>
+  </Message>
+  <Message type="DailyNotes">
+    <MsgText id="NDS901">Insert successfully</MsgText>
+  </Message>
+  <Message type="DailyNotes">
+    <MsgText id="NDS902">Delete successfully</MsgText>
+  </Message>
+  <Message type="DailyNotes">
+    <MsgText id="NDS903">Update successfully</MsgText>
+  </Message>
+</Messages>

@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8506C2CA-1EAA-4B7F-92D0-FD5E97613678}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Paybook.BusinessLayer</RootNamespace>
+    <AssemblyName>Paybook.BusinessLayer</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unity.Abstractions, Version=5.11.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\epayamit_20210731.1\packages\Unity.5.11.10\lib\net40\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.11.11.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\epayamit_20210731.1\packages\Unity.5.11.10\lib\net40\Unity.Container.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Agency\AgencyProcessor.cs" />
+    <Compile Include="Agent\AgentProcessor.cs" />
+    <Compile Include="Business\BusinessProcessor.cs" />
+    <Compile Include="Client\ClientProcessor.cs" />
+    <Compile Include="Common\ActivityProcessor.cs" />
+    <Compile Include="Common\ChartProcessor.cs" />
+    <Compile Include="Common\LastSavedIdProcessor.cs" />
+    <Compile Include="Common\RemarkProcessor.cs" />
+    <Compile Include="Identity\LoginProcessor.cs" />
+    <Compile Include="Invoice\InvoiceProcessor.cs" />
+    <Compile Include="Note\NoteProcessor.cs" />
+    <Compile Include="Payment\PaymentProcessor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report\ReportProcessor.cs" />
+    <Compile Include="Setting\CategoryProcessor.cs" />
+    <Compile Include="Setting\ParticularProcessor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Paybook.DatabaseLayer\Paybook.DatabaseLayer.csproj">
+      <Project>{e1bd3697-61c5-4c7b-9f99-303074044a88}</Project>
+      <Name>Paybook.DatabaseLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Paybook.ServiceLayer\Paybook.ServiceLayer.csproj">
+      <Project>{90675196-4ff9-427d-a280-4cb3aef028b2}</Project>
+      <Name>Paybook.ServiceLayer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
