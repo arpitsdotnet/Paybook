@@ -13,13 +13,13 @@ namespace Paybook.DatabaseLayer.Agent
 {
     public interface IAgentRepository
     {
-        AgentModel[] Agents_Active_SelectAll();
-        AgentModel[] Agents_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive);
-        bool Agent_Insert(AgentModel agentModel);
-        DataTable Agent_Select(string sAgent_ID);
-        AgentModel[] Agent_SelectName();
-        bool Agent_Update(AgentModel agentModel);
-        bool Agent_UpdateIsActive(string sAgent_ID, string sIsActive, string sCreatedBY, string sReason);
+        AgentModel[] GetAllActive();
+        AgentModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive);
+        bool Create(AgentModel agentModel);
+        DataTable GetByAgentID(string sAgent_ID);
+        AgentModel[] GetAllActiveIdAndName();
+        bool Update(AgentModel agentModel);
+        bool Activate(string sAgent_ID, string sIsActive, string sCreatedBY, string sReason);
     }
 
     public class AgentRepository : IAgentRepository
@@ -33,7 +33,7 @@ namespace Paybook.DatabaseLayer.Agent
             _logger = FileLogger.Instance;
         }
 
-        public AgentModel[] Agents_Active_SelectAll()
+        public AgentModel[] GetAllActive()
         {
             List<AgentModel> oAgents = new List<AgentModel>();
             try
@@ -63,7 +63,7 @@ namespace Paybook.DatabaseLayer.Agent
             return oAgents.ToArray();
         }
 
-        public AgentModel[] Agent_SelectName()
+        public AgentModel[] GetAllActiveIdAndName()
         {
             List<AgentModel> oAgent = new List<AgentModel>();
             try
@@ -144,7 +144,7 @@ namespace Paybook.DatabaseLayer.Agent
         //    }
         //    return oAgent.ToArray();
         //}
-        public DataTable Agent_Select(string sAgent_ID)
+        public DataTable GetByAgentID(string sAgent_ID)
         {
             try
             {
@@ -159,15 +159,15 @@ namespace Paybook.DatabaseLayer.Agent
                 throw;
             }
         }
-        public AgentModel[] Agents_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive)
+        public AgentModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive)
         {
-            DataTable dt = new DataTable();
-            List<AgentModel> oAgent = new List<AgentModel>();
             try
             {
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sIsActive", sIsActive));
-                dt = _dbContext.LoadDataByProcedure("sps_Agents_SelectAll", oParams);
+                List<AgentModel> agents = new List<AgentModel>();
+
+                List<Parameter> parameters = new List<Parameter>();
+                parameters.Add(new Parameter("IsActive", sIsActive));
+                DataTable dt = _dbContext.LoadDataByProcedure("sps_Agents_GetAllByPage", parameters);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -191,23 +191,20 @@ namespace Paybook.DatabaseLayer.Agent
                                     PhoneNumber1 = e.Field<string>("PhoneNumber1"),
                                 }).Skip(iPageStart).Take(PagerSetting.iPageSizeDefault);
 
-                    oAgent.AddRange(list);
+                    agents.AddRange(list);
                 }
+                return agents.ToArray();
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
 
-                AgentModel oDataRows = new AgentModel();
-                oDataRows.ID = "0";
-                oDataRows.ERROR = ex.Message;
-                oAgent.Add(oDataRows);
+                throw;
             }
-            return oAgent.ToArray();
 
         }
 
-        public bool Agent_Insert(AgentModel agentModel)
+        public bool Create(AgentModel agentModel)
         {
             try
             {
@@ -240,7 +237,7 @@ namespace Paybook.DatabaseLayer.Agent
             }
         }
 
-        public bool Agent_Update(AgentModel agentModel)
+        public bool Update(AgentModel agentModel)
         {
             try
             {
@@ -274,7 +271,7 @@ namespace Paybook.DatabaseLayer.Agent
 
         }
 
-        public bool Agent_UpdateIsActive(string sAgent_ID, string sIsActive, string sCreatedBY, string sReason)
+        public bool Activate(string sAgent_ID, string sIsActive, string sCreatedBY, string sReason)
         {
             try
             {

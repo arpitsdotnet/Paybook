@@ -13,13 +13,13 @@ namespace Paybook.BusinessLayer.Agent
 {
     public interface IAgentProcessor
     {
-        AgentModel[] Agents_Active_SelectAll();
-        AgentModel[] Agents_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive);
-        string Agent_Insert(AgentModel agentModel);
-        DataTable Agent_Select(string sAgent_ID);
-        AgentModel[] Agent_SelectName();
-        string Agent_Update(AgentModel agentModel);
-        string Agent_UpdateIsActive(string sAgent_ID, string sIsActive, string sCreatedBY, string sReason);
+        AgentModel[] GetAllActive();
+        AgentModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive);
+        string Create(AgentModel agentModel);
+        DataTable GetByAgentID(string sAgent_ID);
+        AgentModel[] GetAllActiveIdAndName();
+        string Update(AgentModel agentModel);
+        string Activate(string sAgent_ID, string sIsActive, string sCreatedBY, string sReason);
     }
 
     public class AgentProcessor : IAgentProcessor
@@ -32,11 +32,11 @@ namespace Paybook.BusinessLayer.Agent
             _logger = FileLogger.Instance;
             _agentRepo = new AgentRepository();
         }
-        public AgentModel[] Agents_Active_SelectAll()
+        public AgentModel[] GetAllActive()
         {
             try
             {
-                return _agentRepo.Agents_Active_SelectAll();
+                return _agentRepo.GetAllActive();
             }
             catch (Exception ex)
             {
@@ -46,11 +46,11 @@ namespace Paybook.BusinessLayer.Agent
             }
         }
 
-        public AgentModel[] Agents_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive)
+        public AgentModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive)
         {
             try
             {
-                return _agentRepo.Agents_SelectAll(sOrderBy, sGridPageNumber, sUserName, sIsActive);
+                return _agentRepo.GetAllByPage(sOrderBy, sGridPageNumber, sUserName, sIsActive);
             }
             catch (Exception ex)
             {
@@ -60,11 +60,11 @@ namespace Paybook.BusinessLayer.Agent
             }
         }
 
-        public string Agent_Insert(AgentModel agentModel)
+        public string Create(AgentModel agentModel)
         {
             try
             {
-                bool result = _agentRepo.Agent_Insert(agentModel);
+                bool result = _agentRepo.Create(agentModel);
                 if (result)
                     return XmlProcessor.ReadXmlFile("AGS203");
 
@@ -78,11 +78,11 @@ namespace Paybook.BusinessLayer.Agent
             }
         }
 
-        public DataTable Agent_Select(string sAgent_ID)
+        public DataTable GetByAgentID(string sAgent_ID)
         {
             try
             {
-                return _agentRepo.Agent_Select(sAgent_ID);
+                return _agentRepo.GetByAgentID(sAgent_ID);
             }
             catch (Exception ex)
             {
@@ -92,11 +92,11 @@ namespace Paybook.BusinessLayer.Agent
             }
         }
 
-        public AgentModel[] Agent_SelectName()
+        public AgentModel[] GetAllActiveIdAndName()
         {
             try
             {
-                return _agentRepo.Agent_SelectName();
+                return _agentRepo.GetAllActiveIdAndName();
             }
             catch (Exception ex)
             {
@@ -106,11 +106,11 @@ namespace Paybook.BusinessLayer.Agent
             }
         }
 
-        public string Agent_Update(AgentModel agentModel)
+        public string Update(AgentModel agentModel)
         {
             try
             {
-                bool result = _agentRepo.Agent_Update(agentModel);
+                bool result = _agentRepo.Update(agentModel);
                 if (result)
                     return XmlProcessor.ReadXmlFile("AGS204");
 
@@ -124,11 +124,11 @@ namespace Paybook.BusinessLayer.Agent
             }
         }
 
-        public string Agent_UpdateIsActive(string sAgent_ID, string sIsActive, string sCreatedBY, string sReason)
+        public string Activate(string agentID, string isActive, string createBY, string reason)
         {
             try
             {
-                bool result = _agentRepo.Agent_UpdateIsActive(sAgent_ID, sIsActive, sCreatedBY, sReason);
+                bool result = _agentRepo.Activate(agentID, isActive, createBY, reason);
                 if (result)
                     return XmlProcessor.ReadXmlFile("AGS206");
 
