@@ -21,7 +21,7 @@ namespace Paybook.WebUI
         {
             try
             {
-                imgLogo.ImageUrl = Application["Path"] + "_Documents/IMG_CompanyLogo/FWTLogo.png";
+                //imgLogo.ImageUrl = Application["Path"] + "_Documents/IMG_CompanyLogo/FWTLogo.png";
                 if (Session["LoggedInUser"] != null && Session["LoggedInUser"].ToString() != "")
                 {
                     if (!IsPostBack)
