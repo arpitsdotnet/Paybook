@@ -1,6 +1,6 @@
 ﻿namespace Paybook.ServiceLayer.Models
 {
-    public class CustomerModel
+    public class ClientModel
     {
         public string ID { get; set; }
         public string CreatedDT { get; set; }
