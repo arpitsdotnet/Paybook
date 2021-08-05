@@ -23,25 +23,25 @@ namespace Paybook.WebUI._Layouts
 
         //Customer
         [WebMethod]
-        public static CustomerModel[] Customers_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBY)
+        public static ClientModel[] Customers_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBY)
         {
             IClientProcessor _processor = new ClientProcessor();
 
-            return _processor.Customers_SelectAll(sOrderBy, sGridPageNumber, sUserName, sIsActive, sSearchText, sSearchBY);
+            return _processor.GetAllByPage(sOrderBy, sGridPageNumber, sUserName, sIsActive, sSearchText, sSearchBY);
         }
         [WebMethod]
-        public static CustomerModel[] Customer_SelectRemainingAmount(string sCustomer_ID)
+        public static ClientModel[] Customer_SelectRemainingAmount(string sCustomer_ID)
         {
             IClientProcessor _processor = new ClientProcessor();
 
             return _processor.Customer_SelectRemainingAmount(sCustomer_ID);
         }
         [WebMethod]
-        public static CustomerModel[] Customer_SelectName(string sAgency_ID)
+        public static ClientModel[] Customer_SelectName(string sAgency_ID)
         {
             IClientProcessor _processor = new ClientProcessor();
 
-            return _processor.Customer_SelectName(sAgency_ID);
+            return _processor.GetAllNamesByAgencyID(sAgency_ID);
         }
         [WebMethod]
         public static string Customer_UpdateIsActive(string sCustomer_ID, string sIsActive, string sCreatedBY, string sReason)
@@ -245,25 +245,32 @@ namespace Paybook.WebUI._Layouts
 
         //Chart
         [WebMethod]
-        public static ChartModel[] Count_PaymentInvoice_Chart()
+        public static ChartModel[] Dashboard_GetClientCounters()
         {
             IChartProcessor _processor = new ChartProcessor();
 
-            return _processor.Count_PaymentInvoice_Chart();
+            return _processor.Dashboard_GetClientCounters();
         }
         [WebMethod]
-        public static ChartModel[] Dashboard_GetCountOfInvoiceAndPaymentByLastWeek()
+        public static ChartModel[] Dashboard_GetCountOfInvoicesAndPaymentsByLastWeek()
         {
             IChartProcessor _processor = new ChartProcessor();
 
-            return _processor.Dashboard_GetCountOfInvoiceAndPaymentByLastWeek();
+            return _processor.Dashboard_GetCountOfInvoicesAndPaymentsByLastWeek();
         }
         [WebMethod]
-        public static ChartModel[] Customer_Chart()
+        public static ChartModel[] Dashboard_GetInvoiceAmountsAndPaymentsByLastWeek()
         {
             IChartProcessor _processor = new ChartProcessor();
 
-            return _processor.Customer_Chart();
+            return _processor.Dashboard_GetInvoiceAmountsAndPaymentsByLastWeek();
+        }
+        [WebMethod]
+        public static ChartModel[] Dashboard_GetPaymentsLast20()
+        {
+            IChartProcessor _processor = new ChartProcessor();
+
+            return _processor.Dashboard_GetPaymentsLast20();
         }
         // Company
         [WebMethod]
