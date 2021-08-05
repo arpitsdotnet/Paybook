@@ -13,8 +13,8 @@ namespace Paybook.BusinessLayer.Common
 {
     public interface IActivityProcessor
     {
-        string Activity_Insert(ActivityModel activityModel);
-        DataTable Activity_Select();
+        string Create(ActivityModel activityModel);
+        DataTable GetAll();
     }
 
     public class ActivityProcessor : IActivityProcessor
@@ -27,11 +27,11 @@ namespace Paybook.BusinessLayer.Common
             _logger = FileLogger.Instance;
             _activity = new ActivityRepository();
         }
-        public string Activity_Insert(ActivityModel activityModel)
+        public string Create(ActivityModel activityModel)
         {
             try
             {
-                bool result = _activity.Activity_Insert(activityModel);
+                bool result = _activity.Create(activityModel);
                 if (result)
                 {
                     return XmlProcessor.ReadXmlFile("AGES104");
@@ -46,11 +46,11 @@ namespace Paybook.BusinessLayer.Common
             }
         }
 
-        public DataTable Activity_Select()
+        public DataTable GetAll()
         {
             try
             {
-                return _activity.Activity_Select();
+                return _activity.GetAll();
             }
             catch (Exception ex)
             {

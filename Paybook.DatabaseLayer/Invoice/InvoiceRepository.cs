@@ -293,7 +293,7 @@ namespace Paybook.DatabaseLayer.Invoice
                 _dbContext.LoadDataByProcedure("sps_Invoice_UpdateCloseStatus", oParams);
 
                 //Insert Into Activity Table
-                _activityRepo.Activity_Insert(new ActivityModel
+                _activityRepo.Create(new ActivityModel
                 {
                     CreatedBY = sCreatedBY,
                     Activity_Date = DateTime.Now.ToString("dd/MM/yyyy"),
@@ -442,7 +442,7 @@ namespace Paybook.DatabaseLayer.Invoice
                             Invoice_ID = dr["Invoice_ID"].ToString()
                         };
 
-                        _activityRepo.Activity_Insert(model);
+                        _activityRepo.Create(model);
 
                         Invoices_Update_OverdueStatus(model.Invoice_ID, model.Category_Core, model.InvoiceStatus_Core);
                     }

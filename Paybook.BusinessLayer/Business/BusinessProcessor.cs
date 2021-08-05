@@ -16,7 +16,7 @@ namespace Paybook.BusinessLayer.Business
         DataTable CompanyProfile_IsExist();
         DataTable CompanyProfile_Select();
         string CompanyProfile_Update(BusinessModel businessModel);
-        DataTable Dashboard_SelectCounts();
+        DataTable Dashboard_GetAllCounters();
     }
 
     public class BusinessProcessor : IBusinessProcessor
@@ -86,11 +86,11 @@ namespace Paybook.BusinessLayer.Business
             }
         }
 
-        public DataTable Dashboard_SelectCounts()
+        public DataTable Dashboard_GetAllCounters()
         {
             try
             {
-                return _businessRepo.Dashboard_SelectCounts();
+                return _businessRepo.Dashboard_GetAllCounters();
             }
             catch (Exception ex)
             {

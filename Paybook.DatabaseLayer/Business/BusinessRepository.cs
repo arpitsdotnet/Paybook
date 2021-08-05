@@ -14,7 +14,7 @@ namespace Paybook.DatabaseLayer.Business
         DataTable CompanyProfile_IsExist();
         DataTable CompanyProfile_Select();
         string CompanyProfile_Update(BusinessModel businessModel);
-        DataTable Dashboard_SelectCounts();
+        DataTable Dashboard_GetAllCounters();
     }
 
     public class BusinessRepository : IBusinessRepository
@@ -25,7 +25,7 @@ namespace Paybook.DatabaseLayer.Business
         {
             _dbContext = DbContextFactory.Instance;
         }
-        public DataTable Dashboard_SelectCounts()
+        public DataTable Dashboard_GetAllCounters()
         {
             DataTable dt;
             try

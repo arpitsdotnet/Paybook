@@ -26,7 +26,7 @@ namespace Paybook.BusinessLayer.Invoice
         string Invoices_Update_PaymentStatus(string sModifiedBY, string sCategory_Core, string sInvoiceStatus_Core, string sLastPayment_Date, string sInvoice_ID);
         InvoiceModel Invoice_Insert(string sCreatedBY, string sAgency_ID, string sCustomer_ID, string sCategory_Core, string sParticular, string sAmount, string sInvoice_Date, string sRemainingAmount, string sInvoiceStatus_Core, string sAgent_ID, string sRemark, string sMRP, string sGST_Type, string sVehicleNo);
         DataTable GetById(string sInvoice_ID);
-        DataTable Dashboard_GetInvoiceCountByLastWeek();
+        DataTable Dashboard_GetInvoiceAmountsByLastWeek();
         string Activity_Insert_Overdue(string sCreatedBY, string sStatus_Core);
     }
 
@@ -49,7 +49,7 @@ namespace Paybook.BusinessLayer.Invoice
             _agencyProcessor = new AgencyProcessor();
         }
 
-        public DataTable Dashboard_GetInvoiceCountByLastWeek()
+        public DataTable Dashboard_GetInvoiceAmountsByLastWeek()
         {
             try
             {

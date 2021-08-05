@@ -14,9 +14,10 @@ namespace Paybook.BusinessLayer.Common
 {
     public interface IChartProcessor
     {
-        ChartModel[] Dashboard_GetCountOfInvoiceAndPaymentByLastWeek();
-        ChartModel[] Count_PaymentInvoice_Chart();
-        ChartModel[] Customer_Chart();
+        ChartModel[] Dashboard_GetClientCounters();
+        ChartModel[] Dashboard_GetInvoiceAmountsAndPaymentsByLastWeek();
+        ChartModel[] Dashboard_GetCountOfInvoicesAndPaymentsByLastWeek();
+        ChartModel[] Dashboard_GetPaymentsLast20();
     }
 
     public class ChartProcessor : IChartProcessor
@@ -34,13 +35,82 @@ namespace Paybook.BusinessLayer.Common
             _paymentRepo = new PaymentProcessor();
         }
 
-        public ChartModel[] Dashboard_GetCountOfInvoiceAndPaymentByLastWeek()
+
+        public ChartModel[] Dashboard_GetClientCounters()
+        {
+            List<ChartModel> charts = new List<ChartModel>();
+            try
+            {
+                DataTable dtCustomer = _chartRepo.Customer_Chart();
+                int iTotalDays = 7;
+                DataTable dt = new DataTable();
+                dt.Columns.Add("Date");
+                dt.Columns.Add("Count");
+                DateTime dTodayDate = Convert.ToDateTime(System.DateTime.Today.ToShortDateString());
+                int i = 0;
+                for (i = iTotalDays; i > 0; i--)
+                {
+                    DataRow dr = dt.NewRow();
+
+                    DateTime sDate = dTodayDate.AddDays(-i);
+                    string sDay = sDate.Day.ToString();
+
+                    dr["Date"] = sDay;
+
+                    if (dtCustomer != null && dtCustomer.Rows.Count > 0)
+                    {
+                        foreach (DataRow drCustomer in dtCustomer.Rows)
+                        {
+                            if (Convert.ToInt16(drCustomer["CreatedDT"]) == Convert.ToInt16(dr["Date"]))
+                            {
+                                dr["Count"] = drCustomer["Count"].ToString();
+                                break;
+                            }
+                            else
+                                dr["Count"] = "0";
+                        }
+                    }
+                    else
+                    {
+                        dr["Count"] = "0";
+                    }
+                    dt.Rows.Add(dr);
+                }
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        ChartModel oDataRows = new ChartModel();
+                        oDataRows.Date = dr["Date"].ToString();
+                        oDataRows.Count = dr["Count"].ToString() == " " ? "0" : dr["Count"].ToString();
+                        charts.Add(oDataRows);
+                    }
+                }
+                else
+                {
+                    charts.Add(new ChartModel
+                    {
+                        Date = DateTime.Now.ToShortDateString(),
+                        Count = "0"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+            return charts.ToArray();
+        }
+        public ChartModel[] Dashboard_GetInvoiceAmountsAndPaymentsByLastWeek()
         {
             List<ChartModel> oChart = new List<ChartModel>();
             try
             {
-                DataTable dtPayment = _paymentRepo.Dashboard_GetPaymentCountByLastWeek();
-                DataTable dtInvoice = _invoiceRepo.Dashboard_GetInvoiceCountByLastWeek();
+                DataTable dtPayment = _paymentRepo.Dashboard_GetPaymentsByLastWeek();
+                DataTable dtInvoice = _invoiceRepo.Dashboard_GetInvoiceAmountsByLastWeek();
                 //if (dtInvoice != null && dtInvoice.Rows.Count > 0)
                 //{
                 //    foreach (DataRow dr in dtInvoice.Rows)
@@ -127,10 +197,8 @@ namespace Paybook.BusinessLayer.Common
                 throw;
             }
             return oChart.ToArray();
-
         }
-
-        public ChartModel[] Count_PaymentInvoice_Chart()
+        public ChartModel[] Dashboard_GetCountOfInvoicesAndPaymentsByLastWeek()
         {
             try
             {
@@ -154,65 +222,22 @@ namespace Paybook.BusinessLayer.Common
                 throw;
             }
         }
-
-        public ChartModel[] Customer_Chart()
+        public ChartModel[] Dashboard_GetPaymentsLast20()
         {
             List<ChartModel> charts = new List<ChartModel>();
             try
             {
-                DataTable dtCustomer = _chartRepo.Customer_Chart();
-                int iTotalDays = 7;
-                DataTable dt = new DataTable();
-                dt.Columns.Add("Date");
-                dt.Columns.Add("Count");
-                DateTime dTodayDate = Convert.ToDateTime(System.DateTime.Today.ToShortDateString());
-                int i = 0;
-                for (i = iTotalDays; i > 0; i--)
+                DataTable payments = _paymentRepo.Dashboard_GetPaymentsLast20();
+                                
+                if (payments != null && payments.Rows.Count > 0)
                 {
-                    DataRow dr = dt.NewRow();
-
-                    DateTime sDate = dTodayDate.AddDays(-i);
-                    string sDay = sDate.Day.ToString();
-
-                    dr["Date"] = sDay;
-
-                    if (dtCustomer != null && dtCustomer.Rows.Count > 0)
+                    foreach (DataRow payment in payments.Rows)
                     {
-                        foreach (DataRow drCustomer in dtCustomer.Rows)
-                        {
-                            if (Convert.ToInt16(drCustomer["CreatedDT"]) == Convert.ToInt16(dr["Date"]))
-                            {
-                                dr["Count"] = drCustomer["Count"].ToString();
-                                break;
-                            }
-                            else
-                                dr["Count"] = "0";
-                        }
+                        ChartModel chart = new ChartModel();
+                        chart.Date = Convert.ToDateTime(payment["Payment_Date"]).ToString("dd/MM/yyyy");
+                        chart.PaymentAmount = payment["PaymentAmount"].ToString();
+                        charts.Add(chart);
                     }
-                    else
-                    {
-                        dr["Count"] = "0";
-                    }
-                    dt.Rows.Add(dr);
-                }
-
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        ChartModel oDataRows = new ChartModel();
-                        oDataRows.Date = dr["Date"].ToString();
-                        oDataRows.Count = dr["Count"].ToString() == " " ? "0" : dr["Count"].ToString();
-                        charts.Add(oDataRows);
-                    }
-                }
-                else
-                {
-                    charts.Add(new ChartModel
-                    {
-                        Date = DateTime.Now.ToShortDateString(),
-                        Count = "0"
-                    });
                 }
             }
             catch (Exception ex)
@@ -222,6 +247,7 @@ namespace Paybook.BusinessLayer.Common
                 throw;
             }
             return charts.ToArray();
+
         }
     }
 }

@@ -15,13 +15,14 @@ namespace Paybook.DatabaseLayer.Payment
 {
     public interface IPaymentRepository
     {
-        bool AdvancePayment_Insert(string sAdvance_ID, string sCurrentAdvancePayment, string sAgency_ID, string sCustomer_ID, string sAdvancePayment_Date, string sCreatedBy, string sTotalAdvancePayment, string sAdvancePaymentType);
-        PaymentModel[] Payments_ForInvoice(string sOrderBy, string sGridPageNumber, string sUserName, string sCustomer_ID, string sInvoice_ID, string sCategory_Core);
-        InvoiceModel[] Payments_Search(string sOrderBy, string sGridPageNumber, string sUserName, string sAgency_ID, string sCustomer_ID, string sPaymentDateTo, string sPaymentDateFrom);
+        bool CreateAdvance(string sAdvance_ID, string sCurrentAdvancePayment, string sAgency_ID, string sCustomer_ID, string sAdvancePayment_Date, string sCreatedBy, string sTotalAdvancePayment, string sAdvancePaymentType);
+        PaymentModel[] GetAllByInvoiceID(string sOrderBy, string sGridPageNumber, string sUserName, string sCustomer_ID, string sInvoice_ID, string sCategory_Core);
+        InvoiceModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sAgency_ID, string sCustomer_ID, string sPaymentDateTo, string sPaymentDateFrom);
         DataTable Payments_SelectCount();
         string Payments_SelectMonthsales();
-        bool Payment_Insert(string sReceipt_ID, string sCreatedBY, string sAgency_ID, string sCustomer_ID, string sPaymentAmount, string sPaymentDate, string sPaymentStatus_Core, string sCategory_Core, string sAgent_ID, string sInvoice_ID);
-        DataTable Dashboard_GetPaymentCountByLastWeek();
+        bool Create(string sReceipt_ID, string sCreatedBY, string sAgency_ID, string sCustomer_ID, string sPaymentAmount, string sPaymentDate, string sPaymentStatus_Core, string sCategory_Core, string sAgent_ID, string sInvoice_ID);
+        DataTable Dashboard_GetPaymentsByLastWeek();
+        DataTable Dashboard_GetPaymentsLast20();
     }
 
     public class PaymentRepository : IPaymentRepository
@@ -41,7 +42,7 @@ namespace Paybook.DatabaseLayer.Payment
 
 
 
-        public bool AdvancePayment_Insert(string sAdvance_ID, string sCurrentAdvancePayment, string sAgency_ID, string sCustomer_ID, string sAdvancePayment_Date, string sCreatedBy, string sTotalAdvancePayment, string sAdvancePaymentType)
+        public bool CreateAdvance(string sAdvance_ID, string sCurrentAdvancePayment, string sAgency_ID, string sCustomer_ID, string sAdvancePayment_Date, string sCreatedBy, string sTotalAdvancePayment, string sAdvancePaymentType)
         {
             try
             {
@@ -72,56 +73,7 @@ namespace Paybook.DatabaseLayer.Payment
                 throw;
             }
         }
-
-        //Payment
-        public DataTable Payments_SelectCount()
-        {
-            try
-            {
-                return _dbContext.LoadDataByProcedure("sps_Payments_SelectCount", null);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-
-        //public static clsPayments[] Payments_Select(string sCustomer_ID, string sParticular, string sCategory_Core)
-        //{
-        //    List<clsPayments> oPayment = new List<clsPayments>();
-        //    try
-        //    {
-        //        List<clsParams> oParams = new List<clsParams>();
-        //        oParams.Add(new clsParams("sParticular", sParticular));
-        //        oParams.Add(new clsParams("sCustomer_ID", sCustomer_ID));
-        //        oParams.Add(new clsParams("sCategory_Core", sCategory_Core));
-        //        DataTable dt = clsCommon.ToLoad_MySqlDB_ByProc("sps_Payments_SelectAll", oParams);
-        //        if (dt != null && dt.Rows.Count > 0)
-        //        {
-        //            foreach (DataRow dr in dt.Rows)
-        //            {
-        //                clsPayments oDataRows = new clsPayments();
-        //                oDataRows.ReceiptID = dr["ReceiptID"].ToString();
-        //                oDataRows.Payment_Date = dr["Payment_Date"].ToString();
-        //                oDataRows.PaymentAmount = dr["PaymentAmount"].ToString();
-        //                oDataRows.PaymentType = dr["PaymentType"].ToString();
-
-        //                oPayment.Add(oDataRows);
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        clsPayments oDataRows = new clsPayments();
-        //        oDataRows.ERROR = ex.Message;
-        //        oPayment.Add(oDataRows);
-        //    }
-        //    return oPayment.ToArray();
-        //}
-
-        public PaymentModel[] Payments_ForInvoice(string sOrderBy, string sGridPageNumber, string sUserName, string sCustomer_ID, string sInvoice_ID, string sCategory_Core)
+        public PaymentModel[] GetAllByInvoiceID(string sOrderBy, string sGridPageNumber, string sUserName, string sCustomer_ID, string sInvoice_ID, string sCategory_Core)
         {
             DataTable dt = new DataTable();
             List<PaymentModel> oPayment = new List<PaymentModel>();
@@ -172,8 +124,7 @@ namespace Paybook.DatabaseLayer.Payment
             }
             return oPayment.ToArray();
         }
-
-        public InvoiceModel[] Payments_Search(string sOrderBy, string sGridPageNumber, string sUserName, string sAgency_ID, string sCustomer_ID, string sPaymentDateTo, string sPaymentDateFrom)
+        public InvoiceModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sAgency_ID, string sCustomer_ID, string sPaymentDateTo, string sPaymentDateFrom)
         {
             List<InvoiceModel> oPayment = new List<InvoiceModel>();
             try
@@ -270,7 +221,53 @@ namespace Paybook.DatabaseLayer.Payment
             }
             return oPayment.ToArray();
         }
+        public bool Create(string sReceiptID, string sCreatedBY, string sAgency_ID, string sCustomer_ID, string sPaymentAmount, string sPaymentDate, string sPaymentStatus_Core, string sCategory_Core, string sAgent_ID, string sInvoice_ID)
+        {
+            try
+            {
+                //convert date into mwsql date formate
+                string sTime = DateTime.Now.ToString("HH:mm:ss");
+                sPaymentDate = sPaymentDate + " " + sTime;
+                string dPaymentDate = Convert.ToDateTime(sPaymentDate).ToString("yyyy-MM-dd HH:mm:ss").ToString();
+                sAgency_ID = sAgency_ID == "NONE" ? "0" : sAgency_ID;
 
+                List<Parameter> oParams = new List<Parameter>();
+                oParams.Clear();
+                oParams.Add(new Parameter("sCreatedBY", sCreatedBY));
+                oParams.Add(new Parameter("sAgency_ID", sAgency_ID));
+                oParams.Add(new Parameter("sCustomer_ID", sCustomer_ID));
+                //oParams.Add(new clsParams("sPaymentType", sPaymentType));
+                oParams.Add(new Parameter("sReceiptID", sReceiptID));
+                oParams.Add(new Parameter("sPaymentAmount", sPaymentAmount));
+                oParams.Add(new Parameter("dPaymentDate", dPaymentDate));
+                oParams.Add(new Parameter("sCategory_Core", sCategory_Core));
+                oParams.Add(new Parameter("sAgent_ID", sAgent_ID));
+                oParams.Add(new Parameter("sInvoice_ID", sInvoice_ID));
+                _dbContext.LoadDataByProcedure("sps_Payments_Insert", oParams);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+
+        }
+        public DataTable Payments_SelectCount()
+        {
+            try
+            {
+                return _dbContext.LoadDataByProcedure("sps_Payments_SelectCount", null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
         public string Payments_SelectMonthsales()
         {
             string TotalMonthSale = "";
@@ -320,74 +317,14 @@ namespace Paybook.DatabaseLayer.Payment
             }
             return TotalMonthSale;
         }
-
-        public bool Payment_Insert(string sReceiptID, string sCreatedBY, string sAgency_ID, string sCustomer_ID, string sPaymentAmount, string sPaymentDate, string sPaymentStatus_Core, string sCategory_Core, string sAgent_ID, string sInvoice_ID)
+        public DataTable Dashboard_GetPaymentsByLastWeek()
         {
-            try
-            {
-                //convert date into mwsql date formate
-                string sTime = DateTime.Now.ToString("HH:mm:ss");
-                sPaymentDate = sPaymentDate + " " + sTime;
-                string dPaymentDate = Convert.ToDateTime(sPaymentDate).ToString("yyyy-MM-dd HH:mm:ss").ToString();
-                sAgency_ID = sAgency_ID == "NONE" ? "0" : sAgency_ID;
-
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Clear();
-                oParams.Add(new Parameter("sCreatedBY", sCreatedBY));
-                oParams.Add(new Parameter("sAgency_ID", sAgency_ID));
-                oParams.Add(new Parameter("sCustomer_ID", sCustomer_ID));
-                //oParams.Add(new clsParams("sPaymentType", sPaymentType));
-                oParams.Add(new Parameter("sReceiptID", sReceiptID));
-                oParams.Add(new Parameter("sPaymentAmount", sPaymentAmount));
-                oParams.Add(new Parameter("dPaymentDate", dPaymentDate));
-                oParams.Add(new Parameter("sCategory_Core", sCategory_Core));
-                oParams.Add(new Parameter("sAgent_ID", sAgent_ID));
-                oParams.Add(new Parameter("sInvoice_ID", sInvoice_ID));
-                _dbContext.LoadDataByProcedure("sps_Payments_Insert", oParams);
-                
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-
+            return _dbContext.LoadDataByProcedure("sps_Dashboard_GetPaymentsByLastWeek", null);
+        }
+        public DataTable Dashboard_GetPaymentsLast20()
+        {
+            return _dbContext.LoadDataByProcedure("sps_Dashboard_GetPaymentsLast20", null);
         }
 
-        internal DataTable Payments_SelectCounts_PaidLast30Days()
-        {
-            try
-            {
-                return _dbContext.LoadDataByProcedure("sps_Dashboard_SelectCounts_PaidLast30Days", null);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-
-        internal DataTable Payments_SelectCounts_PaidPartialLast30Days()
-        {
-            try
-            {
-                return _dbContext.LoadDataByProcedure("sps_Dashboard_SelectCounts_PaidPartialLast30Days", null);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-
-        }
-
-        public DataTable Dashboard_GetPaymentCountByLastWeek()
-        {
-            return _dbContext.LoadDataByProcedure("sps_Dashboard_GetPaymentCountByLastWeek", null);
-        }
     }
 }

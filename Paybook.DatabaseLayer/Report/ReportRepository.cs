@@ -314,30 +314,30 @@ namespace Paybook.DatabaseLayer.Report
                             // Select total invoice amount before FromDate
                             // string sInvoiceTotalselect_BeforeFromDate = "select if(sum(T_Invoices.amount) is null,0,sum(T_Invoices.amount)) As Amount from T_Invoices where Customer_ID=" + "\"" + sCustomer_ID + "\"" + "And Date(Invoice_Date) < Date(" + "\"" + sPaymentDateFrom + "\"" + ") and IsActive=1 AND InvoiceStatus_Core<>\"IS_CLOSE\";";// AND InvoiceStatus_Core<>\"IS_PAID\"
                             oParams.Add(new Parameter("sPaymentDateFrom", sPaymentDateFrom));
-                            DataTable dtAmount = _dbContext.LoadDataByProcedure("sps_Invoice_SelectTotal_BeforeFromDate", oParams);
+                            DataTable invoiceAmounts = _dbContext.LoadDataByProcedure("sps_Invoice_SelectTotal_BeforeFromDate", oParams);
 
                             //Select total payment before FromDate which are not fullypaid
                             //string sPaymentTotalselect_BeforeFromDate = " SELECT (if(SUM(TP.PaymentAmount)>0, SUM(TP.PaymentAmount), 0)) AS Paid FROM ( T_Payments AS TP LEFT JOIN T_Invoices AS TIN ON TIN.Customer_ID=TP.Customer_ID And TIN.Particular = TP.Particular And TIN.Category_Core=TP.Category_Core) WHERE TP.IsActive=1 AND InvoiceStatus_Core<>\"IS_CLOSE\" AND TP.Customer_ID=" + "\"" + sCustomer_ID + "\"" + " AND Date(Payment_Date) < Date(" + "\"" + sPaymentDateFrom + "\"" + ");";//AND InvoiceStatus_Core<>\"IS_PAID\"
-                            DataTable dtPaid = _dbContext.LoadDataByProcedure("sps_Payment_SelectTotal_BeforeFromDate", oParams);
+                            DataTable payments = _dbContext.LoadDataByProcedure("sps_Payment_SelectTotal_BeforeFromDate", oParams);
 
                             DataRow dr = dt.NewRow();
-                            dr["Amount"] = dtAmount.Rows[0]["Amount"];
-                            dr["Paid"] = dtPaid.Rows[0]["Paid"];
+                            dr["Amount"] = invoiceAmounts.Rows[0]["Amount"];
+                            dr["Paid"] = payments.Rows[0]["Paid"];
                             dt.Rows.Add(dr);
                         }
                         else
                         {
                             DataRow dr = dt.NewRow();
-                            dr["Amount"] = 00.0;
-                            dr["Paid"] = 00.0;
+                            dr["Amount"] = 0.0;
+                            dr["Paid"] = 0.0;
                             dt.Rows.Add(dr);
                         }
                     }
                     else
                     {
                         DataRow dr = dt.NewRow();
-                        dr["Amount"] = 00.0;
-                        dr["Paid"] = 00.0;
+                        dr["Amount"] = 0.0;
+                        dr["Paid"] = 0.0;
                         dt.Rows.Add(dr);
                     }
                 }

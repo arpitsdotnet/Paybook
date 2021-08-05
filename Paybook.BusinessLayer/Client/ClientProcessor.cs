@@ -13,16 +13,16 @@ namespace Paybook.BusinessLayer.Client
 {
     public interface IClientProcessor
     {
-        CustomerModel[] Customers_Search(string SearchText);
-        CustomerModel[] Customers_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBy);
-        string Customer_Insert(CustomerModel customerModel);
-        string Customer_IsExist(CustomerModel customerModel);
-        DataTable Customer_Select(string sCustomer_ID);
-        DataTable Customer_SelectCount();
-        CustomerModel[] Customer_SelectName(string sAgency_ID);
-        CustomerModel[] Customer_SelectRemainingAmount(string sCustomer_ID);
+        ClientModel[] GetAllByText(string SearchText);
+        ClientModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBy);
+        string Create(ClientModel customerModel);
+        string IsExists(ClientModel customerModel);
+        DataTable GetByClientID(string sCustomer_ID);
+        DataTable GetCount();
+        ClientModel[] GetAllNamesByAgencyID(string sAgency_ID);
+        ClientModel[] Customer_SelectRemainingAmount(string sCustomer_ID);
         string Customer_UpdateRemainingAmount(string customerId, double amount);
-        string Customer_Update(CustomerModel customerModel);
+        string Customer_Update(ClientModel customerModel);
         string Customer_UpdateIsActive(string sCustomer_ID, string sIsActive, string sCreatedBY, string sReason);
         string Customer_Update_AdvancePayment(string sTotalAdvancePayment, string sCustomer_ID, string sTotalRemainigAmount);
     }
@@ -38,11 +38,11 @@ namespace Paybook.BusinessLayer.Client
             _clientRepo = new ClientRepository();
         }
 
-        public CustomerModel[] Customers_Search(string SearchText)
+        public ClientModel[] GetAllByText(string SearchText)
         {
             try
             {
-                return _clientRepo.Customers_Search(SearchText);
+                return _clientRepo.GetAllByText(SearchText);
             }
             catch (Exception ex)
             {
@@ -52,11 +52,11 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public CustomerModel[] Customers_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBy)
+        public ClientModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBy)
         {
             try
             {
-                return _clientRepo.Customers_SelectAll(sOrderBy, sGridPageNumber, sUserName, sIsActive, sSearchText, sSearchBy);
+                return _clientRepo.GetAllByPage(sOrderBy, sGridPageNumber, sUserName, sIsActive, sSearchText, sSearchBy);
             }
             catch (Exception ex)
             {
@@ -66,11 +66,11 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public string Customer_Insert(CustomerModel customerModel)
+        public string Create(ClientModel customerModel)
         {
             try
             {
-                bool result = _clientRepo.Customer_Insert(customerModel);
+                bool result = _clientRepo.Create(customerModel);
                 if (result)
                 {
                     return XmlProcessor.ReadXmlFile("CUS103");
@@ -85,11 +85,11 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public string Customer_IsExist(CustomerModel customerModel)
+        public string IsExists(ClientModel customerModel)
         {
             try
             {
-                bool result = _clientRepo.Customer_IsExist(customerModel);
+                bool result = _clientRepo.IsExists(customerModel);
                 if (result)
                 {
                     return XmlProcessor.ReadXmlFile("CUW110");
@@ -104,11 +104,11 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public DataTable Customer_Select(string sCustomer_ID)
+        public DataTable GetByClientID(string sCustomer_ID)
         {
             try
             {
-                return _clientRepo.Customer_Select(sCustomer_ID);
+                return _clientRepo.GetByClientID(sCustomer_ID);
             }
             catch (Exception ex)
             {
@@ -118,11 +118,11 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public DataTable Customer_SelectCount()
+        public DataTable GetCount()
         {
             try
             {
-                return _clientRepo.Customer_SelectCount();
+                return _clientRepo.GetCount();
             }
             catch (Exception ex)
             {
@@ -132,11 +132,11 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public CustomerModel[] Customer_SelectName(string sAgency_ID)
+        public ClientModel[] GetAllNamesByAgencyID(string sAgency_ID)
         {
             try
             {
-                return _clientRepo.Customer_SelectName(sAgency_ID);
+                return _clientRepo.GetAllNamesByAgencyID(sAgency_ID);
             }
             catch (Exception ex)
             {
@@ -146,11 +146,11 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public CustomerModel[] Customer_SelectRemainingAmount(string sCustomer_ID)
+        public ClientModel[] Customer_SelectRemainingAmount(string sCustomer_ID)
         {
             try
             {
-                return _clientRepo.Customer_SelectRemainingAmount(sCustomer_ID);
+                return _clientRepo.GetPaymentByClientID(sCustomer_ID);
             }
             catch (Exception ex)
             {
@@ -160,7 +160,7 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public string Customer_Update(CustomerModel customerModel)
+        public string Customer_Update(ClientModel customerModel)
         {
             try
             {
@@ -202,7 +202,7 @@ namespace Paybook.BusinessLayer.Client
         {
             try
             {
-                bool result = _clientRepo.Customer_UpdateReminingAmount(customerId, amount);
+                bool result = _clientRepo.UpdatePayment(customerId, amount);
                 if (result)
                 {
                     return XmlProcessor.ReadXmlFile("PTS501");

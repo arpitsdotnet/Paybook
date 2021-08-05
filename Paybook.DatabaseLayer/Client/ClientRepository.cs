@@ -13,16 +13,16 @@ namespace Paybook.DatabaseLayer.Client
 {
     public interface IClientRepository
     {
-        CustomerModel[] Customers_Search(string SearchText);
-        CustomerModel[] Customers_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBy);
-        bool Customer_Insert(CustomerModel customerModel);
-        bool Customer_IsExist(CustomerModel customerModel);
-        DataTable Customer_Select(string sCustomer_ID);
-        DataTable Customer_SelectCount();
-        CustomerModel[] Customer_SelectName(string sAgency_ID);
-        CustomerModel[] Customer_SelectRemainingAmount(string sCustomer_ID);
-        bool Customer_UpdateReminingAmount(string customerId, double amount);
-        bool Customer_Update(CustomerModel customerModel);
+        ClientModel[] GetAllByText(string SearchText);
+        ClientModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBy);
+        bool Create(ClientModel customerModel);
+        bool IsExists(ClientModel customerModel);
+        DataTable GetByClientID(string sCustomer_ID);
+        DataTable GetCount();
+        ClientModel[] GetAllNamesByAgencyID(string sAgency_ID);
+        ClientModel[] GetPaymentByClientID(string sCustomer_ID);
+        bool UpdatePayment(string customerId, double amount);
+        bool Customer_Update(ClientModel customerModel);
         bool Customer_UpdateIsActive(string sCustomer_ID, string sIsActive, string sCreatedBY, string sReason);
         bool Customer_Update_AdvancePayment(string sTotalAdvancePayment, string sCustomer_ID, string sTotalRemainigAmount);
     }
@@ -38,10 +38,10 @@ namespace Paybook.DatabaseLayer.Client
             _dbContext = DbContextFactory.Instance;
         }
 
-        public CustomerModel[] Customers_Search(string SearchText)
+        public ClientModel[] GetAllByText(string SearchText)
         {
 
-            List<CustomerModel> oCustomer = new List<CustomerModel>();
+            List<ClientModel> oCustomer = new List<ClientModel>();
             try
             {
                 List<Parameter> oParams = new List<Parameter>();
@@ -51,7 +51,7 @@ namespace Paybook.DatabaseLayer.Client
                 {
                     foreach (DataRow dr in dt.Rows)
                     {
-                        CustomerModel oDataRows = new CustomerModel();
+                        ClientModel oDataRows = new ClientModel();
 
                         oDataRows.CustomerName = dr["CustomerName"].ToString();
                         oDataRows.Customer_ID = dr["Customer_ID"].ToString();
@@ -68,22 +68,24 @@ namespace Paybook.DatabaseLayer.Client
             return oCustomer.ToArray();
         }
 
-        public CustomerModel[] Customer_SelectName(string sAgency_ID)
+        public ClientModel[] GetAllNamesByAgencyID(string sAgency_ID)
         {
-            List<CustomerModel> oCustomer = new List<CustomerModel>();
+            List<ClientModel> oCustomer = new List<ClientModel>();
 
             try
             {
                 List<Parameter> oParams = new List<Parameter>();
                 oParams.Add(new Parameter("sAgency_ID", sAgency_ID));
-                DataTable dt = _dbContext.LoadDataByProcedure("sps_Customers_SelectName", oParams);
+                DataTable dt = _dbContext.LoadDataByProcedure("sps_Client_GetAllNamesByAgencyID", oParams);
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     foreach (DataRow dr in dt.Rows)
                     {
-                        CustomerModel oDataRows = new CustomerModel();
-                        oDataRows.CustomerName = dr["CustomerName"].ToString();
-                        oDataRows.Customer_ID = dr["Customer_ID"].ToString();
+                        ClientModel oDataRows = new ClientModel
+                        {
+                            CustomerName = dr["CustomerName"].ToString(),
+                            Customer_ID = dr["Customer_ID"].ToString()
+                        };
                         oCustomer.Add(oDataRows);
                     }
                 }
@@ -97,9 +99,9 @@ namespace Paybook.DatabaseLayer.Client
             return oCustomer.ToArray();
         }
 
-        public CustomerModel[] Customer_SelectRemainingAmount(string sCustomer_ID)
+        public ClientModel[] GetPaymentByClientID(string sCustomer_ID)
         {
-            List<CustomerModel> oCustomer = new List<CustomerModel>();
+            List<ClientModel> clients = new List<ClientModel>();
 
             try
             {
@@ -108,12 +110,14 @@ namespace Paybook.DatabaseLayer.Client
                 DataTable dt = _dbContext.LoadDataByProcedure("sps_Customers_SelectRemainingAmount", oParams);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    CustomerModel oDataRows = new CustomerModel();
-                    oDataRows.RemainingAmount = dt.Rows[0]["RemainingAmount"].ToString() == "" ? "0" : dt.Rows[0]["RemainingAmount"].ToString();
-                    oDataRows.AdvancePayment = dt.Rows[0]["AdvancePayment"].ToString();
-                    oDataRows.CustomerName = dt.Rows[0]["CustomerName"].ToString();
+                    ClientModel client = new ClientModel
+                    {
+                        RemainingAmount = dt.Rows[0]["RemainingAmount"].ToString() == "" ? "0" : dt.Rows[0]["RemainingAmount"].ToString(),
+                        AdvancePayment = dt.Rows[0]["AdvancePayment"].ToString(),
+                        CustomerName = dt.Rows[0]["CustomerName"].ToString()
+                    };
 
-                    oCustomer.Add(oDataRows);
+                    clients.Add(client);
                 }
             }
             catch (Exception ex)
@@ -122,11 +126,11 @@ namespace Paybook.DatabaseLayer.Client
 
                 throw;
             }
-            return oCustomer.ToArray();
+            return clients.ToArray();
         }
 
 
-        public bool Customer_UpdateReminingAmount(string customerId, double amount)
+        public bool UpdatePayment(string customerId, double amount)
         {
             try
             {
@@ -202,7 +206,7 @@ namespace Paybook.DatabaseLayer.Client
         //    }
         //    return oCustomer.ToArray();
         //}
-        public DataTable Customer_Select(string sCustomer_ID)
+        public DataTable GetByClientID(string sCustomer_ID)
         {
             DataTable dt;
             try
@@ -221,10 +225,10 @@ namespace Paybook.DatabaseLayer.Client
             return dt;
 
         }
-        public CustomerModel[] Customers_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBy)
+        public ClientModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBy)
         {
             DataTable dt = new DataTable();
-            List<CustomerModel> oPP = new List<CustomerModel>();
+            List<ClientModel> clients = new List<ClientModel>();
             try
             {
                 List<Parameter> oParams = new List<Parameter>();
@@ -236,8 +240,8 @@ namespace Paybook.DatabaseLayer.Client
                     dt = _dbContext.LoadDataByProcedure("sps_Agency_Search", oParams);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    string dtCount = dt.Rows.Count.ToString();
-                    int dRowTotal = int.Parse(dtCount);
+                    int dRowTotal = dt.Rows.Count;
+                    string dtCount = dRowTotal.ToString();
                     int iPageNumber = Convert.ToInt32(sGridPageNumber);
                     int iPageStart = iPageNumber == 0 ? 0 : (PagerSetting.iPageSizeDefault * iPageNumber);
 
@@ -253,42 +257,42 @@ namespace Paybook.DatabaseLayer.Client
                                     EMail = e.Field<string>("EMail"),
                                     PhoneNumber1 = e.Field<string>("PhoneNumber1"),
                                     RemainingAmount = e.Field<string>("RemainingAmount"),
-                                    Invoices_Overdue_Count = e.Field<string>("Invoices_Overdue_Count"),
-                                    Invoices_Open_Count = e.Field<string>("Invoices_Open_Count"),
+                                    Invoices_Overdue_Count = e.Field<int>("Invoices_Overdue_Count"),
+                                    Invoices_Open_Count = e.Field<int>("Invoices_Open_Count"),
                                     AgencyName = e.Field<string>("AgencyName"),
                                     Agency_ID = e.Field<string>("Agency_ID"),
 
                                 }).Skip(iPageStart).Take(PagerSetting.iPageSizeDefault);
 
-                    dt = list.ToList().ToDataTable();
-
-                    if (dt != null && dt.Rows.Count > 0)
+                    if (list != null && list.Count() > 0)
                     {
-                        foreach (DataRow dr in dt.Rows)
+                        foreach (var dr in list)
                         {
-                            CustomerModel oDataRows = new CustomerModel();
-                            oDataRows.RowCount = dr["RowCount"].ToString();
-                            oDataRows.Customer_ID = dr["Customer_ID"].ToString();
-                            oDataRows.CustomerName = dr["CustomerName"].ToString();
-                            oDataRows.City = dr["City"].ToString();
-                            oDataRows.State_Disp = dr["State_Disp"].ToString();
-                            oDataRows.Country_Core = dr["Country_Core"].ToString();
-                            oDataRows.EMail = dr["EMail"].ToString();
-                            oDataRows.PhoneNumber1 = dr["PhoneNumber1"].ToString();
-                            oDataRows.RemainingAmount = dr["RemainingAmount"].ToString();
-                            oDataRows.Invoices_Overdue_Count = dr["Invoices_Overdue_Count"].ToString();
-                            oDataRows.Invoices_Open_Count = dr["Invoices_Open_Count"].ToString();
-                            oDataRows.AgencyName = dr["AgencyName"].ToString();
-                            oDataRows.Agency_ID = dr["Agency_ID"].ToString();
-                            oPP.Add(oDataRows);
+                            var client = new ClientModel
+                            {
+                                RowCount = dr.RowCount,
+                                Customer_ID = dr.Customer_ID,
+                                CustomerName = dr.CustomerName,
+                                City = dr.City,
+                                State_Disp = dr.State_Disp,
+                                Country_Core = dr.Country_Core,
+                                EMail = dr.EMail,
+                                PhoneNumber1 = dr.PhoneNumber1,
+                                RemainingAmount = dr.RemainingAmount,
+                                Invoices_Overdue_Count = dr.Invoices_Overdue_Count.ToString(),
+                                Invoices_Open_Count = dr.Invoices_Open_Count.ToString(),
+                                AgencyName = dr.AgencyName,
+                                Agency_ID = dr.Agency_ID
+                            };
+
+                            clients.Add(client);
                         }
                     }
                     else
                     {
-                        CustomerModel oDataRows = new CustomerModel();
-                        oDataRows.ID = "0";
-                        oPP.Add(oDataRows);
-
+                        ClientModel client = new ClientModel();
+                        client.ID = "0";
+                        clients.Add(client);
                     }
                 }
             }
@@ -298,16 +302,16 @@ namespace Paybook.DatabaseLayer.Client
 
                 throw;
             }
-            return oPP.ToArray();
+            return clients.ToArray();
 
         }
 
-        public DataTable Customer_SelectCount()
+        public DataTable GetCount()
         {
             DataTable dt = new DataTable();
             try
             {
-                dt = _dbContext.LoadDataByProcedure("sps_Coustomers_SelectCount", null);
+                dt = _dbContext.LoadDataByProcedure("sps_Client_GetCount", null);
             }
             catch (Exception ex)
             {
@@ -364,7 +368,7 @@ namespace Paybook.DatabaseLayer.Client
             }
 
         }
-        public bool Customer_IsExist(CustomerModel customerModel)
+        public bool IsExists(ClientModel customerModel)
         {
             try
             {
@@ -391,7 +395,7 @@ namespace Paybook.DatabaseLayer.Client
             }
 
         }
-        public bool Customer_Update(CustomerModel customerModel)
+        public bool Customer_Update(ClientModel customerModel)
         {
             try
             {
@@ -428,7 +432,7 @@ namespace Paybook.DatabaseLayer.Client
             }
         }
 
-        public bool Customer_Insert(CustomerModel customerModel)
+        public bool Create(ClientModel customerModel)
         {
 
             try

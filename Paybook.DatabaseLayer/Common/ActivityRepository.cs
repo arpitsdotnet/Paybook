@@ -11,8 +11,8 @@ namespace Paybook.DatabaseLayer.Common
 {
     public interface IActivityRepository
     {
-        bool Activity_Insert(ActivityModel activityModel);
-        DataTable Activity_Select();
+        bool Create(ActivityModel activityModel);
+        DataTable GetAll();
     }
 
     public class ActivityRepository : IActivityRepository
@@ -26,7 +26,7 @@ namespace Paybook.DatabaseLayer.Common
             _dbContext = DbContextFactory.Instance;
         }
 
-        public bool Activity_Insert(ActivityModel activityModel)
+        public bool Create(ActivityModel activityModel)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Paybook.DatabaseLayer.Common
 
         }
 
-        public DataTable Activity_Select()
+        public DataTable GetAll()
         {
             try
             {

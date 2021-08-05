@@ -185,7 +185,7 @@ namespace Paybook.BusinessLayer.Report
 
                     if (sCustomer_ID != "NONE")
                     {
-                        DataTable arrCustomer = _clientProcessor.Customer_Select(sCustomer_ID);
+                        DataTable arrCustomer = _clientProcessor.GetByClientID(sCustomer_ID);
                         if (arrCustomer != null && arrCustomer.Rows.Count > 0)
                         {
 
