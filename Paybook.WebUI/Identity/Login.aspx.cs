@@ -1,5 +1,7 @@
 ﻿using Paybook.BusinessLayer;
 using Paybook.BusinessLayer.Identity;
+using Paybook.BusinessLayer.Invoice;
+using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Enums;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
@@ -14,10 +16,12 @@ namespace Paybook.WebUI.Identity
     {
         private readonly ILogger _logger;
         private readonly ILoginProcessor _login;
+        private readonly IInvoiceProcessor _invoiceProcessor;
         public Login()
         {
             _logger = FileLogger.Instance;
             _login = new LoginProcessor();
+            _invoiceProcessor = new InvoiceProcessor();
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -58,6 +62,8 @@ namespace Paybook.WebUI.Identity
                 DataTable dt = _login.Login_Isvalid(loginModel);
                 if (dt != null && dt.Rows.Count > 0)
                 {
+                    OverdueInvoicesInsertToActivitiesOnFirstRun();
+
                     Session["LoggedInUser"] = dt.Rows[0]["CompanyName"].ToString() + "/" + dt.Rows[0]["UserID"].ToString();
                     Response.Redirect(Application["Path"] + "dashboard", false);
                 }
@@ -73,7 +79,25 @@ namespace Paybook.WebUI.Identity
                 ExceptionMessage(ExceptionType.ERROR, XmlProcessor.ReadXmlFile("OTW901"));
             }
         }
-        protected void GetCaptcha()
+        private void OverdueInvoicesInsertToActivitiesOnFirstRun()
+        {
+            try
+            {
+                if (Session["LoggedInUser"] != null)
+                {
+                    string[] sLoginUser = Session["LoggedInUser"].ToString().Split('/');
+                    _invoiceProcessor.Activity_Insert_Overdue(sLoginUser[0], InvoiceStatusConst.Overdue);
+                    //Properties.Settings.Default["FirstRun"] = false;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        private void GetCaptcha()
         {
             try
             {
