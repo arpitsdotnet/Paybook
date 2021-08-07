@@ -1,0 +1,18 @@
+﻿CREATE TABLE [dbo].[Payments]
+(
+    [Id] INT NOT NULL IDENTITY,
+    [BusinessId] INT  NOT NULL, 
+    [IsActive] BIT NOT NULL, 
+    [CreateDate] DATETIME NULL, 
+    [ModifyDate] DATETIME NULL, 
+    [CreateBy] NVARCHAR(50) NULL, 
+    [ModifyBy] NVARCHAR(50) NULL, 
+    [IsSuccess] BIT NULL, 
+    [Method] NVARCHAR(50) NULL,
+    [PaymentDate] DATETIME NOT NULL, 
+    [Amount] DECIMAL(18, 2) NULL, 
+    [IsRefund] BIT NULL, 
+    [Attempts] INT NULL, 
+    CONSTRAINT [PK_Payments] PRIMARY KEY ([Id]), 
+    CONSTRAINT [FK_Payments_ToBusinesses_BusinessId] FOREIGN KEY ([BusinessId]) REFERENCES [Businesses]([Id]), 
+)

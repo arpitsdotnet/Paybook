@@ -1,0 +1,23 @@
+﻿CREATE TABLE [dbo].[Businesses]
+(
+	[Id] INT NOT NULL  IDENTITY,
+    [IsActive] BIT NOT NULL, 
+    [CreateDate] DATETIME NULL, 
+    [ModifyDate] DATETIME NULL, 
+    [CreateBy] NVARCHAR(50) NULL, 
+    [ModifyBy] NVARCHAR(50) NULL, 
+    [Name] NVARCHAR(256) NOT NULL, 
+    [Description] NVARCHAR(500) NULL, 
+    [IsSelected] BIT NOT NULL, 
+    [Image] NVARCHAR(256) NOT NULL, 
+    [GSTNumber] NVARCHAR(256) NULL, 
+    [PhoneNumber] NVARCHAR(20) NOT NULL, 
+    [Email] NVARCHAR(256) NOT NULL, 
+    [AddressLine1] NVARCHAR(256) NOT NULL, 
+    [AddressLine2] NVARCHAR(256) NULL, 
+    [City] NVARCHAR(50) NOT NULL, 
+    [State] NVARCHAR(50) NOT NULL, 
+    [Country] NVARCHAR(50) NOT NULL, 
+    [Pincode] NVARCHAR(10) NOT NULL, 
+    CONSTRAINT [PK_Businesses] PRIMARY KEY ([Id]), 
+)

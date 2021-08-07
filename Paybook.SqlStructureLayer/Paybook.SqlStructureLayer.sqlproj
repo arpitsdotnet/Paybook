@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>Paybook.SqlStructureLayer</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{d0771108-2de5-4049-a9ff-fca710539ad9}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>Paybook.SqlStructureLayer</RootNamespace>
+    <AssemblyName>Paybook.SqlStructureLayer</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo" />
+    <Folder Include="dbo\Tables" />
+    <Folder Include="dbo\Stored Procedures" />
+    <Folder Include="dbo\Views" />
+    <Folder Include="dbo\Functions" />
+    <Folder Include="dbo\Functions\Table-valued Functions" />
+    <Folder Include="Profile\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\IdentityUsers.sql" />
+    <Build Include="dbo\Tables\IdentityRoles.sql" />
+    <Build Include="dbo\Tables\IdentityUserRoles.sql" />
+    <Build Include="dbo\Tables\Businesses.sql" />
+    <Build Include="dbo\Tables\Agencies.sql" />
+    <Build Include="dbo\Tables\Clients.sql" />
+    <Build Include="dbo\Tables\UserBusinesses.sql" />
+    <Build Include="dbo\Tables\Invoices.sql" />
+    <Build Include="dbo\Tables\CategoryMaster.sql" />
+    <Build Include="dbo\Tables\CategoryTypeMaster.sql" />
+    <Build Include="dbo\Tables\InvoiceServices.sql" />
+    <Build Include="dbo\Tables\Payments.sql" />
+    <Build Include="dbo\Tables\InvoicePayments.sql" />
+    <Build Include="dbo\Tables\Notes.sql" />
+    <Build Include="dbo\Tables\LastSavedIds.sql" />
+    <Build Include="dbo\Tables\Activities.sql" />
+    <Build Include="dbo\Stored Procedures\spi_Activities_Insert.sql" />
+    <Build Include="dbo\Tables\DBLogs.sql" />
+    <Build Include="dbo\Stored Procedures\spi_DBLogs_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Activities_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\spi_Identity_Initialize.sql" />
+    <Build Include="dbo\Tables\CountryMaster.sql" />
+    <Build Include="dbo\Tables\StateMaster.sql" />
+    <Build Include="dbo\Stored Procedures\sps_IdentityUser_IsValid.sql" />
+    <Build Include="dbo\Stored Procedures\sps_IdentityUser_GetByUsername.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Businesses_GetAllByUserId.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetInvoiceCountByDays.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetPaymentsByDays.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetPaymentsLast10.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetCounters.sql" />
+    <Build Include="dbo\Functions\Table-valued Functions\fns_Category_GetByCore.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Clients_GetAllByPage.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Agencies_GetAllByPage.sql" />
+    <Build Include="dbo\Stored Procedures\spi_Clients_Insert.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Paybook.SqlStructureLayer.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Profile\Paybook.SqlStructureLayer.publish.xml" />
+  </ItemGroup>
+</Project>
