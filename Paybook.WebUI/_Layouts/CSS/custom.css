@@ -1,7 +1,17 @@
-﻿:root { --spacer: 2px; --color-primary: #2C3E50; --color-secondary: #DDD; }
+﻿:root { --spacer: 2px; --color-primary: #2C3E50; --color-secondary: #DDD; --color-secondary-dark: #555; }
 
 html, body { background-color: #EEE !important; }
 
+.navbar-brand { height: 60px; padding: 0px 15px; }
+    .navbar-brand img { height: 60px; text-align: center; }
+
+.select2-container { width: 99% !important; padding: 0; }
+
+@media only screen and (min-width: 601px) {
+    .navbar-toggle { right: 10px; top: 0px !important; }
+}
+
+.col { width: 20% !important; }
 
 .m-auto { margin: 0 auto; }
 
@@ -37,14 +47,13 @@ html, body { background-color: #EEE !important; }
 .p-2 { padding: calc(var(--spacer)*2) !important; }
 .pr-5 { padding-right: calc(var(--spacer)*5) !important; }
 
-.bg-secondary { background-color: var(--color-secondary); }
-
-.dm-hide { display: block; }
+.text-secondary { color: var(--color-secondary-dark) !important; }
+.bg-secondary { background-color: var(--color-secondary) !important; }
 
 
 h1, h2, h3, h4, h5, h6 { font-size: 1.5em; color: #666666; text-transform: uppercase !important; font-weight: 200; margin-bottom: 0px; }
 
-h1 { font-size: 2.2em; padding-bottom: 0px; margin-bottom: 0px; }
+h1 { font-size: 2.5em; padding-bottom: 0px; margin-bottom: 0px; }
 
 h2 { font-size: 1.7em; font-weight: 800 !important; margin-top: 12px; color: var(--color-primary); }
 
@@ -56,6 +65,9 @@ h5, h6 { font-size: 1em; }
 
 .unselect { user-select: none; -moz-user-select: none; -khtml-user-select: none; -webkit-user-select: none; -o-user-select: none; }
 
+
+.dm-hide { display: block; }
+
 @media screen and (min-width: 0px) and (max-width: 768px) {
     .dm-hide { display: none; }
 }
@@ -63,10 +75,6 @@ h5, h6 { font-size: 1em; }
 /*.px-2 { padding-left: ($spacer * .5) !important; padding-right: ($spacer * .5) !important; }
 
 .p-3 { padding: $spacer !important; }*/
-.navbar-brand { height: 60px; padding: 0px 15px; }
-    .navbar-brand img { height: 60px; text-align: center; }
-
-.select2-container { width: 99% !important; padding: 0; }
 
 
 
@@ -2051,19 +2059,11 @@ body .ui-tooltip { border-width: 2px; }
 
         .async-result div:hover { background-color: #333; color: #FFF; }
 
-.activity-timeline ul { margin: 0; padding: 0; height: 400px; overflow-y: auto; }
-
-    .activity-timeline ul li { padding: 10px; border-bottom: solid 1px #DDD; list-style-image: url(../../_Layouts/IMG/dot.png); list-style-position: inside; transition: 0.2s ease-in-out; }
-
+.activity-timeline ul { margin: 0; padding: 0; height: 530px; overflow-y: auto; }
+    .activity-timeline ul li { padding: 10px; border-bottom: solid 1px #DDD; list-style: none; transition: 0.2s ease-in-out; }
+        .activity-timeline ul li span.nowrap { white-space: nowrap; }
         .activity-timeline ul li:hover { background: #FFF; box-shadow: #999 0px 1px 4px; }
 
-        .activity-timeline ul li.paid { padding: 10px; border-bottom: solid 1px #DDD; list-style-image: url('../../_Layouts/IMG/tick.png'); list-style-position: inside; transition: 0.2s ease-in-out; }
-
-            .activity-timeline ul li.paid:hover { background: #FFF; box-shadow: #999 0px 1px 4px; }
-
-        .activity-timeline ul li.close { padding: 10px; border-bottom: solid 1px #DDD; list-style-image: url('../../_Layouts/IMG/close.png'); list-style-position: inside; transition: 0.2s ease-in-out; }
-
-            .activity-timeline ul li.close:hover { background: #FFF; box-shadow: #999 0px 1px 4px; }
 
 .add-new { position: relative; width: 30px; height: 30px; background: #3A4F63; color: #FFF; transition: 0.2s ease-in-out; }
 
@@ -2095,9 +2095,9 @@ body .ui-tooltip { border-width: 2px; }
 
 .requied { color: Red; font-size: small; }
 
-.div-cross { position: absolute; top: 0; left: 90%; z-index: 999; cursor: pointer; padding: 5px; background-color: #3E90D4; border-radius: 0px 4px 4px 0px; border: solid 1px #E58126; padding: 3px 5px 3px 5px; font-size: 12px; color: white; }
+.div-cross { position: absolute; top: 0; right: 0%; z-index: 999; cursor: pointer; background-color: #666; border-radius: 0px 4px 4px 0px; padding: 8px 8px 9px 8px; font-size: 12px; color: white; }
 
-    .div-cross:hover { color: maroon; font-weight: bold; }
+    .div-cross:hover { background-color: #ff5600; }
 
 #idDateTimeShow { border-left: solid 2px #00435c; border-right: solid 2px #00435c; width: 160px; background: #ccf1ff; color: #000; line-height: 14px; padding: 10px 10px 8px 10px !important; transition: ease-in-out 0.3s; cursor: default; }
 

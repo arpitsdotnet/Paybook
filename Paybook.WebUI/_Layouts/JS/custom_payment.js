@@ -23,7 +23,7 @@ function GetAll_CustomerPayments(sOrderBy) {
             'sCustomer_ID': $("#ddlCustomers").val(), 'sPaymentDateTo': $("#txtDateTo").val(), 'sPaymentDateFrom': $("#txtDateFrom").val()
         };
 
-        CallAjaxMethod("Payments_Search", jsonVar, "Payments_Search_Complete");
+        CallAjaxMethod("Payments_Search", jsonVar, "Payments_Search_Callback");
 
     }
     catch (err) {
@@ -31,7 +31,7 @@ function GetAll_CustomerPayments(sOrderBy) {
     }
 
 }
-function Payments_Search_Complete(data) {
+function Payments_Search_Callback(data) {
 
     try {
      
@@ -146,7 +146,7 @@ function Payments_Search_Complete(data) {
         IsProcessingHomeGrid = false;
 
     }
-    catch (err) { alert("Error occured in  function(Payments_Select_Complete) " + err); }
+    catch (err) { alert("Error occured in  function(Payments_Select_Callback) " + err); }
 }
 function SelectPaymentsGridPageNumberBlank() {
     try {
@@ -287,7 +287,7 @@ function PaymentGrid_ForInvoice(sOrderBy) {
             'sCustomer_ID': $("#hfCustomer_ID").val(), 'sInvoice_ID': $("#hfInvoice_ID").val(), 'sCategory_Core': $("#hfCategory").val()
         };
      
-        CallAjaxMethod("Payments_ForInvoice", jsonVar, "Payments_ForInvoice_Complete");
+        CallAjaxMethod("Payments_ForInvoice", jsonVar, "Payments_ForInvoice_Callback");
 
     }
     catch (err) {
@@ -295,7 +295,7 @@ function PaymentGrid_ForInvoice(sOrderBy) {
     }
 
 }
-function Payments_ForInvoice_Complete(data) {
+function Payments_ForInvoice_Callback(data) {
 
     try {
         var sRow = "";
@@ -366,7 +366,7 @@ function Payments_ForInvoice_Complete(data) {
         IsProcessingHomeGrid = false;
 
     }
-    catch (err) { alert("Error occured in  function(Payments_ForInvoice_Complete) " + err); }
+    catch (err) { alert("Error occured in  function(Payments_ForInvoice_Callback) " + err); }
 }
 function SelectPayments_ForInvoice_PageNumberBlank() {
     try {

@@ -282,7 +282,7 @@
             $("#txtCustomerPhoneNumber1").change(function () {
                 try {                  
                         if (__Messages._mob.test($.trim($("#txtCustomerPhoneNumber1").val())) == false) {                         
-                            ReadXMLMessage("BSW010", "ReadXMLMessage_Complete");
+                            ReadXMLMessage("BSW010", "ReadXMLMessage_Callback");
                         }                    
                 }
                 catch (err) {
@@ -291,7 +291,7 @@
             });          
            
         });
-        function ReadXMLMessage_Complete(data) {
+        function ReadXMLMessage_Callback(data) {
             try {
                 ShowMessage(data);
             }

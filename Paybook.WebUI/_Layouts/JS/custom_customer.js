@@ -1,6 +1,7 @@
 ﻿var sOrderBy = "", sOrderByAsc = "0";
 var bBlankInFirst = true;
 function GetAllCustomers(sOrderBy) {
+    console.log("GetAllCustomers Started");
     try {
         //        var sAllTabName = $('#' + sAllTabName_HiddenField + '').val().split('|');
         //        var sUserNameEmail = $('#' + sLoginUserNameEmailID_HiddenField + '').val();
@@ -21,18 +22,21 @@ function GetAllCustomers(sOrderBy) {
         }
         var sIsActive = 1;//$("#rbtnIsActive input:checked").val();       
         var jsonVar = { 'sOrderBy': sOrderBy, 'sGridPageNumber': sCustomersGridPageNumberValue, 'sUserName': "", 'sIsActive': sIsActive, 'sSearchText': $("#hfSearchText").val(), 'sSearchBY': $("#hfSearchBy").val() };
+        console.log(jsonVar)
+        CallAjaxMethod("Client_GetAllByPage", jsonVar, "Client_GetAllByPage_Callback");
 
-        CallAjaxMethod("Customers_SelectAll", jsonVar, "Customers_SelectAll_Complete");
+        console.log("GetAllCustomers Ended");
     }
     catch (err) {
         alert("Error occured in  function(GetAllCustomers)" + err);
     }
 
 }
-function Customers_SelectAll_Complete(data) {
+function Client_GetAllByPage_Callback(data) {
 
     try {
 
+        console.log("Client_GetAllByPage_Callback Started");
         var sRow = "";
         $("#tblCustomers tbody").html("");//add line for back and privious button
         if (data.d.length > 0) {
@@ -41,7 +45,7 @@ function Customers_SelectAll_Complete(data) {
                 $('#hfCustomersGridPageNumber').val("End");
                 bBlankInFirst = false;
             }
-            else if (data.d[0].ERROR != "") {
+            else if (data.d[0].ERROR != null && data.d[0].ERROR != "") {
                 $('#tblCustomers .table-message').html(data.d[0].ERROR);
                 $('#hfCustomersGridPageNumber').val("End");
                 $("#lblCustomersPageNumber").html("");
@@ -54,35 +58,19 @@ function Customers_SelectAll_Complete(data) {
                 var sDisplayRowCount = (parseInt(sCustomersGridPageNumberValue) + 1);
                 $("#lblCustomersPageNumber").html(" &nbsp; Page : <b class=\"fwt-text-teal\">" + sDisplayRowCount + "</b> of <b class=\"fwt-text-teal\">" + sRowCount + "</b> &nbsp; ");
 
-                var sCssClass = "background:#D5E990;", sCssClassCustomer_ID = "", sCssClassCustomerName = "", sCssClassPrefix_Disp = "", sCssClassAgencyName = "";
-                var sCssClassAddress1 = "", sCssClassAddress2 = "", sCssClassCity = "", sCssClassState_Disp = "", sCssClassCountry_Core = "",
-                    sCssClassEMail = "", sCssClassPhoneNumber1 = "", sCssClassPhoneNumber2 = "", sCssClassRemainingAmount = "", sCssClassPandingInvoices = "";
-                if (sOrderBy == "Customer_ID") sCssClassCustomer_ID = sCssClass;
-                else if (sOrderBy == "CustomerName") sCssClassCustomerName = sCssClass;
-                else if (sOrderBy == "AgencyName") sCssClassAgencyName = sCssClass;
-                else if (sOrderBy == "PandingInvoices") sCssClassPandingInvoices = sCssClass;
-                else if (sOrderBy == "Address1") sCssClassAddress1 = sCssClass;
-                else if (sOrderBy == "Address2") sCssClassAddress2 = sCssClass;
-                else if (sOrderBy == "City") sCssClassCity = sCssClass;
-                else if (sOrderBy == "State_Disp") sCssClassState_Disp = sCssClass;
-                else if (sOrderBy == "Country_Core") sCssClassCountry_Core = sCssClass;
-                else if (sOrderBy == "EMail") sCssClassEMail = sCssClass;
-                else if (sOrderBy == "PhoneNumber1") sCssClassPhoneNumber1 = sCssClass;
-                else if (sOrderBy == "PhoneNumber2") sCssClassPhoneNumber2 = sCssClass;
-                else if (sOrderBy == "RemainingAmount") sCssClassRemainingAmount = sCssClass;
-
                 if (sCustomersGridPageNumberValue == "0") {
                     $("#tblCustomers thead").html("");
-                    sRow += "<tr class='rowHead'><th onclick='SetCustomersGridPageNumberBlank(); Customer_SelectALL(\"Customer_ID\");' class='rowHeadColumn LinkHeader' style='width:8%;' align='center'>Customer ID</th>" +
-                        "<th onclick='SetCustomersGridPageNumberBlank(); Customer_SelectALL(\"CustomerName\");' class='rowHeadColumn LinkHeader' style='width:15%;' align='center'>Customer Name</th>" +
-                        "<th onclick='SetCustomersGridPageNumberBlank(); Customer_SelectALL(\"AgencyName\");' class='rowHeadColumn LinkHeader' style='width:15%;' align='center'>Agency Name</th>" +
-                        "<th onclick='SetCustomersGridPageNumberBlank(); Customer_SelectALL(\"PandingInvoices\");' class='rowHeadColumn LinkHeader' style='width:12%;' align='center'>Pending Invoices</th>" +
-                        "<th onclick='SetCustomersGridPageNumberBlank(); Customer_SelectALL(\"PhoneNumber1\");' class='rowHeadColumn LinkHeader' align='center' style='width:11%;'>Phone Number</th>" +
-                        "<th onclick='SetCustomersGridPageNumberBlank(); Customer_SelectALL(\"EMail\");' class='rowHeadColumn LinkHeader' align='center' style='width:11%;'>Email</th>" +
-                        "<th onclick='SetCustomersGridPageNumberBlank(); Customer_SelectALL(\"City\");' class='rowHeadColumn LinkHeader' align='center' style='width:11%;'>Address</th>" +
-                        //"<th onclick='SetCustomersGridPageNumberBlank(); Customer_SelectALL(\"State_Disp\");' class='rowHeadColumn LinkHeader' align='center' style='width:10%;'>State</th>" +
-                        //"<th onclick='SetCustomersGridPageNumberBlank(); Customer_SelectALL(\"Country_Core\");' class='rowHeadColumn LinkHeader' align='center' style='width:8%;'>Country</th>" +
-                        "<th onclick='SetCustomersGridPageNumberBlank(); Customer_SelectALL(\"RemainingAmount\");' class='rowHeadColumn LinkHeader' align='center' style='width:12%;'>Remaining Amount</th></tr>";
+                    sRow += "<tr class='rowHead'>" +
+                        "<th class='rowHeadColumn' style='width:8%;' align='center'>CUSTOMER ID</th>" +
+                        "<th class='rowHeadColumn' style='width:15%;' align='center'>CUSTOMER NAME</th>" +
+                        "<th class='rowHeadColumn' style='width:15%;' align='center'>AGENCY NAME</th>" +
+                        "<th class='rowHeadColumn' style='width:12%;' align='center'>PENDING INVOICE</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:12%;'>REMAINING AMOUNT</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:11%;'>ADDRESS</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:11%;'>PHONE NUMBER</th>" +
+                        "<th class='rowHeadColumn' align='center' style=''>EMAIL</th>" +
+                        "<th class='' align='center' style='width:100px!important;'>ACTION</th>";
+                        "</tr> ";
                     $("#tblCustomers thead").append(sRow);
                 }
 
@@ -91,19 +79,26 @@ function Customers_SelectAll_Complete(data) {
                     var sAgencyName = "-";
                     var sAgencyID = "0";
                     if (data.d[i].AgencyName != "" && data.d[i].AgencyName != "0") {
-                        sAgencyName = data.d[i].AgencyName + " <i class=\"fa fa-pencil\"></i>";
                         sAgencyID = data.d[i].Agency_ID;
                     }
-                    sRow += "<tr class='rowHover'><td class='fwt-center' style='" + sCssClassCustomer_ID + "' title=\"View All Documents\">" + data.d[i].Customer_ID + "</td>" +
-                        "<td align='center' style='cursor:pointer;" + sCssClassCustomerName + "'onclick=\"javascript:SelectCustomersEditButton('" + data.d[i].Customer_ID + "');\" >" + data.d[i].CustomerName + " <i class=\"fa fa-pencil\"></i></td>" +
-                        "<td align='center' style='cursor:pointer;" + sCssClassAgencyName + "'onclick=\"javascript:SelectAgencyEditButton('" + sAgencyID + "');\" >" + sAgencyName + " </td>" +
-                        "<td align='center' style='" + sCssClassPandingInvoices + "'>" + "<span class=\"fwt-text-blue\">" + data.d[i].Invoices_Open_Count + " Open Invoices</span>" + "<br><b><span class=\"fwt-text-red\">" + data.d[i].Invoices_Overdue_Count + " Overdue Invoices" + "</span></b></td>" +
-                        "<td align='center' style='" + sCssClassPhoneNumber1 + "'>" + data.d[i].PhoneNumber1 + "</td>" +
-                        "<td align='center' style='" + sCssClassEMail + "'>" + data.d[i].EMail + "</td>" +
-                        "<td align='center' style='" + sCssClassCity + "'>" + data.d[i].City + "<br>" + data.d[i].State_Disp + "</td>" +
-                        //"<td align='center' style='" + sCssClassState_Disp + "'>" + data.d[i].State_Disp + "</td>" +
-                        //"<td align='center' style='" + sCssClassCountry_Core + "'>" + data.d[i].Country_Core + "</td>" +
-                        "<td align='center' style='" + sCssClassRemainingAmount + "'><i class='fa fa-inr'></i> " + parseFloat(data.d[i].RemainingAmount).toFixed(2) + "</td></tr>";
+                    data.d[i].AgencyName = data.d[i].AgencyName || "";
+                    data.d[i].EMail = data.d[i].EMail || "";
+                    data.d[i].City = data.d[i].City || "";
+                    data.d[i].State_Disp = data.d[i].State_Disp || "";
+                    sRow += "<tr class='rowHover'>" +
+                        "<td class='fwt-center' title=\"View All Documents\">" + data.d[i].Customer_ID + "</td>" +
+                        "<td align='center' onclick=\"javascript:SelectCustomersEditButton('" + data.d[i].Customer_ID + "');\" >" + data.d[i].CustomerName + "</td>" +
+                        "<td align='center' onclick=\"javascript:SelectAgencyEditButton('" + sAgencyID + "');\" >" + data.d[i].AgencyName + " </td>" +
+                        "<td align='center'>" + "<span class=\"fwt-text-blue\">" + data.d[i].Invoices_Open_Count + " Open Invoice(s)</span>" + "<br><b><span class=\"fwt-text-red\">" + data.d[i].Invoices_Overdue_Count + " Overdue Invoice(s)" + "</span></b></td>" +
+                        "<td align='center'><i class='fa fa-inr'></i> " + parseFloat(data.d[i].RemainingAmount).toFixed(2) + "</td>" +
+                        "<td align='center'>" + data.d[i].City + "<br>" + data.d[i].State_Disp + "</td>" +
+                        "<td align='center'>" + data.d[i].PhoneNumber1 + "</td>" +
+                        "<td align='center'>" + data.d[i].EMail + "</td>" +
+                        "<td class='fwt-center fwt-btn-group'>" +
+                        "   <button class='fwt-btn fwt-round fwt-text-green fwt-white fwt-hover-green pointer' onclick=\"return OpenPartialPagePopup('client/update/" + data.d[i].ID + "', 'EDIT CLIENT');\" title='Edit'> <i class=\"fa fa-pencil fa-2x\"></i> </button>" +
+                        "   <button class='fwt-btn fwt-round fwt-text-red fwt-white fwt-hover-red' id='btnDeleteNote_" + i + "' type='button' name='btnDeleteNote" + i + "' onclick='Note_Delete(this.id, \"" + data.d[i].ID + "\");' title='Delete'> <i class=\"fa fa-trash fa-2x\"></i> </button>" +
+                        "</td>" +
+                        "</tr>";
                     $("#tblCustomers tbody").append(sRow);
                 }
                 $('#tblCustomers .table-loading').hide();
@@ -126,8 +121,9 @@ function Customers_SelectAll_Complete(data) {
         }
         IsProcessingHomeGrid = false;
 
+        console.log("Client_GetAllByPage_Callback Ended");
     }
-    catch (err) { alert("Error occured in  function(Customers_SelectAll_Complete) " + err); }
+    catch (err) { alert("Error occured in  function(Client_GetAllByPage_Callback) " + err); }
 }
 function SetCustomersGridPageNumberBlank() {
     try {

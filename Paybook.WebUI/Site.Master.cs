@@ -12,10 +12,10 @@ namespace Paybook.WebUI
         private readonly ILogger _logger;
         private readonly IBusinessProcessor _business;
 
-        public Site()
+        public Site(ILogger logger, IBusinessProcessor business)
         {
-            _logger = FileLogger.Instance;
-            _business = new BusinessProcessor();
+            _logger = logger;
+            _business = business;
         }
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -28,7 +28,7 @@ namespace Paybook.WebUI
                     {
 
                         //string sLoginUser = Session["LoggedInUser"].ToString();
-                        DataTable dtCompanyProfile = _business.CompanyProfile_Select();
+                        DataTable dtCompanyProfile = _business.GetByUserId();
                         if (dtCompanyProfile.Rows.Count > 0 && dtCompanyProfile != null)
                         {
                             //if(Convert.ToInt32(hfWindowWidth.Value)<600)

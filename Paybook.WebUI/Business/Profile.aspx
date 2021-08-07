@@ -173,12 +173,12 @@
             //            var jsonVar = { "sCreatedBY": $("#hfLogInUser").val(), "sCompanyName": $("#txtCompanyName").val(), "sFounded_Date": $("#txtCompanyFounderDate").val(), "sCompanyAddress1": $("#txtCompanyAddress1").val(), "sCompanyAddress2": $("#txtCompanyAddress2").val(), "sCompanyCity": $("#txtCompanyCity").val(), "sCompanyState_Core": $("#ddlCompanyState").val(), "sCompanyCountry": $("#txtCompanyCountry").val(), "sCompanyPhoneNumber1": $("#txtCompanyPhoneNumber1").val(), "sCompanyPhoneNumber2": $("#txtCompanyPhoneNumber2").val(), "sCompanyFaxNumber": $("#txtCompanyFaxNumber").val(), "sCompanyEmail": $("#txtCompanyEmail").val(), "sImageFileName": $("#hfCompanyLogo_Image").val() };
             //            //if ($("#btnSubmitAndUpdate").val() == "Submit") {
 
-            //            //    CallAjaxMethod("CompanyProfile_Insert", jsonVar, "CompanyProfile_Insert_Complete");
+            //            //    CallAjaxMethod("CompanyProfile_Insert", jsonVar, "CompanyProfile_Insert_Callback");
             //            //    SetDefault();
             //            //}
             //            //else {
 
-            //            CallAjaxMethod("CompanyProfile_Update", jsonVar, "CompanyProfile_Update_Complete");
+            //            CallAjaxMethod("CompanyProfile_Update", jsonVar, "CompanyProfile_Update_Callback");
             //            //}
 
             //        }
@@ -217,23 +217,23 @@
         //    try {
 
         //        if ($("#txtCompanyPhoneNumber1").val() == "") {
-        //            ReadXMLMessage("BSW009", "ReadXMLMessage_Complete");
+        //            ReadXMLMessage("BSW009", "ReadXMLMessage_Callback");
         //            return false;
         //        }
         //        else if (__Messages._mob.test($.trim($("#txtCompanyPhoneNumber1").val())) == false) {
-        //            ReadXMLMessage("BSW010", "ReadXMLMessage_Complete");
+        //            ReadXMLMessage("BSW010", "ReadXMLMessage_Callback");
         //            return false;
         //        }
         //        else if ($("#txtCompanyEmail").val() == "") {
-        //            ReadXMLMessage("BSW011", "ReadXMLMessage_Complete");
+        //            ReadXMLMessage("BSW011", "ReadXMLMessage_Callback");
         //            return false;
         //        }
         //        else if (__Messages._email.test($.trim($("#txtCompanyEmail").val())) == false) {
-        //            ReadXMLMessage("BSW012", "ReadXMLMessage_Complete");
+        //            ReadXMLMessage("BSW012", "ReadXMLMessage_Callback");
         //            return false;
         //        }
         //        else if ($("#txtCompanyName").val() == "") {
-        //            ReadXMLMessage("BSW008", "ReadXMLMessage_Complete");
+        //            ReadXMLMessage("BSW008", "ReadXMLMessage_Callback");
 
         //            return false;
         //        }
@@ -244,7 +244,7 @@
         //    }
         //}
 
-        //function CompanyProfile_Insert_Complete(data) {
+        //function CompanyProfile_Insert_Callback(data) {
         //    try {
         //        var $Data = data.d;
         //        if ($Data.length > 0) {
@@ -257,10 +257,10 @@
         //        }
         //    }
         //    catch (err) {
-        //        ShowMessage("There is an issue calling the function (CompanyProfile_Insert_Complete)" + err);
+        //        ShowMessage("There is an issue calling the function (CompanyProfile_Insert_Callback)" + err);
         //    }
         //}
-        //function CompanyProfile_Update_Complete(data) {
+        //function CompanyProfile_Update_Callback(data) {
         //    try {
         //        var $Data = data.d;
         //        if ($Data.length > 0) {
@@ -273,10 +273,10 @@
         //        }
         //    }
         //    catch (err) {
-        //        ShowMessage("There is an issue calling the function (CompanyProfile_Update_Complete)" + err);
+        //        ShowMessage("There is an issue calling the function (CompanyProfile_Update_Callback)" + err);
         //    }
         //}       
-        function ReadXMLMessage_Complete(data) {
+        function ReadXMLMessage_Callback(data) {
             try {
                 ShowMessage(data);
             }

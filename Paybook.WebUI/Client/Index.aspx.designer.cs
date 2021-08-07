@@ -51,15 +51,6 @@ namespace Paybook.WebUI.Client
         protected global::System.Web.UI.WebControls.HiddenField hfSearchText;
 
         /// <summary>
-        /// idLabelError control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl idLabelError;
-
-        /// <summary>
         /// txtAgencySearch control.
         /// </summary>
         /// <remarks>
@@ -78,22 +69,13 @@ namespace Paybook.WebUI.Client
         protected global::System.Web.UI.WebControls.TextBox txtSearchText;
 
         /// <summary>
-        /// btnCustomerCreate control.
+        /// idLabelError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlButton btnCustomerCreate;
-
-        /// <summary>
-        /// btnAgencyCreate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlButton btnAgencyCreate;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl idLabelError;
 
         /// <summary>
         /// lblCustomersPageNumber control.

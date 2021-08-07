@@ -12,12 +12,10 @@ namespace Paybook.WebUI.Notes
     public partial class Index : System.Web.UI.Page
     {
         private readonly ILogger _logger;
-        private readonly INoteProcessor _note;
 
-        public Index()
+        public Index(ILogger logger)
         {
-            _logger = FileLogger.Instance;
-            _note = new NoteProcessor();
+            _logger = logger;
         }
         protected void Page_Load(object sender, EventArgs e)
         {

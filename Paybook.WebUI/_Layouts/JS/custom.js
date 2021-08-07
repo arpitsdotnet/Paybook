@@ -96,7 +96,7 @@ function ReadXMLMessage(ID, callbackFunction) {
         var sUrl = sSiteUrlValue + "_Layouts/messages.xml";
         if (sXmlData == "") {
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: sUrl,
                 // data: JSON.stringify(sJsonVar),
                 //contentType: "application/xml; charset=utf-8",
@@ -200,7 +200,7 @@ function PageActiveCall() {
         $("input,select").prop("disabled", true);
     }
 }
-function Name_Search_Complete(data) {
+function Name_Search_Callback(data) {
     try {
         var $Data = data.d;
 
@@ -221,7 +221,7 @@ function Name_Search_Complete(data) {
 
     }
     catch (err) {
-        alert("There is an issue calling the function (Name_Search_Complete)" + err);
+        alert("There is an issue calling the function (Name_Search_Callback)" + err);
     }
     return false;
 }
@@ -239,7 +239,7 @@ function SearchName_Select(txtID, idSearch, txtName) {
 //    try {
 
 //        var jsonVar = { 'sType': sType, 'sControlID': sControlID };
-//        CallAjaxMethod("GetLastSavedID", jsonVar, "GetLastSavedID_Complete");
+//        CallAjaxMethod("GetLastSavedID", jsonVar, "GetLastSavedID_Callback");
 
 //    }
 //    catch (err) {
@@ -247,7 +247,7 @@ function SearchName_Select(txtID, idSearch, txtName) {
 //        alert("There is an issue calling the function (LastSavedID_Create)" + err);
 //    }
 //}
-//function GetLastSavedID_Complete(data) {
+//function GetLastSavedID_Callback(data) {
 //    try {
 //        var $Data = data.d;
 
@@ -262,7 +262,7 @@ function SearchName_Select(txtID, idSearch, txtName) {
 //        }
 //    }
 //    catch (err) {
-//        alert("There is an issue calling the function (GetLastSavedID_Complete)" + err);
+//        alert("There is an issue calling the function (GetLastSavedID_Callback)" + err);
 //    }
 //    return false;
 //}
@@ -311,14 +311,14 @@ function GetAllAgents(sOrderBy) {
         //alert('sSiteUrl' + sSiteUrl + '\nsTabSelected' + sTabName + '\nsOrderBy' + sOrderBy + '\nsOrderByAsc' + sOrderByAsc + '\nsGridPageNumber' + sGridPageNumber + '\nsUserNameEmail' + sUserNameEmail);
         var jsonVar = { 'sOrderBy': sOrderBy, 'sGridPageNumber': sAgentsGridPageNumberValue, 'sUserName': "", 'sIsActive': sIsActive };
 
-        CallAjaxMethod("Agent_GetAllByPage", jsonVar, "Agent_GetAllByPage_Complete");
+        CallAjaxMethod("Agent_GetAllByPage", jsonVar, "Agent_GetAllByPage_Callback");
 
     }
     catch (err) {
         alert("Error occured in  function(GetAllAgents) " + err);
     }
 }
-function Agent_GetAllByPage_Complete(data) {
+function Agent_GetAllByPage_Callback(data) {
 
     try {
         if (data.d.length > 0) {
@@ -351,8 +351,10 @@ function Agent_GetAllByPage_Complete(data) {
                         "<td align='center' >" + data.d[i].City + "</td>" +
                         "<td align='center' >" + data.d[i].State_Disp + "</td>" +
                         "<td align='center' >" + data.d[i].Country_Core + "</td>" +
-                        "<td align='center' style='width:2%;'><input id='RadioButton1' type='radio' name='RadioButton1' value='RadioButton1' onclick=\"javascript:SelectAgentsSingleRadiobutton('" + data.d[i].Agent_ID + "');\" /></td>" +
-                        "</tr > ");
+                        "<td class='fwt-center fwt-btn-group'>" +
+                        "   <button type='button' class='fwt-btn fwt-round fwt-text-green fwt-white fwt-hover-green pointer' onclick=\"return OpenPartialPagePopup('agent/update/" + data.d[i].Agent_ID + "', 'UPDATE AGENT');\" title='Edit'> <i class=\"fa fa-pencil fa-2x\"></i> </button>" +
+                        "   <button type='button' class='fwt-btn fwt-round fwt-text-red fwt-white fwt-hover-red' id='btnDeleteNote_" + i + "' type='button' name='btnDeleteNote" + i + "' onclick='Note_Delete(this.id, \"" + data.d[i].ID + "\");' title='Delete'> <i class=\"fa fa-trash fa-2x\"></i> </button>" +
+                        "</td></tr>");
                 }
 
                 //var sAgentsGridPageNumberValue = $('#hfAgentsGridPageNumber').val();
@@ -361,11 +363,11 @@ function Agent_GetAllByPage_Complete(data) {
                         "<th class='rowHeadColumn' style='width:10%;' align='center'>AGENT ID</th>" +
                         "<th class='rowHeadColumn' style='width:20%;' align='center'>AGENT NAME</th>" +
                         "<th class='rowHeadColumn' align='center' style='width:10%;'>PHONE NUMBER1 </th>" +
-                        "<th class='rowHeadColumn' align='center' style='width:14%;'>EMAIL</th>" +
-                        "<th class='rowHeadColumn' align='center' style='width:13%;'>CITY</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:20%;'>EMAIL</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:10%;'>CITY</th>" +
                         "<th class='rowHeadColumn' align='center' style='width:10%;'>STATE</th>" +
-                        "<th class='rowHeadColumn' align='center' style='width:10%;'>COUNTRY</th>" +
-                        "<th class='' style='width:2%;' title=\"Edit Agent\">ACTION</th>" +
+                        "<th class='rowHeadColumn' align='center' style=''>COUNTRY</th>" +
+                        "<th class='' align='center' style='width:100px!important;'>ACTION</th>" +
                         "</tr > ");
                     $('#divAgents .table-main').floatThead();
 
@@ -391,7 +393,7 @@ function Agent_GetAllByPage_Complete(data) {
         IsProcessingHomeGrid = false;
 
     }
-    catch (err) { alert("Error occured in  function(Agent_GetAllByPage_Complete) " + err); }
+    catch (err) { alert("Error occured in  function(Agent_GetAllByPage_Callback) " + err); }
 }
 function SetAgentsGridPageNumberBlank() {
     try {
@@ -437,6 +439,7 @@ function ShowMessage(sMessage) {
 function OpenPartialPagePopup(pageUri, title) {
     //'/notes/create'
     try {
+        console.log("OpenPartialPagePopup Started");
         const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
         const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
 
@@ -457,12 +460,13 @@ function OpenPartialPagePopup(pageUri, title) {
                 var closeBtn = $('.ui-dialog-titlebar-close');
             }
         });
-
+        
         $("#divPartialPagePopup").load(sSiteUrlValue + pageUri, function () {
             $("#divPartialPagePopup").dialog("open");
         });
 
 
+        console.log("OpenPartialPagePopup Ended");
         return false;
     }
     catch (err) { alert("Error occured in  function(OpenPartialPagePopup) " + err); }

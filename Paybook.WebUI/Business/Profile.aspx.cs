@@ -21,11 +21,11 @@ namespace Paybook.WebUI.Business
         private readonly ICategoryProcessor _category;
         private readonly IBusinessProcessor _business;
 
-        public Profile()
+        public Profile(ILogger logger, ICategoryProcessor category, IBusinessProcessor business)
         {
-            _logger = FileLogger.Instance;
-            _category = new CategoryProcessor();
-            _business = new BusinessProcessor();
+            _logger = logger;
+            _category = category;
+            _business = business;
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -75,25 +75,27 @@ namespace Paybook.WebUI.Business
                 txtImageUrl.Text = sFileName;
             }
 
-            BusinessModel businessModel = new BusinessModel();
-            businessModel.ModifiedBY = hfLogInUser.Value.Trim();
-            businessModel.CompanyName = txtCompanyName.Text.Trim();
-            businessModel.Founded_Date = txtCompanyFounderDate.Text.Trim();
-            businessModel.Address1 = txtCompanyAddress1.Text.Trim();
-            //oCompany.Address2 = txtCompanyAddress2.Text.Trim();
-            businessModel.City = txtCompanyCity.Text.Trim();
-            businessModel.State_Core = ddlCompanyState.SelectedValue.ToString();
-            businessModel.Country_Core = txtCompanyCountry.Text.Trim();
-            businessModel.PhoneNumber1 = txtCompanyPhoneNumber1.Text.Trim();
-            //oCompany.PhoneNumber2 = txtCompanyPhoneNumber2.Text.Trim();
-            businessModel.FaxNumber = txtCompanyFaxNumber.Text.Trim();
-            businessModel.EMail = txtCompanyEmail.Text.Trim();
-            businessModel.ImageFileName = txtImageUrl.Text.Trim();
-            businessModel.UserName = txtUsername.Text.Trim();
-            businessModel.Password = txtPassword.Text.Trim();
-            businessModel.GSTIN = txtGSTIN.Text.Trim();
+            BusinessModel businessModel = new BusinessModel
+            {
+                ModifiedBY = hfLogInUser.Value.Trim(),
+                CompanyName = txtCompanyName.Text.Trim(),
+                Founded_Date = txtCompanyFounderDate.Text.Trim(),
+                Address1 = txtCompanyAddress1.Text.Trim(),
+                //oCompany.Address2 = txtCompanyAddress2.Text.Trim();
+                City = txtCompanyCity.Text.Trim(),
+                State_Core = ddlCompanyState.SelectedValue.ToString(),
+                Country_Core = txtCompanyCountry.Text.Trim(),
+                PhoneNumber1 = txtCompanyPhoneNumber1.Text.Trim(),
+                //oCompany.PhoneNumber2 = txtCompanyPhoneNumber2.Text.Trim();
+                FaxNumber = txtCompanyFaxNumber.Text.Trim(),
+                EMail = txtCompanyEmail.Text.Trim(),
+                ImageFileName = txtImageUrl.Text.Trim(),
+                UserName = txtUsername.Text.Trim(),
+                Password = txtPassword.Text.Trim(),
+                GSTIN = txtGSTIN.Text.Trim()
+            };
 
-            string sMessage = _business.CompanyProfile_Update(businessModel);
+            string sMessage = _business.Update(businessModel);
 
             ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + sMessage + "');});", true);
             CompanyProfile_IsExist();
@@ -104,7 +106,7 @@ namespace Paybook.WebUI.Business
         {
             try
             {
-                DataTable dt = _business.CompanyProfile_IsExist();
+                DataTable dt = _business.IsExist();
                 if (dt.Rows.Count > 0 && dt != null)
                 {
                     if (Int32.Parse(dt.Rows[0]["Company_ID"].ToString()) == 0)
@@ -115,7 +117,7 @@ namespace Paybook.WebUI.Business
                     else
                     {
                         btnSubmitAndUpdate.Text = "Update";
-                        DataTable dtCompanyProfile = _business.CompanyProfile_Select();
+                        DataTable dtCompanyProfile = _business.GetByUserId();
                         if (dtCompanyProfile.Rows.Count > 0 && dtCompanyProfile != null)
                         {
                             txtCompanyName.Text = dtCompanyProfile.Rows[0]["CompanyName"].ToString();

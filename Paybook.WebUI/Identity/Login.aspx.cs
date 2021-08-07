@@ -16,12 +16,12 @@ namespace Paybook.WebUI.Identity
     {
         private readonly ILogger _logger;
         private readonly ILoginProcessor _login;
-        private readonly IInvoiceProcessor _invoiceProcessor;
-        public Login()
+        //private readonly IInvoiceProcessor _invoiceProcessor;
+        public Login(ILogger logger, ILoginProcessor login)
         {
-            _logger = FileLogger.Instance;
-            _login = new LoginProcessor();
-            _invoiceProcessor = new InvoiceProcessor();
+            _logger = logger;
+            _login = login;
+            //_invoiceProcessor = new InvoiceProcessor();
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -48,9 +48,11 @@ namespace Paybook.WebUI.Identity
         {
             try
             {
-                LoginModel loginModel = new LoginModel();
-                loginModel.Username = txtUserName.Text.Trim();
-                loginModel.Password = txtPassword.Text.Trim();
+                LoginModel loginModel = new LoginModel
+                {
+                    Username = txtUserName.Text.Trim(),
+                    Password = txtPassword.Text.Trim()
+                };
 
                 string message = IsModelValid(loginModel);
                 if (!string.IsNullOrWhiteSpace(message))
@@ -62,9 +64,10 @@ namespace Paybook.WebUI.Identity
                 DataTable dt = _login.Login_Isvalid(loginModel);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    OverdueInvoicesInsertToActivitiesOnFirstRun();
-
                     Session["LoggedInUser"] = dt.Rows[0]["CompanyName"].ToString() + "/" + dt.Rows[0]["UserID"].ToString();
+
+                    //OverdueInvoicesInsertToActivitiesOnFirstRun();
+
                     Response.Redirect(Application["Path"] + "dashboard", false);
                 }
                 else
@@ -79,24 +82,24 @@ namespace Paybook.WebUI.Identity
                 ExceptionMessage(ExceptionType.ERROR, XmlProcessor.ReadXmlFile("OTW901"));
             }
         }
-        private void OverdueInvoicesInsertToActivitiesOnFirstRun()
-        {
-            try
-            {
-                if (Session["LoggedInUser"] != null)
-                {
-                    string[] sLoginUser = Session["LoggedInUser"].ToString().Split('/');
-                    _invoiceProcessor.Activity_Insert_Overdue(sLoginUser[0], InvoiceStatusConst.Overdue);
-                    //Properties.Settings.Default["FirstRun"] = false;
-                }
+        //private void OverdueInvoicesInsertToActivitiesOnFirstRun()
+        //{
+        //    try
+        //    {
+        //        if (Session["LoggedInUser"] != null)
+        //        {
+        //            string[] sLoginUser = Session["LoggedInUser"].ToString().Split('/');
+        //            _invoiceProcessor.Activity_Insert_Overdue(sLoginUser[0], InvoiceStatusConst.Overdue);
+        //            //Properties.Settings.Default["FirstRun"] = false;
+        //        }
 
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(_logger.MethodName, ex);
+        //        throw;
+        //    }
+        //}
         private void GetCaptcha()
         {
             try
@@ -119,12 +122,11 @@ namespace Paybook.WebUI.Identity
         }
         private Boolean IsCaptchaValid()
         {
-            int result;
             if (txtCaptcha.Text.Trim() == "")
             {
                 return false;
             }
-            else if (!int.TryParse(txtCaptcha.Text.Trim(), out result))
+            else if (!int.TryParse(txtCaptcha.Text.Trim(), out int result))
             {
                 return false;
             }

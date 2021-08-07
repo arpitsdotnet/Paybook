@@ -18,7 +18,7 @@
                         &nbsp;<i class="fa fa-ellipsis-h fwt-large"></i>&nbsp;</button>
                     <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Sync" onclick="location.href=location.href;">
                         &nbsp;<i class="fa fa-refresh fwt-large"></i>&nbsp;</button>
-                    <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Add a Note" onclick="return OpenPartialPagePopup('notes/create','CREATE NOTE');">
+                    <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Add a Note" onclick="return OpenPartialPagePopup('note/create','CREATE NOTE');">
                         &nbsp;<i class="fa fa-plus fwt-large"></i>&nbsp; CREATE NOTE&nbsp;</button>
                 </div>
             </div>
@@ -26,11 +26,11 @@
     </div>
 
     <div class="container-fluid pt-3">
-        <div class="fwt-padding-4 " id="idPageNumber">
-            <div class="fwt-col l6 m12 s12">
+        <div class="row fwt-padding-4 " id="idPageNumber">
+            <div class="col-lg-6 col-md-12">
                 &nbsp;
             </div>
-            <div class="fwt-col l6 m12 s12">
+            <div class="col-lg-6 col-md-12">
                 <div class="w3-bar fwt-right-align">
                     <span class="fwt-button">
                         <button id="btnPrivious" clientidmode="Static" class="fwt-btn fwt-round fwt-ripple fwt-dropdown-click fwt-light-green">
@@ -43,9 +43,7 @@
                             &nbsp;<i class="fa fa-forward"></i>&nbsp;</button>
                     </span>
                 </div>
-
             </div>
-            <div class="fwt-clear"></div>
         </div>
         <div class="fwt-padding-4">
             <div id="div_HeadertblDailyNotes">

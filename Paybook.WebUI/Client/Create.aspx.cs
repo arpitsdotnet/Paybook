@@ -23,13 +23,13 @@ namespace Paybook.WebUI.Client
         private readonly IClientProcessor _client;
         private readonly IAgencyProcessor _agency;
 
-        public Create()
+        public Create(ILogger logger, ICategoryProcessor category, ILastSavedIdProcessor lastSavedId, IClientProcessor client, IAgencyProcessor agency)
         {
-            _logger = FileLogger.Instance;
-            _category = new CategoryProcessor();
-            _lastSavedId = new LastSavedIdProcessor();
-            _client = new ClientProcessor();
-            _agency = new AgencyProcessor();
+            _logger = logger;
+            _category = category;
+            _lastSavedId = lastSavedId;
+            _client = client;
+            _agency = agency;
         }
 
 
@@ -87,7 +87,7 @@ namespace Paybook.WebUI.Client
                 string sDOB = Convert.ToDateTime(txtCustomerDOB.Text.Trim()).ToString("yyyy-MM-dd HH:mm:ss");
 
                 var sGender = rbtnGender.SelectedValue.ToString();
-                CustomerModel customerModel = new CustomerModel
+                ClientModel customerModel = new ClientModel
                 {
                     Customer_ID = lblCustomer_ID.Text.Trim(),
                     Prefix_Core = ddlCustomerPrefix.SelectedValue.ToString(),
@@ -112,7 +112,7 @@ namespace Paybook.WebUI.Client
                 if (hfCustomer_ID.Value == "")
                 {
                     customerModel.CreatedBY = hfLogInUser.Value.Trim();
-                    message = _client.Customer_Insert(customerModel);
+                    message = _client.Create(customerModel);
 
                     //update LastSavedId                
                     _lastSavedId.LastSavedID_Update(customerModel.Customer_ID, LastIdTypes.Customer);
@@ -149,7 +149,7 @@ namespace Paybook.WebUI.Client
 
             try
             {
-                DataTable dtCustomer = _client.Customer_Select(hfCustomer_ID.Value);
+                DataTable dtCustomer = _client.GetByClientID(hfCustomer_ID.Value);
                 if (dtCustomer.Rows.Count > 0)
                 {
 
@@ -314,12 +314,14 @@ namespace Paybook.WebUI.Client
                         if (ddlAgencyName.SelectedIndex != 0)
                             sAgencyID = ddlAgencyName.SelectedValue.ToString();
 
-                        CustomerModel customerModel = new CustomerModel();
-                        customerModel.FirstName = txtCustomerFirstName.Text.Trim();
-                        customerModel.Agency_ID = sAgencyID;
-                        customerModel.PhoneNumber1 = txtCustomerPhoneNumber1.Text.Trim();
+                        ClientModel customerModel = new ClientModel
+                        {
+                            FirstName = txtCustomerFirstName.Text.Trim(),
+                            Agency_ID = sAgencyID,
+                            PhoneNumber1 = txtCustomerPhoneNumber1.Text.Trim()
+                        };
 
-                        return _client.Customer_IsExist(customerModel);
+                        return _client.IsExists(customerModel);
                     }
 
                 }

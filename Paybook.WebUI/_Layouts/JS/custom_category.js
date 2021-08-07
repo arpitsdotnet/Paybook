@@ -18,14 +18,14 @@ function GetAllSubCategories() {
             'sOrderBy': sOrderBy, 'sGridPageNumber': sCategoriesGridPageNumberValue, 'sUserName': "", "sCategory_Core": $("#ddlCategories").val()
         };
         // var jsonVar = { "sCategory_Core": $("#ddlCategories").val() };
-        CallAjaxMethod("SubCategories_SelectGrid", jsonVar, "SubCategories_SelectGrid_Complete");
+        CallAjaxMethod("SubCategories_SelectGrid", jsonVar, "SubCategories_SelectGrid_Callback");
 
     }
     catch (err) {
         alert("Error occured in  function(GetAllSubCategories) " + err);
     }
 }
-function SubCategories_SelectGrid_Complete(data) {
+function SubCategories_SelectGrid_Callback(data) {
     try {
         var sRow = "";
         $("#tblCategories tbody").html("");//add line for back and privious button
@@ -95,7 +95,7 @@ function SubCategories_SelectGrid_Complete(data) {
                         "<td class='fwt-center' >" + data.d[i].OrderBy + "</td>" +
                         "<td align='center' style='width:10%;'><button type='button' class='fwt-btn fwt-round' name='Button1' style='" + sCssClassIsActiveButton + "' onclick=\"javascript:SelectCategoriesButton('" + data.d[i].ID + "','" + data.d[i].IsActive + "');\">" + sIsActive + "</button></td>" +
                         "<td class='fwt-center fwt-btn-group'>" +
-                        "   <button class='fwt-btn fwt-round fwt-text-green fwt-white fwt-hover-green pointer' onclick=\"return OpenPartialPagePopup('category/update/" + data.d[i].ID + "', 'EDIT SUBCATEGORY');\" title='Edit'> <i class=\"fa fa-pencil fa-2x\"></i> </button>" +
+                        "   <button class='fwt-btn fwt-round fwt-text-green fwt-white fwt-hover-green pointer' onclick=\"return OpenPartialPagePopup('category/update/" + data.d[i].ID + "', 'UPDATE SUBCATEGORY');\" title='Edit'> <i class=\"fa fa-pencil fa-2x\"></i> </button>" +
                         "   <button class='fwt-btn fwt-round fwt-text-red fwt-white fwt-hover-red' id='btnDeleteNote_" + i + "' type='button' name='btnDeleteNote" + i + "' onclick='Note_Delete(this.id, \"" + data.d[i].ID + "\");' title='Delete'> <i class=\"fa fa-trash fa-2x\"></i> </button>" +
                         "</td></tr > ";
                     $("#tblCategories tbody").append(sRow);
@@ -120,7 +120,7 @@ function SubCategories_SelectGrid_Complete(data) {
         }
         IsProcessingHomeGrid = false;
     }
-    catch (err) { alert("Error occured in  function(SubCategories_Select_Complete) " + err); }
+    catch (err) { alert("Error occured in  function(SubCategories_Select_Callback) " + err); }
 }
 function SelectSubCategoryDisp_Link(sSubCategory_Core, sSubCategory_Disp, sOrderBy) {
 
@@ -138,11 +138,11 @@ function SelectCategoriesButton(sID, sISActive) {
             sISActive = 1;
         $('#hfsIsActive').val(sISActive);
         var jsonVar = { "sID": sID, "sISActive": sISActive };
-        CallAjaxMethod("SubCategories_UpdateIsActive", jsonVar, "SubCategories_UpdateIsActive_Complete");
+        CallAjaxMethod("SubCategories_UpdateIsActive", jsonVar, "SubCategories_UpdateIsActive_Callback");
     }
     catch (err) { alert("Error occured in  function(SelectCategoriesButton) " + err); }
 }
-function SubCategories_UpdateIsActive_Complete(data) {
+function SubCategories_UpdateIsActive_Callback(data) {
     try {
         var $Data = data.d;
         if ($Data.length > 0) {
@@ -160,5 +160,5 @@ function SubCategories_UpdateIsActive_Complete(data) {
         }
         GetAllSubCategories();
     }
-    catch (err) { alert("Error occured in  function(SubCategories_UpdateIsActive_Complete) " + err); }
+    catch (err) { alert("Error occured in  function(SubCategories_UpdateIsActive_Callback) " + err); }
 }

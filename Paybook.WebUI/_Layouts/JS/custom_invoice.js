@@ -30,7 +30,7 @@ function GetAll_Invoices(sOrderBy) {
             'sInvoiceStatus_Core': $("#ddlInvoiceStatus").val()
         };
 
-        CallAjaxMethod("Invoices_Search", jsonVar, "Invoices_Search_Complete");
+        CallAjaxMethod("Invoices_Search", jsonVar, "Invoices_Search_Callback");
 
     }
     catch (err) {
@@ -38,7 +38,7 @@ function GetAll_Invoices(sOrderBy) {
     }
 
 }
-function Invoices_Search_Complete(data) {
+function Invoices_Search_Callback(data) {
     console.log(data);
 
     try {
@@ -67,40 +67,16 @@ function Invoices_Search_Complete(data) {
                 var sRowCount = Math.ceil(data.d[0].RowCount / 10);
                 var sDisplayRowCount = (parseInt(sInvoicesGridPageNumberValue) + 1);
                 $("#lblPageNumber").html(" &nbsp; Page : <b class=\"fwt-text-teal\">" + sDisplayRowCount + "</b> of <b class=\"fwt-text-teal\">" + sRowCount + "</b> &nbsp; ");
-                //
-                var sCssClass = "background:#D5E990;", sCssClassCustomer_ID = "", sCssClassInvoice_ID = "", sCssClassParticular = "width:14%;word-break: break-all;", sCssClassReceiptID = "";
-                var sCssClassCreatedBY = "", sCssClassCreatedDT = "", sCssClassCategory_Disp = "", sCssClassAmount = "", sCssClassPaid = "", sCssClassInvoiceStatus_Disp = "";
-                if (sOrderBy == "Customer_ID") sCssClassCustomer_ID = sCssClass;
-                else if (sOrderBy == "Agent_ID") sCssClassAgent_ID = sCssClass;
-                else if (sOrderBy == "Particular") sCssClassParticular = sCssClass;
-                else if (sOrderBy == "ReceiptID") sCssClassReceiptID = sCssClass;
-                else if (sOrderBy == "Category_Disp") sCssClassCategory_Disp = sCssClass;
-                else if (sOrderBy == "CreatedBY") sCssClassCreatedBY = sCssClass;
-                else if (sOrderBy == "CreatedDT") sCssClassCreatedDT = sCssClass;
-                else if (sOrderBy == "InvoiceStatus_Disp") sCssClassInvoiceStatus_Disp = sCssClass;
-                else if (sOrderBy == "Amount") sCssClassAmount = sCssClass;
-                else if (sOrderBy == "Paid") sCssClassPaid = sCssClass;
-                //if ($(window).width() <= 768) {
-                //    if (data.d.length > 5) {
-                //        //$("#div_ScrolltblInvoices").removeClass("table-Scroll");
-                //        //$("#div_ScrolltblInvoices").addClass("table-Scroll_FixHeight");
-
-                //        $('.table-Scroll').css({ "height": "300px","overflow-y": "auto","overflow-x": "auto" });
-                //    }
-                //    else
-                //        $('.table-Scroll').css({ "height": "auto" });
-                //}
+                
                 var sCustomer_ID = "", sAgent_ID = "";
                 if (sInvoicesGridPageNumberValue == "0") {
                     $("#tblInvoices thead").html("");
                     sRow += "<tr class='rowHead'>" +
-                        "<th class='rowHeadColumn' class='rowHeadColumn' style='width:8%;' align='center'>INVOICE ID</th>" +
-                        "<th class='rowHeadColumn' class='rowHeadColumn' style='width:25%;' align='center'>PARTICULAR</th>" +
-                        //"<th onclick='SelectInvoicesGridPageNumberBlank(); Invoices_Search(\"Agent_ID\");' class='rowHeadColumn LinkHeader' style='width:15%;' align='center'>Agent ID<br>Agent Name(Mobile)</th>" +
-                        "<th class='rowHeadColumn' style='width:15%;' align='center'>CUSTOMER NAME (MOBILE)</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:8%;'>INVOICE ID</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:25%;'>PARTICULAR</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:15%;'>CUSTOMER NAME (MOBILE)</th>" +
                         "<th class='rowHeadColumn' align='center' style='width:10%;'>TYPE</th>" +
-                        //"<th onclick='SelectInvoicesGridPageNumberBlank(); Invoices_Search(\"CreatedBY\");' class='rowHeadColumn LinkHeader' align='center' style='width:10%;'>Created BY</th>" +
-                        "<th class='rowHeadColumn' align='center' style='width:10%;'>CREATE DATE</th>" +
+                        "<th class='rowHeadColumn' align='center' style='width:10%;'>INVOICE DATE</th>" +
                         "<th class='rowHeadColumn' align='center' style='width:10%;'>TOTAL AMOUNT</th>" +
                         "<th class='rowHeadColumn' align='center' style='width:10%;'>PAID AMOUNT</th>" +
                         "<th class='rowHeadColumn' align='center' style='width:10%;'>STATUS</th>" +
@@ -119,10 +95,9 @@ function Invoices_Search_Complete(data) {
                         sCssClassInvoiceStatus_Disp = "color:#4CAF50;";
                     else
                         sCssClassInvoiceStatus_Disp = "color:#4CAF50;font-weight:bold;";
+
                     var sStatusIsPaidStatement = data.d[i].InvoiceStatus_Core == "IS_PAID" ? "&nbsp;<i class=\"fa fa-caret-down fwt-text-red\"></i>" : "";
-
                     var sTimeString = jQuery.timeago(data.d[i].CreatedDT);//jQuery.timeago(new Date(data.d[i].CreatedDT));
-
                     var sParticularDisplay = (data.d[i].Particular.length > 90) ? data.d[i].Particular.substring(0, 86) + "...." : data.d[i].Particular;
 
                     sRow = "<tr class='rowHover'>" +
@@ -136,7 +111,7 @@ function Invoices_Search_Complete(data) {
                         "<td class='fwt-center' style='';\"><i class='fa fa-inr'></i> " + parseFloat(data.d[i].Paid).toFixed(2) + "</td>" +
                         "<td align='center' style='" + sCssClassInvoiceStatus_Disp + "'>" + data.d[i].InvoiceStatus_Disp + " </td>" +
                         "<td class='fwt-center fwt-btn-group'>" +
-                        "<button class='fwt-btn fwt-round fwt-text-green fwt-white fwt-hover-green pointer' onclick=\"return SelectInvoiceLink('" + data.d[i].Invoice_ID + "');\" title='Edit'> <i class=\"fa fa-pencil fa-2x\"></i> </button>" +
+                        "   <a class='fwt-btn fwt-round fwt-text-green fwt-white fwt-hover-green pointer' href=\"/invoice/particular/" + data.d[i].Invoice_ID + "\" title='Edit'> <i class=\"fa fa-pencil fa-2x\"></i> </a>" +
                         "</td></tr > ";
                     $("#tblInvoices tbody").append(sRow);
                 }
@@ -161,7 +136,7 @@ function Invoices_Search_Complete(data) {
         IsProcessingHomeGrid = false;
 
     }
-    catch (err) { alert("Error occured in  function(Invoices_Search_Complete) " + err); }
+    catch (err) { alert("Error occured in  function(Invoices_Search_Callback) " + err); }
 }
 function SelectInvoicesGridPageNumberBlank() {
     try {
@@ -173,7 +148,7 @@ function SelectInvoiceLink(sInvoice_ID) {
     try {
 
         if (sInvoice_ID == "") {
-            ReadXMLMessage("INS304", "ReadXMLMessage_Complete");
+            ReadXMLMessage("INS304", "ReadXMLMessage_Callback");
         }
 
         else
@@ -216,7 +191,7 @@ function ReadXMLMessage(ID, callbackFunction) {
         alert("There is an issue calling the function " + ReadXMLFile + ", Reason: " + err);
     }
 }
-function ReadXMLMessage_Complete(data) {
+function ReadXMLMessage_Callback(data) {
     try {
         ShowMessage(data);
     }

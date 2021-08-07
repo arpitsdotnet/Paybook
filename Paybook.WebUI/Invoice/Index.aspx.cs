@@ -16,14 +16,14 @@ namespace Paybook.WebUI.Invoice
         private readonly ILogger _logger;
         private readonly ICategoryProcessor _category;
         private readonly IAgencyProcessor _agency;
-        private readonly IClientProcessor _customer;
+        private readonly IClientProcessor _client;
 
-        public Index()
+        public Index(ILogger logger, ICategoryProcessor category, IAgencyProcessor agency, IClientProcessor client)
         {
-            _logger = FileLogger.Instance;
-            _category = new CategoryProcessor();
-            _agency = new AgencyProcessor();
-            _customer = new ClientProcessor();
+            _logger = logger;
+            _category = category;
+            _agency = agency;
+            _client = client;
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -166,12 +166,12 @@ namespace Paybook.WebUI.Invoice
         {
             try
             {
-                CustomerModel[] customers = _customer.Customer_SelectName("");
+                ClientModel[] customers = _client.GetAllNamesByAgencyID("");
 
                 if (customers != null && customers.Length > 0)
                 {
                     ddlCustomers.Items.Insert(0, new ListItem("-All-", "All"));
-                    foreach (CustomerModel customer in customers)
+                    foreach (ClientModel customer in customers)
                     {
                         ddlCustomers.Items.Add(new ListItem(customer.CustomerName, customer.Customer_ID.ToString()));
                     }

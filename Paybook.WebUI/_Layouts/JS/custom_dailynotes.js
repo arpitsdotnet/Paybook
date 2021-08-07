@@ -17,14 +17,14 @@ function GetAllDailyNotes() {
 
         var jsonVar = { 'sGridPageNumber': sDailyNotesGridPageNumberValue };
         // var jsonVar = { "sCategory_Core": $("#ddlDailyNotes").val() };
-        CallAjaxMethod("DailyNotes_SelectGrid", jsonVar, "DailyNotes_SelectGrid_Complete");
+        CallAjaxMethod("DailyNotes_SelectGrid", jsonVar, "DailyNotes_SelectGrid_Callback");
 
     }
     catch (err) {
         alert("Error occured in  function(GetAllSubDailyNotes) " + err);
     }
 }
-function DailyNotes_SelectGrid_Complete(data) {
+function DailyNotes_SelectGrid_Callback(data) {
     try {
         var sRow = "";
         $("#tblDailyNotes tbody").html("");//add line for back and privious button
@@ -73,7 +73,7 @@ function DailyNotes_SelectGrid_Complete(data) {
                         "<td class='fwt-right-align' style=''>" + data.d[i].Balance + "</td>" +
                         "<td class=''>" + sNoteDisplay + "</td>" +
                         "<td class='fwt-center fwt-btn-group'>" +
-                        "   <button class='fwt-btn fwt-round fwt-text-green fwt-white fwt-hover-green pointer' onclick=\"return OpenPartialPagePopup('notes/update/" + data.d[i].ID + "', 'EDIT NOTE');\" title='Edit'> <i class=\"fa fa-pencil fa-2x\"></i> </button>" +
+                        "   <button class='fwt-btn fwt-round fwt-text-green fwt-white fwt-hover-green pointer' onclick=\"return OpenPartialPagePopup('note/update/" + data.d[i].ID + "', 'EDIT NOTE');\" title='Edit'> <i class=\"fa fa-pencil fa-2x\"></i> </button>" +
                         "   <button class='fwt-btn fwt-round fwt-text-red fwt-white fwt-hover-red' id='btnDeleteNote_" + i + "' type='button' name='btnDeleteNote" + i + "' onclick='Note_Delete(this.id, \"" + data.d[i].ID + "\");' title='Delete'> <i class=\"fa fa-trash fa-2x\"></i> </button>" +
                         "</td></tr>";
                     //SelectDailyNotesLink('" + data.d[i].ID + "');
@@ -99,12 +99,12 @@ function DailyNotes_SelectGrid_Complete(data) {
         }
         IsProcessingHomeGrid = false;
     }
-    catch (err) { alert("Error occured in  function(SubDailyNotes_Select_Complete) " + err); }
+    catch (err) { alert("Error occured in  function(SubDailyNotes_Select_Callback) " + err); }
 }
 function SelectDailyNotesLink(sDataID) {
     try {
         var jsonVar = { 'sDataID': sDataID };
-        CallAjaxMethod("DailyNotes_Edit", jsonVar, "DailyNotes_Edit_Complete");
+        CallAjaxMethod("DailyNotes_Edit", jsonVar, "DailyNotes_Edit_Callback");
     }
     catch (err) {
         alert("There is an issue calling the function (SelectDailyNotesLink)" + err);
@@ -116,7 +116,7 @@ function Note_Delete(btnID, sDataID) {
         if (confirm("Are you sure, you want to delete the record permanently, this will not be recoverable?")) {
             $("#" + btnID).parent().parent().remove();
             var sJsonVar = { 'sDataID': sDataID };
-            CallAjaxMethod("DailyNotes_Delete", sJsonVar, "DailyNotes_Delete_Complete");
+            CallAjaxMethod("DailyNotes_Delete", sJsonVar, "DailyNotes_Delete_Callback");
             $('#hfDailyNotesGridPageNumber').val("0");
             //if (iDailyNotesGridPageNumber == 0)
             //    $("#tblDailyNotes thead").html("");        
@@ -127,7 +127,7 @@ function Note_Delete(btnID, sDataID) {
         alert("There is an issue calling the function (Note_Delete)" + err);
     }
 }
-function DailyNotes_Edit_Complete(data) {
+function DailyNotes_Edit_Callback(data) {
     try {
         var $Data = data.d;
         if ($Data.length > 0) {
@@ -150,10 +150,10 @@ function DailyNotes_Edit_Complete(data) {
         }
 
     } catch (err) {
-        ShowMessage("There is an issue calling the function (DailyNotes_Edit_Complete)" + err);
+        ShowMessage("There is an issue calling the function (DailyNotes_Edit_Callback)" + err);
     }
 }
-function DailyNotes_Delete_Complete(data) {
+function DailyNotes_Delete_Callback(data) {
     try {
         var $Data = data.d;
         if ($Data.length > 0) {
@@ -168,7 +168,7 @@ function DailyNotes_Delete_Complete(data) {
         }
 
     } catch (err) {
-        ShowMessage("There is an issue calling the function (DailyNotes_Delete_Complete)" + err);
+        ShowMessage("There is an issue calling the function (DailyNotes_Delete_Callback)" + err);
     }
 }
 function SetDailyNotesGridPageNumberBlank() {

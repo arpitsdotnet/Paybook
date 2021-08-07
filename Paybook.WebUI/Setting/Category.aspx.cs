@@ -1,6 +1,7 @@
 ﻿using Paybook.BusinessLayer;
 using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer.Logger;
+using Paybook.ServiceLayer.Xml;
 using System;
 using System.Data;
 using System.Web.UI.WebControls;
@@ -12,10 +13,10 @@ namespace Paybook.WebUI.Setting
         private readonly ILogger _logger;
         private readonly CategoryProcessor _category;
 
-        public Category()
+        public Category(ILogger logger, CategoryProcessor category)
         {
-            _logger = FileLogger.Instance;
-            _category = new CategoryProcessor();
+            _logger = logger;
+            _category = category;
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -36,8 +37,8 @@ namespace Paybook.WebUI.Setting
             }
             catch (Exception ex)
             {
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + ex.Message + "');});", true);
-
+                _logger.LogError(_logger.MethodName, ex);
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("") + "');});", true);
             }
         }
         protected void Categories_Active_SelectAll()
@@ -64,7 +65,8 @@ namespace Paybook.WebUI.Setting
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
             }
         }
 

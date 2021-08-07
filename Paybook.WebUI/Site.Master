@@ -15,6 +15,7 @@
     <link href="/_Layouts/CSS/custom.css" rel="stylesheet" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server">
     </asp:ContentPlaceHolder>
+    <script src="/_Layouts/JS/jquery.min.js" type="text/javascript"></script>
 </head>
 <body>
     <form runat="server">
@@ -37,7 +38,7 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li><a href="/dashboard"><i class="fa fa-dashboard"></i>&nbsp; Dashboard</a></li>
-                        <li class="dropdown">
+                        <%--<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <i class="fa fa-user-md"></i>&nbsp; Agents <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
@@ -45,24 +46,26 @@
                                 <li><a onclick="return OpenPartialPagePopup('agent/create','CREATE NOTE');" href="#">Create a Agent</a></li>
                                 <li class="divider"></li>
                             </ul>
-                        </li>
+                        </li>--%>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <i class="fa fa-user-circle"></i>&nbsp; Clients <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="/client/search">Client List</a></li>
-                                <li><a onclick="return OpenPartialPagePopup('client/create','CREATE CLIENT');" href="#">Create a Client</a></li>
+                                <li><a href="/agencies">Agency List</a></li>
+                                <li><a onclick="return OpenPartialPagePopup('agency/create','CREATE AGENCY');" href="#">Create a Agency</a></li>
                                 <li class="divider"></li>
+                                <li><a href="/clients">Client List</a></li>
+                                <li><a onclick="return OpenPartialPagePopup('client/create','CREATE CLIENT');" href="#">Create a Client</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <i class="fa fa-credit-card"></i>&nbsp; Invoices <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="/invoice/search">Invoice List</a></li>
-                                <li><a onclick="return OpenPartialPagePopup('invoice/create','CREATE INVOICE');" href="#">Create a Invoice</a></li>
+                                <li><a href="/invoices">Invoice List</a></li>
+                                <li><a href="/invoice/create">Create a Invoice</a></li>
                                 <li class="divider"></li>
-                                <li><a href="/payment/search">Payment List</a></li>
+                                <li><a href="/payments">Payment List</a></li>
                                 <li><a onclick="return OpenPartialPagePopup('payment/create','CREATE NOTE');" href="#">Create a Payment</a></li>
                             </ul>
                         </li>
@@ -71,7 +74,7 @@
                                 <i class="fa fa-sticky-note-o"></i>&nbsp; Notes <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="/notes">Note List</a></li>
-                                <li><a onclick="return OpenPartialPagePopup('notes/create','CREATE NOTE');" href="#">Create a Note</a></li>
+                                <li><a onclick="return OpenPartialPagePopup('note/create','CREATE NOTE');" href="#">Create a Note</a></li>
                                 <li class="divider"></li>
                             </ul>
                         </li>
@@ -80,8 +83,8 @@
                                 <i class="fa fa-gears"></i>&nbsp; Settings <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="/business/profile">Business Profile</a></li>
-                                <li><a href="/agency">Agency List</a></li>
-                                <li><a href="/category">Category List</a></li>
+                                <li><a href="/agent/search">Agent List</a></li>
+                                <li><a href="/settings/category">Category List</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -104,9 +107,6 @@
                                     <asp:Image ID="hlLoggedInControlsProfile" runat="server"
                                         AlternateText="Person" ClientIDMode="Static" CssClass="fwt-pointer" Style="position: relative;" />
                                     <asp:Label ID="lblUsername" runat="server" Text="Guest User" ClientIDMode="Static"> </asp:Label>
-                                    <span class="closebtn" title="Logout">
-                                        <a href="/identity/logout" class="" title="Logout">&nbsp;<i class="fa fa-times"></i>&nbsp;</a>
-                                    </span>
                                 </div>
                             </div>
                             <ul class="dropdown-menu" role="menu">
@@ -141,7 +141,6 @@
             </div>
         </div>
     </form>
-    <script src="/_Layouts/JS/jquery.min.js" type="text/javascript"></script>
     <script src="/_Layouts/LIB/bootstrap-3.4.1/js/bootstrap.min.js"></script>
     <script src="/_Layouts/JS/jquery-ui.min.js" type="text/javascript"></script>
     <script src="/_Layouts/JS/jquery.floatThead.js" type="text/javascript"></script>

@@ -49,7 +49,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            //google.charts.setOnLoadCallback(PaymentChartLoad_Select_Complete);
+            //google.charts.setOnLoadCallback(PaymentChartLoad_Select_Callback);
 
         });
 

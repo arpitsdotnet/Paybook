@@ -17,16 +17,16 @@ namespace Paybook.WebUI.Agency
     public partial class Create : System.Web.UI.Page
     {
         private readonly ILogger _logger;
-        private readonly ILastSavedIdProcessor _lastSavedID;
+        private readonly ILastSavedIdProcessor _lastSavedId;
         private readonly ICategoryProcessor _category;
         private readonly IAgencyProcessor _agency;
 
-        public Create()
+        public Create(ILogger logger, ILastSavedIdProcessor lastSavedId, ICategoryProcessor category, IAgencyProcessor agency)
         {
-            _logger = FileLogger.Instance;
-            _lastSavedID = new LastSavedIdProcessor();
-            _category = new CategoryProcessor();
-            _agency = new AgencyProcessor();
+            _logger = logger;
+            _lastSavedId = lastSavedId;
+            _category = category;
+            _agency = agency;
         }
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -52,7 +52,7 @@ namespace Paybook.WebUI.Agency
                     }
                     else
                     {
-                        string sAgency_ID = _lastSavedID.GetLastSavedID(LastIdTypes.Agency);
+                        string sAgency_ID = _lastSavedId.GetLastSavedID(LastIdTypes.Agency);
                         lblAgency_ID.Text = sAgency_ID;
                         lblPageHeading.Text = "Add New Agency";
                         hfAgency_ID.Value = "";
@@ -95,20 +95,17 @@ namespace Paybook.WebUI.Agency
         }
         protected Boolean Validation()
         {
-            string sMessage = "";
             try
             {
                 if (txtAgencyPhoneNumber1.Text == "" || txtAgencyPhoneNumber1.Text.Length > 10)
                 {
-                    sMessage = XmlProcessor.ReadXmlFile("BSW010");
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + sMessage + "');});", true);
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("BSW010") + "');});", true);
                     return false;
                 }
 
                 else if (txtAgencyName.Text == "")
                 {
-                    sMessage = XmlProcessor.ReadXmlFile("AGE101");
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + sMessage + "');});", true);
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("AGE101") + "');});", true);
                     return false;
                 }
                 return true;
@@ -174,27 +171,30 @@ namespace Paybook.WebUI.Agency
                 string sMessage = "";
                 if (Validation())
                 {
-                    AgencyModel oAgency = new AgencyModel();
-                    oAgency.Agency_ID = lblAgency_ID.Text.Trim();
-                    oAgency.AgencyName = txtAgencyName.Text.Trim();
-                    oAgency.Address1 = txtAgencyAddress1.Text.Trim();
-                    oAgency.Address2 = txtAgencyAddress2.Text.Trim();
-                    oAgency.City = txtAgencyCity.Text.Trim();
-                    oAgency.State_Core = ddlAgencyState.SelectedValue.ToString();
-                    oAgency.Country_Core = txtAgencyCountry.Text.Trim();
-                    oAgency.PhoneNumber1 = txtAgencyPhoneNumber1.Text.Trim();
-                    oAgency.PhoneNumber2 = txtAgencyPhoneNumber2.Text.Trim();
-                    oAgency.EMail = txtAgencyEmail.Text.Trim();
+                    var oAgency = new AgencyModel
+                    {
+                        Agency_ID = lblAgency_ID.Text.Trim(),
+                        AgencyName = txtAgencyName.Text.Trim(),
+                        Address1 = txtAgencyAddress1.Text.Trim(),
+                        Address2 = txtAgencyAddress2.Text.Trim(),
+                        City = txtAgencyCity.Text.Trim(),
+                        State_Core = ddlAgencyState.SelectedValue.ToString(),
+                        Country_Core = txtAgencyCountry.Text.Trim(),
+                        PhoneNumber1 = txtAgencyPhoneNumber1.Text.Trim(),
+                        PhoneNumber2 = txtAgencyPhoneNumber2.Text.Trim(),
+                        EMail = txtAgencyEmail.Text.Trim()
+                    };
+
                     if (hfAgency_ID.Value == "")
                     {
                         oAgency.CreatedBY = hfLogInUser.Value.Trim();
                         //Insert New Agency  
                         sMessage = _agency.Agency_Insert(oAgency);
                         //update LastSavedId                
-                        _lastSavedID.LastSavedID_Update(oAgency.Agency_ID, "Agency");
+                        _lastSavedId.LastSavedID_Update(oAgency.Agency_ID, "Agency");
                         SetDefault();
                         //show new Agency id
-                        string sAgency_ID = _lastSavedID.GetLastSavedID(LastIdTypes.Agency);
+                        string sAgency_ID = _lastSavedId.GetLastSavedID(LastIdTypes.Agency);
                         lblAgency_ID.Text = sAgency_ID;
                         ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + sMessage + "');});", true);
 

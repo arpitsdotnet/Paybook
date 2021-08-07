@@ -56,22 +56,6 @@
             </div>
             <div class="fwt-clear"></div>
         </div>
-        <%--<div class="fwt-padding-4 " id="idPageNumber">
-            <div class="fwt-col l2 m2 s12">
-                <asp:Label ID="lblPageNumber" ClientIDMode="Static" runat="server"></asp:Label>
-
-            </div>
-            <div class="fwt-col l10 m10 s6 fwt-NavigationButtons">
-                <button id="btnPrivious" clientidmode="Static" class="fwt-btn fwt-ripple fwt-dropdown-click fwt-amber">
-                    <i class="fa fa-backward"></i>&nbsp;</button>
-                <button id="btnNext" clientidmode="Static" class="fwt-btn fwt-ripple fwt-dropdown-click fwt-amber">
-                    <i class="fa fa-forward"></i>&nbsp;</button>
-            </div>
-
-            <div class="fwt-clear">
-            </div>
-
-        </div>--%>
         <div class="fwt-padding-4">
             <div id="div_HeadertblCategories">
             </div>
@@ -178,7 +162,7 @@
                         
                         if ($("#btnSubmitAndUpdate").val() == "Submit") {
                             var sJsonVar = { "sSubCategory_Core": $("#txtCategoryCoreName").val(), "sCategory_Core": $('#ddlCategories').val() };
-                            CallAjaxMethod("SubCategory_IsExist", sJsonVar, "SubCategory_IsExist_Complete");
+                            CallAjaxMethod("SubCategory_IsExist", sJsonVar, "SubCategory_IsExist_Callback");
                         }
                         else {
                             var jsonVar = {
@@ -189,7 +173,7 @@
                                 "sSubCategory_Prefix": $("#hfCategoryPrefix").val(),
                                 "sOrderBy": $("#txtOrderBY").val(), "ButtonText": $("#btnSubmitAndUpdate").val()
                             };                         
-                            CallAjaxMethod("SubCategories_Update", jsonVar, "SubCategories_Update_Complete");
+                            CallAjaxMethod("SubCategories_Update", jsonVar, "SubCategories_Update_Callback");
                         }
                     }
                 }
@@ -230,15 +214,15 @@
         function Validation() {
             try {
                 if ($("#ddlCategories").val() == 0) {
-                    ReadXMLMessage("CAW803", "ReadXMLMessage_Complete");
+                    ReadXMLMessage("CAW803", "ReadXMLMessage_Callback");
                     return false;
                 }
                 else if ($("#txtCategoryDisplayName").val() == "") {
-                    ReadXMLMessage("CAW804", "ReadXMLMessage_Complete");
+                    ReadXMLMessage("CAW804", "ReadXMLMessage_Callback");
                     return false;
                 }
                 else if ($("#txtOrderBY").val() == "") {
-                    ReadXMLMessage("CAW802", "ReadXMLMessage_Complete");
+                    ReadXMLMessage("CAW802", "ReadXMLMessage_Callback");
                     return false;
                 }
                 else
@@ -249,7 +233,7 @@
             }
         }
 
-         function SubCategory_IsExist_Complete(data) {
+         function SubCategory_IsExist_Callback(data) {
             try {
                 $Data = data.d;
                 if ($Data.length > 0) {
@@ -259,7 +243,7 @@
                     else {                       
                         var sSubCategoryCount = $Data[0].SubCategoryCount;                       
                         if (sSubCategoryCount != "0") { 
-                            ReadXMLMessage("CAW801", "ReadXMLMessage_Complete");
+                            ReadXMLMessage("CAW801", "ReadXMLMessage_Callback");
                         }
                         else
                         {
@@ -271,7 +255,7 @@
                                 "sSubCategory_Prefix": $("#hfCategoryPrefix").val(),
                                 "sOrderBy": $("#txtOrderBY").val(), "ButtonText": $("#btnSubmitAndUpdate").val()
                             };
-                            CallAjaxMethod("SubCategories_Insert", jsonVar, "SubCategories_Insert_Complete");
+                            CallAjaxMethod("SubCategories_Insert", jsonVar, "SubCategories_Insert_Callback");
                         }
                     }
                 }
@@ -280,7 +264,7 @@
                 ShowMessage(err);
             }
         }
-        function SubCategories_Insert_Complete(data) {
+        function SubCategories_Insert_Callback(data) {
             try {
                 $Data = data.d;
                 if ($Data.length > 0) {
@@ -300,7 +284,7 @@
                 ShowMessage(err);
             }
         }
-        function SubCategories_Update_Complete(data) {
+        function SubCategories_Update_Callback(data) {
             try {
                 $Data = data.d;
                 if ($Data.length > 0) {
@@ -319,7 +303,7 @@
                 ShowMessage(err);
             }
         }
-        function ReadXMLMessage_Complete(data) {
+        function ReadXMLMessage_Callback(data) {
             try {
                 ShowMessage(data);
             }

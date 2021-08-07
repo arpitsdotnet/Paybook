@@ -3,6 +3,7 @@ using Paybook.BusinessLayer.Client;
 using Paybook.BusinessLayer.Common;
 using Paybook.BusinessLayer.Invoice;
 using Paybook.BusinessLayer.Setting;
+using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Xml;
 using System;
@@ -16,15 +17,15 @@ namespace Paybook.WebUI.Invoice
     {
         private readonly ILogger _logger;
         private readonly IInvoiceProcessor _invoice;
-        private readonly IClientProcessor _customer;
+        private readonly IClientProcessor _client;
         private readonly IRemarkProcessor _remark;
 
-        public Particular()
+        public Particular(ILogger logger, IInvoiceProcessor invoice, IClientProcessor client, IRemarkProcessor remark)
         {
-            _logger = FileLogger.Instance;
-            _invoice = new InvoiceProcessor();
-            _customer = new ClientProcessor();
-            _remark = new RemarkProcessor();
+            _logger = logger;
+            _invoice = invoice;
+            _client = client;
+            _remark = remark;
         }
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -102,13 +103,14 @@ namespace Paybook.WebUI.Invoice
                     hfCustomer_ID.Value = sCustomer_ID;
                     sAgent_ID = dt.Rows[0]["Agent_ID"].ToString();
 
-                    if (dt.Rows[0]["InvoiceStatus_Core"].ToString() == "IS_OPEN")
+                    string invoiceStatusCore = dt.Rows[0]["InvoiceStatus_Core"].ToString();
+                    if (invoiceStatusCore == InvoiceStatusConst.Open)
                         lblInvoiceStatus.ForeColor = System.Drawing.ColorTranslator.FromHtml("#00BDFD");
-                    else if (dt.Rows[0]["InvoiceStatus_Core"].ToString() == "IS_OVERDUE")
+                    else if (invoiceStatusCore == InvoiceStatusConst.Overdue)
                         lblInvoiceStatus.ForeColor = System.Drawing.ColorTranslator.FromHtml("#F44336");
-                    else if (dt.Rows[0]["InvoiceStatus_Core"].ToString() == "IS_PAID_PARTIAL")
+                    else if (invoiceStatusCore == InvoiceStatusConst.PaidPartial)
                         lblInvoiceStatus.ForeColor = System.Drawing.ColorTranslator.FromHtml("#4CAF50");
-                    else if (dt.Rows[0]["InvoiceStatus_Core"].ToString() == "IS_CLOSE")
+                    else if (invoiceStatusCore == InvoiceStatusConst.Close)
                         lblInvoiceStatus.ForeColor = System.Drawing.ColorTranslator.FromHtml("#757575");
                     else
                         lblInvoiceStatus.ForeColor = System.Drawing.ColorTranslator.FromHtml("#4CAF50");
@@ -122,7 +124,7 @@ namespace Paybook.WebUI.Invoice
                 }
 
                 dt.Clear();
-                dt = _customer.Customer_Select(sCustomer_ID);
+                dt = _client.GetByClientID(sCustomer_ID);
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     string Address = string.Concat(dt.Rows[0]["Address1"].ToString(), " ", dt.Rows[0]["Address2"].ToString(), " ", dt.Rows[0]["City"].ToString());

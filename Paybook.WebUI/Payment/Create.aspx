@@ -1,5 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Create.aspx.cs" Inherits="Paybook.WebUI.Payment.Create" %>
 
+<%@ Import Namespace="Paybook.ServiceLayer.Constants" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -141,7 +143,7 @@
             $("#txtAdvancePayment").attr('disabled', true)
             LastSavedID_Create("Receipt", "Text/hfReceipt_ID");
             sJsonVar = { 'sAgencyName': "" };
-            CallAjaxMethod("Customer_SelectName", sJsonVar, "Customer_SelectName_Complete");
+            CallAjaxMethod("Customer_SelectName", sJsonVar, "Customer_SelectName_Callback");
 
             $("#btnPay_Add").click(function (e) {
                 try {
@@ -161,13 +163,13 @@
                                     var sCurrentPayment = $idCurrentPayment.html();
 
                                     if (parseFloat($idRemaingPayment.html()) == 0)
-                                        var sPaymentStatus_Core = "IS_PAID";
+                                        var sPaymentStatus_Core = <%=InvoiceStatusConst.Paid%>;
                                     else
-                                        sPaymentStatus_Core = "IS_PAID_PARTIAL";
+                                        sPaymentStatus_Core = <%=InvoiceStatusConst.PaidPartial%>;
 
                                     //Insert Payments
                                     var jsonVar = { "sCreatedBY": $("#hfLogInUser").val(), "sCustomer_ID": $("#hfCustomer_ID").val(), "sPaymentType": $("#txtPaymentMethod").val(), "sReceiptID": $("#hfReceipt_ID").val(), "sPaymentAmount": sCurrentPayment, "sPaymentDate": $("#txtPaymentDate").val(), "sPaymentStatus_Core": sPaymentStatus_Core, "sCategory_Core": sCategory_Core };
-                                    CallAjaxMethod("Payment_Insert", jsonVar, "Payment_Insert_Complete");
+                                    CallAjaxMethod("Payment_Insert", jsonVar, "Payment_Insert_Callback");
                                 }
                                 i++;
                             });
@@ -184,13 +186,13 @@
                                 $("#txtAdvancePayment").val(dTotalAdvancePAyment);
 
                                 var jsonVar = { "sCurrentAdvancePayment": $("#txtPayment").val(), "sCustomer_ID": $("#hfCustomer_ID").val(), "sAdvancePayment_Date": $("#txtPaymentDate").val(), "sCreatedBy": $("#hfLogInUser").val(), "sTotalAdvancePayment": dTotalAdvancePAyment };
-                                CallAjaxMethod("AdvancePayment_Insert", jsonVar, "AdvancePayment_Insert_Complete");
+                                CallAjaxMethod("AdvancePayment_Insert", jsonVar, "AdvancePayment_Insert_Callback");
                                 $("#hfAdvancePayment").val($("#txtAdvancePayment").val());
                                 $("#txtPayment").val(0.00);
-                                ReadXMLMessage("PTS504", "ReadXMLMessage_Complete");
+                                ReadXMLMessage("PTS504", "ReadXMLMessage_Callback");
                             }
                             else
-                                ReadXMLMessage("PTS502", "ReadXMLMessage_Complete");
+                                ReadXMLMessage("PTS502", "ReadXMLMessage_Callback");
                         }
                     }
                 }
@@ -257,7 +259,7 @@
 
 
                         var sJsonVar = { "sCustomer_ID": $("#ddlCustomers").val() }
-                        CallAjaxMethod("Customer_SelectRemainingAmount", sJsonVar, "Customer_SelectRemainingAmount_Complete");
+                        CallAjaxMethod("Customer_SelectRemainingAmount", sJsonVar, "Customer_SelectRemainingAmount_Callback");
                     }
                 }
                 catch (err) {
@@ -274,7 +276,7 @@
                     var sRemainingAmount = $("#hfTotalRemainingAmount").val();
                     var sJsonVar = { "sPaymentDateTo": sPaymentDateTo, "sPaymentDateFrom": sPaymentDateFrom, "sCustomer_ID": sCustomer_ID, "sRemainingAmount": sRemainingAmount }
 
-                    CallAjaxMethod("GenrateReport", sJsonVar, "GenrateReport_Complete");
+                    CallAjaxMethod("GenrateReport", sJsonVar, "GenrateReport_Callback");
                     e.preventDefault();
                 }
                 catch (err) {
@@ -303,7 +305,7 @@
 
             });
         });
-        function GenrateReport_Complete(data) {
+        function GenrateReport_Callback(data) {
             try {
                 var $Data = data.d;
                 if ($Data.length > 0) {
@@ -341,14 +343,14 @@
 
             }
             catch (err) {
-                ShowMessage("There is an issue calling the function (GenrateReport_Complete)" + err);
+                ShowMessage("There is an issue calling the function (GenrateReport_Callback)" + err);
             }
 
         }
         function Validation() {
             try {
                 if ($("#hfCustomer_ID").val() == "" || $("#ddlCustomers").val() == 'All') {
-                    ReadXMLMessage("CUS107", "ReadXMLMessage_Complete");
+                    ReadXMLMessage("CUS107", "ReadXMLMessage_Callback");
                     return false;
                 }
                 //else if ($("#txtDateTo").val() == "" || $("#txtDateFrom").val() == "") {
@@ -356,7 +358,7 @@
                 //    return false;
                 //}
                 else if ($("#txtPaymentDate").val() == "") {
-                    ReadXMLMessage("BSW008", "ReadXMLMessage_Complete");
+                    ReadXMLMessage("BSW008", "ReadXMLMessage_Callback");
                     return false;
                 }
                 else
@@ -367,7 +369,7 @@
                 ShowMessage("There is an issue calling the function (Validation)" + err);
             }
         }
-        function Customer_SelectRemainingAmount_Complete(data) {
+        function Customer_SelectRemainingAmount_Callback(data) {
             try {
                 var $Data = data.d;
                 if ($Data.length > 0) {
@@ -385,10 +387,10 @@
                 }
             }
             catch (err) {
-                ShowMessage("There is an issue calling the function (Customer_SelectRemainingAmount_Complete)" + err);
+                ShowMessage("There is an issue calling the function (Customer_SelectRemainingAmount_Callback)" + err);
             }
         }
-        function Customer_Update_AdvancePayment_Complete(data) {
+        function Customer_Update_AdvancePayment_Callback(data) {
             try {
                 // $("#txtAdvancePayment").attr("disabled", false);
                 var $Data = data.d;
@@ -406,19 +408,19 @@
                 }
             }
             catch (err) {
-                ShowMessage("There is an issue calling the function (Customer_Update_AdvancePayment_Complete)" + err);
+                ShowMessage("There is an issue calling the function (Customer_Update_AdvancePayment_Callback)" + err);
             }
         }
-        function AdvancePayment_Insert_Complete() {
+        function AdvancePayment_Insert_Callback() {
             try {
 
             }
             catch (err) {
-                ShowMessage("There is an issue calling the function (AdvancePayment_Insert_Complete)" + err);
+                ShowMessage("There is an issue calling the function (AdvancePayment_Insert_Callback)" + err);
             }
         }
 
-        function Customer_SelectName_Complete(data) {
+        function Customer_SelectName_Callback(data) {
             try {
                 $('#ddlCustomers').empty();
                 var $Data = data.d;
@@ -445,12 +447,12 @@
 
             }
             catch (err) {
-                ShowMessage("There is an issue calling the function (Customer_SelectName_Complete)" + err);
+                ShowMessage("There is an issue calling the function (Customer_SelectName_Callback)" + err);
 
             }
         }
         var varCountPayment = 0;
-        function Payment_Insert_Complete(data) {
+        function Payment_Insert_Callback(data) {
             try {
                 var $Data = data.d;
                 if ($Data.length > 0) {
@@ -463,7 +465,7 @@
                         if ($("#divPayments .table-main tbody").find('tr').length == varCountPayment) {
                             //Update Advance Payment after Payment
                             jsonVar = { "sTotalAdvancePayment": $("#txtAdvancePayment").val(), "sCustomer_ID": $("#hfCustomer_ID").val(), "sTotalRemainigAmount": "" };
-                            CallAjaxMethod("Customer_Update_AdvancePayment", jsonVar, "Customer_Update_AdvancePayment_Complete");
+                            CallAjaxMethod("Customer_Update_AdvancePayment", jsonVar, "Customer_Update_AdvancePayment_Callback");
                         }
 
                         //Update Advance
@@ -473,25 +475,25 @@
 
             }
             catch (err) {
-                ShowMessage("There is an issue calling the function (Payment_Insert_Complete)" + err);
+                ShowMessage("There is an issue calling the function (Payment_Insert_Callback)" + err);
 
             }
         }
-        function LastSavedID_Update_Complete() {
+        function LastSavedID_Update_Callback() {
             try {
                 LastSavedID_Create("Receipt", "Text/hfReceipt_ID");
             }
             catch (err) {
-                ShowMessage("There is an issue calling the function (LastSavedID_Update_Complete)" + err);
+                ShowMessage("There is an issue calling the function (LastSavedID_Update_Callback)" + err);
 
             }
         }
-        function ReadXMLMessage_Complete(data) {
+        function ReadXMLMessage_Callback(data) {
             try {
                 ShowMessage(data);
             }
             catch (err) {
-                ShowMessage("ERROR", "There is an issue calling the function (ReadXMLMessage_Complete)" + err);
+                ShowMessage("ERROR", "There is an issue calling the function (ReadXMLMessage_Callback)" + err);
             }
         }
     </script>

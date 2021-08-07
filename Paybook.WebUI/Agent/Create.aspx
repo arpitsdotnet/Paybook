@@ -224,7 +224,7 @@
             //    $("#hfAgent_ID").val(url[1]);
             //    $("#lblAgent_ID").html($("#hfAgent_ID").val());
             //    jsonVar = { "sAgent_ID": $("#hfAgent_ID").val() };
-            //    CallAjaxMethod("Agent_Select", jsonVar, "Agent_Select_Complete");
+            //    CallAjaxMethod("Agent_Select", jsonVar, "Agent_Select_Callback");
 
             //}
             //else {
@@ -247,11 +247,11 @@
 
             //            if ($("#hfAgent_ID").val() != "" && $("#hfAgent_ID").val() != undefined) {
             //                //Update Agent
-            //                CallAjaxMethod("Agent_Update", jsonVar, "Agent_Update_Complete");
+            //                CallAjaxMethod("Agent_Update", jsonVar, "Agent_Update_Callback");
             //            }
             //            else {
             //                //Insert New Agent
-            //                string sMessage =CallAjaxMethod("Agent_Insert", jsonVar, "Agent_Insert_Complete");
+            //                string sMessage =CallAjaxMethod("Agent_Insert", jsonVar, "Agent_Insert_Callback");
             //                SetDefault();
             //            }
 
@@ -266,7 +266,7 @@
             //    try {
             //        var sIsActive = ($("#hfIsActive").val()) == 1 ? 0 : 1;
             //        var jsonVar = { "sAgent_ID": $("#hfAgent_ID").val(), "sIsActive": sIsActive, "sCreatedBY": sCreatedBY, "sReason": $("#txtReason").val() };
-            //        CallAjaxMethod("Agent_UpdateIsActive", jsonVar, "Agent_UpdateIsActive_Complete");
+            //        CallAjaxMethod("Agent_UpdateIsActive", jsonVar, "Agent_UpdateIsActive_Callback");
 
             //    }
             //    catch (err) {
@@ -323,7 +323,7 @@
         //        ErrorMessage("WARNING",err);
         //    }
         //}
-        //function Agent_UpdateIsActive_Complete(data) {
+        //function Agent_UpdateIsActive_Callback(data) {
         //    try {
         //        var $Data = data.d;
         //        if ($Data.length > 0) {
@@ -344,7 +344,7 @@
         //    }
         //}
 
-        //function Agent_Select_Complete(data) {
+        //function Agent_Select_Callback(data) {
         //    try {
         //        $Data = data.d;
         //        if ($Data.length > 0) {
@@ -391,7 +391,7 @@
         //    }
         //}
 
-        //function Agent_Insert_Complete(data) {
+        //function Agent_Insert_Callback(data) {
         //    try {
         //        var $Data = data.d;
         //        if ($Data.length > 0) {
@@ -401,7 +401,7 @@
         //            else {
         //                SetDefault();
         //                //var jsonVar = { "sID": $("#lblAgent_ID").html(), "sType": "Agent" }
-        //                //CallAjaxMethod("LastSavedID_Update", jsonVar, "LastSavedID_Update_Complete");
+        //                //CallAjaxMethod("LastSavedID_Update", jsonVar, "LastSavedID_Update_Callback");
         //                LastSavedID_Create("Agent", "Label/lblAgent_ID");
         //                ErrorMessage("WARNING",$Data[0].Message);
         //            }
@@ -411,7 +411,7 @@
         //        ErrorMessage("WARNING",err);
         //    }
         //}
-        //function Agent_Update_Complete(data) {
+        //function Agent_Update_Callback(data) {
         //    try {
 
         //        var $Data = data.d;
@@ -428,7 +428,7 @@
         //        ErrorMessage("WARNING",err);
         //    }
         //}
-        //function LastSavedID_Update_Complete() {
+        //function LastSavedID_Update_Callback() {
         //    try {
         //        LastSavedID_Create("Agent", "Label/lblAgent_ID");
         //    }

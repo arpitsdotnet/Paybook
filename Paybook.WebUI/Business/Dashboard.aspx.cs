@@ -3,6 +3,8 @@ using Paybook.BusinessLayer.Business;
 using Paybook.BusinessLayer.Common;
 using Paybook.BusinessLayer.Invoice;
 using Paybook.BusinessLayer.Payment;
+using Paybook.ServiceLayer.Constants;
+using Paybook.ServiceLayer.Logger;
 using System;
 using System.Data;
 using System.Text;
@@ -11,16 +13,16 @@ namespace Paybook.WebUI.Business
 {
     public partial class Dashboard : System.Web.UI.Page
     {
+        private readonly ILogger _logger;
         private readonly IActivityProcessor _activityProcessor;
-        private readonly IBusinessProcessor _businessProcessor;
+        private readonly IDashboardProcessor _dashboardProcessor;
         private readonly IPaymentProcessor _paymentProcessor;
-        private readonly IInvoiceProcessor _invoiceProcessor;
-        public Dashboard()
+        public Dashboard(ILogger logger, IActivityProcessor activityProcessor, IDashboardProcessor dashboardProcessor, IPaymentProcessor paymentProcessor)
         {
-            _activityProcessor = new ActivityProcessor();
-            _businessProcessor = new BusinessProcessor();
-            _paymentProcessor = new PaymentProcessor();
-            _invoiceProcessor = new InvoiceProcessor();
+            _logger = logger;
+            _activityProcessor = activityProcessor;
+            _dashboardProcessor = dashboardProcessor;
+            _paymentProcessor = paymentProcessor;
         }
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -33,53 +35,24 @@ namespace Paybook.WebUI.Business
                 }
                 if (!IsPostBack)
                 {
-                    //if (Properties.Settings.Default.FirstRun == true)
-                    {
-                        InvoiceCheckOnFirstRun();
-                    }
-                    // Get_CompanyProfile();
-                    TotalMonthSale();
-                    InvoiceActivities_SelectAll();
+                    GetAllCounters();
+                    GetAllActivities();
                 }
             }
             catch (Exception ex)
             {
+                _logger.LogError(_logger.MethodName, ex);
                 ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + ex.Message + "');});", true);
-
             }
 
         }
-        protected void InvoiceCheckOnFirstRun()
-        {
-            try
-            {
-                if (Session["LoggedInUser"] == null)
-                {
-                    Session["LoggedInUser"] = "";
 
-                }
-                else
-                {
-                    string[] sLoginUser = Session["LoggedInUser"].ToString().Split('/');
-                    hfLogInUser.Value = sLoginUser[0];
-                    hfLogInUser_ID.Value = sLoginUser[1];
-                    _invoiceProcessor.Activity_Insert_Overdue(hfLogInUser.Value, "IS_OVERDUE");
-                    //Properties.Settings.Default["FirstRun"] = false;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        protected void InvoiceActivities_SelectAll()
+        protected void GetAllActivities()
         {
             StringBuilder sb = new StringBuilder();
             try
             {
-                DataTable dt = _activityProcessor.Activity_Select();
+                DataTable dt = _activityProcessor.GetAll();
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     sb.Append("<ul>");
@@ -87,111 +60,99 @@ namespace Paybook.WebUI.Business
                     {
                         string sActivityDate = Convert.ToDateTime(dr["Activity_Date"].ToString()).ToString("d MMM");
 
-                        if (dr["InvoiceStatus_Core"].ToString() == "IS_OVERDUE")
-                        {
-                            string sOverdue = ActivityView_Overdue(sActivityDate, dr["PaymentAmount"].ToString(), dr["CustomerName"].ToString(), dr["InvoiceStatus_Disp"].ToString(), dr["Category_Core"].ToString());
-                            sb.Append($"<li>{sOverdue}</li>");
-                        }
-                        if (dr["InvoiceStatus_Core"].ToString() == "IS_PAID" || dr["InvoiceStatus_Core"].ToString() == "IS_PAID_PARTIAL")
-                        {
-                            string sPayment = ActivityView_Paid(sActivityDate, dr["PaymentAmount"].ToString(), dr["CustomerName"].ToString(), dr["InvoiceStatus_Disp"].ToString(), dr["Category_Core"].ToString());
-                            sb.Append($"<li class=\"paid\">{sPayment}</li>");
-                        }
-                        if (dr["InvoiceStatus_Core"].ToString() == "IS_CLOSE")
-                        {
-                            string sPayment = ActivityView_Close(sActivityDate, dr["PaymentAmount"].ToString(), dr["CustomerName"].ToString(), dr["InvoiceStatus_Disp"].ToString(), dr["Category_Core"].ToString());
-                            sb.Append($"<li class=\"close\">{sPayment}</li>");
-                        }
+                        string invoiceID = dr["Invoice_ID"].ToString();
+                        string invoiceStatusCore = dr["InvoiceStatus_Core"].ToString();
+                        string invoiceStatus = dr["InvoiceStatus_Disp"].ToString();
+                        string paymentAmount = dr["PaymentAmount"].ToString();
+                        string clientName = dr["CustomerName"].ToString();
+                        string categoryCore = dr["Category_Core"].ToString();
+
+                        string statusClass = ActivityStatusCssConst.DEFAULT;
+
+                        if (invoiceStatusCore == InvoiceStatusConst.Overdue)
+                            statusClass = ActivityStatusCssConst.DANGER;
+                        else if (invoiceStatusCore == InvoiceStatusConst.Paid || invoiceStatusCore == InvoiceStatusConst.PaidPartial)
+                            statusClass = ActivityStatusCssConst.SUCCESS;
+                        else if (invoiceStatusCore == InvoiceStatusConst.Open)
+                            statusClass = ActivityStatusCssConst.INFO;
+                        else if (invoiceStatusCore == InvoiceStatusConst.Close)
+                            statusClass = ActivityStatusCssConst.DEFAULT;
+
+                        sb.AppendFormat("<li>{0}</li>", ActivityListViewGenerate(statusClass, invoiceID, sActivityDate, paymentAmount, clientName, invoiceStatus, categoryCore));
                     }
                     sb.Append("</ul>");
+                }
+                else
+                {
+                    sb.AppendLine("<div class=\"" + ActivityStatusCssConst.INFO + " pt-5\">Ooh! We did not find any activity till last month. </div>");
                 }
                 idActivitiesList.InnerHtml = sb.ToString();
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
             }
         }
 
-        protected string ActivityView_Overdue(string sInvoiceDate, string sAmount, string sCustomerName, string InvoiceStatus_Disp, string Category_Core)
+
+        private string ActivityListViewGenerate(string statusClass, string invoiceID, string sInvoiceDate, string sAmount, string sCustomerName, string InvoiceStatus_Disp, string Category_Core)
         {
-            string sReturn = "";
             try
             {
-                sReturn = "<span class=\"fwt-text-red fwt-large\">" + InvoiceStatus_Disp + " <span class=\"fwt-small fwt-text-grey\">"
-                         + "(" + sInvoiceDate + ")</span></span>"
+                return "<div class=\"" + statusClass + " fwt-large\"><i class='fa fa-info-circle'></i>&nbsp;" + InvoiceStatus_Disp + " <span class=\"fwt-small fwt-text-grey\">"
+                         + "(" + sInvoiceDate + ")</span></div>"
                             + "<div class=\"fwt-small\">"
-                                + "Invoice <span class=\"fwt-text-blue\"></span>:<i class='fa fa-inr'></i>" + sAmount + " to <span class=\"fwt-text-blue\">"
-                                    + sCustomerName + "</span>"
+                                //+ "Invoice <span class=\"fwt-text-blue\">" + invoiceID + "</span> : <i class='fa fa-inr'></i>" + sAmount + " to <span class=\"fwt-text-blue\">" + sCustomerName + "</span>"
+                                + "Invoice <span class=\"fwt-text-blue\">" + invoiceID + "</span> to <span class=\"fwt-text-blue\">" + sCustomerName + "</span> of <span class='nowrap'><i class='fa fa-inr'></i>" + sAmount + "</span> is " + InvoiceStatus_Disp + "."
                             + "</div>";
                 // +"Invoice <span class=\"fwt-text-blue\"><a href=\"particular/" + sParticular + "/" + Category_Core + "\"" + ">#" + sParticular + "</a></span>: ₹" + sAmount + " to <span class=\"fwt-text-blue\">"
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
-            return sReturn;
         }
 
-        protected string ActivityView_Paid(string sPaymentDate, string sAmount, string sCustomerName, string InvoiceStatus_Disp, string Category_Core)
-        {
-            string sReturn = "";
-            try
-            {
-                sReturn = "<span class=\"fwt-text-green fwt-large\">" + InvoiceStatus_Disp + " <span class=\"fwt-small fwt-text-grey\">"
-                       + "(" + sPaymentDate + ")</span></span>"
-                          + "<div class=\"fwt-small\">"
-                              + "Invoice <span class=\"fwt-text-blue\"></span>: <i class='fa fa-inr'></i>" + sAmount + " to <span class=\"fwt-text-blue\">"
-                                  + sCustomerName + "</span>"
-                          + "</div>";
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return sReturn;
-        }
-
-        protected string ActivityView_Close(string sPaymentDate, string sAmount, string sCustomerName, string InvoiceStatus_Disp, string Category_Core)
-        {
-            string sReturn = "";
-            try
-            {
-                sReturn = "<span class=\"fwt-text-grey fwt-large\">" + InvoiceStatus_Disp + " <span class=\"fwt-small fwt-text-grey\">"
-                       + "(" + sPaymentDate + ")</span></span>"
-                          + "<div class=\"fwt-small\">"
-                              + "Invoice <span class=\"fwt-text-blue\"></span>: <i class='fa fa-inr'></i>" + sAmount + " to <span class=\"fwt-text-blue\">"
-                                  + sCustomerName + "</span>"
-                          + "</div>";
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return sReturn;
-        }
-
-        protected void TotalMonthSale()
+        protected void GetAllCounters()
         {
             try
             {
-                DataTable dt = _businessProcessor.Dashboard_SelectCounts();
+                DataTable dt = _dashboardProcessor.Dashboard_GetAllCounters();
                 if (dt.Rows.Count > 0 && dt != null)
                 {
-                    lblCounts_OpenLastMonth.Text = dt.Rows[0]["CountTotalOpenInvoice"].ToString();
-                    lblTotal_OpenLastMonth.Text = dt.Rows[0]["SumofTotalOpenInvoice"].ToString() == "" ? "0" : dt.Rows[0]["SumofTotalOpenInvoice"].ToString();
+                    idInvoicesOpen.Count = dt.Rows[0]["CountTotalOpenInvoice"].ToString();
+                    idInvoicesOpen.Total = dt.Rows[0]["SumofTotalOpenInvoice"].ToString() == "" ? "0" : dt.Rows[0]["SumofTotalOpenInvoice"].ToString();
 
-                    lblCounts_Overdue.Text = dt.Rows[0]["CountOfOverdue"].ToString();
-                    lblTotal_Overdue.Text = dt.Rows[0]["SumOfOverdue"].ToString() == "" ? "0" : dt.Rows[0]["SumOfOverdue"].ToString();
+                    idInvoicesOpenLastWeek.Count = dt.Rows[0]["CountLastWeekOpenInvoice"].ToString();
+                    idInvoicesOpenLastWeek.Total = dt.Rows[0]["SumLastWeekOpenInvoice"].ToString() == "" ? "0" : dt.Rows[0]["SumLastWeekOpenInvoice"].ToString();
 
-                    lblCounts_PaidLastMonth.Text = dt.Rows[0]["CountOfPaidAmount"].ToString();
-                    lblTotal_PaidLastMonth.Text = dt.Rows[0]["SumOfPaidAmount"].ToString() == "" ? "0" : dt.Rows[0]["SumOfPaidAmount"].ToString();
+                    idInvoicesOverdue.Count = dt.Rows[0]["CountOfOverdue"].ToString();
+                    idInvoicesOverdue.Total = dt.Rows[0]["SumOfOverdue"].ToString() == "" ? "0" : dt.Rows[0]["SumOfOverdue"].ToString();
 
-                    lblCounts_Paid_Partial.Text = dt.Rows[0]["CountOfPaidPartial"].ToString();
-                    lblTotal_Paid_Partial.Text = dt.Rows[0]["SumOfPaidPartialAmount"].ToString() == "" ? "0" : dt.Rows[0]["SumOfPaidPartialAmount"].ToString();
+                    idPaymentPaidPartial.Count = dt.Rows[0]["CountOfPaidPartial"].ToString();
+                    idPaymentPaidPartial.Total = dt.Rows[0]["SumOfPaidPartialAmount"].ToString() == "" ? "0" : dt.Rows[0]["SumOfPaidPartialAmount"].ToString();
 
-                    lblCounts_OpenInvoice.Text = dt.Rows[0]["CountOfOpenInvoice"].ToString();
-                    lblTotal_OpenInvoice.Text = dt.Rows[0]["SumOfOpenInvoice"].ToString() == "" ? "0" : dt.Rows[0]["SumOfOpenInvoice"].ToString();
+                    idPaymentPaidLastMonth.Count = dt.Rows[0]["CountOfPaidAmount"].ToString();
+                    idPaymentPaidLastMonth.Total = dt.Rows[0]["SumOfPaidAmount"].ToString() == "" ? "0" : dt.Rows[0]["SumOfPaidAmount"].ToString();
+
+                    idPaymentTotal.Count = dt.Rows[0]["CountOfPaymentTotal"].ToString();
+                    idPaymentTotal.Total = dt.Rows[0]["SumOfPaymentTotal"].ToString() == "" ? "0" : dt.Rows[0]["SumOfPaymentTotal"].ToString();
+
+                    //lblCounts_OpenInvoice.Text = dt.Rows[0]["CountOfOpenInvoice"].ToString();
+                    //lblTotal_OpenInvoice.Text = dt.Rows[0]["SumOfOpenInvoice"].ToString() == "" ? "0" : dt.Rows[0]["SumOfOpenInvoice"].ToString();
+
+                    //lblCounts_OpenLastMonth.Text = dt.Rows[0]["CountTotalOpenInvoice"].ToString();
+                    //lblTotal_OpenLastMonth.Text = dt.Rows[0]["SumofTotalOpenInvoice"].ToString() == "" ? "0" : dt.Rows[0]["SumofTotalOpenInvoice"].ToString();
+
+                    //lblCounts_Overdue.Text = dt.Rows[0]["CountOfOverdue"].ToString();
+                    //lblTotal_Overdue.Text = dt.Rows[0]["SumOfOverdue"].ToString() == "" ? "0" : dt.Rows[0]["SumOfOverdue"].ToString();
+
+                    //lblCounts_Paid_Partial.Text = dt.Rows[0]["CountOfPaidPartial"].ToString();
+                    //lblTotal_Paid_Partial.Text = dt.Rows[0]["SumOfPaidPartialAmount"].ToString() == "" ? "0" : dt.Rows[0]["SumOfPaidPartialAmount"].ToString();
+
+                    //lblCounts_PaidLastMonth.Text = dt.Rows[0]["CountOfPaidAmount"].ToString();
+                    //lblTotal_PaidLastMonth.Text = dt.Rows[0]["SumOfPaidAmount"].ToString() == "" ? "0" : dt.Rows[0]["SumOfPaidAmount"].ToString();
 
                     lblCustomerCount.Text = dt.Rows[0]["CountofCustomers"].ToString();
 
@@ -201,7 +162,8 @@ namespace Paybook.WebUI.Business
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
             }
         }
 

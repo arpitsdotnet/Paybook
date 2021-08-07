@@ -1,7 +1,4 @@
-﻿using System;
-using System.Web.Services;
-using Paybook.BusinessLayer;
-using Paybook.BusinessLayer.Agency;
+﻿using Paybook.BusinessLayer.Agency;
 using Paybook.BusinessLayer.Agent;
 using Paybook.BusinessLayer.Business;
 using Paybook.BusinessLayer.Client;
@@ -12,6 +9,8 @@ using Paybook.BusinessLayer.Payment;
 using Paybook.BusinessLayer.Report;
 using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer.Models;
+using System;
+using System.Web.Services;
 
 namespace Paybook.WebUI._Layouts
 {
@@ -23,7 +22,7 @@ namespace Paybook.WebUI._Layouts
 
         //Customer
         [WebMethod]
-        public static ClientModel[] Customers_SelectAll(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBY)
+        public static ClientModel[] Client_GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBY)
         {
             IClientProcessor _processor = new ClientProcessor();
 
@@ -236,45 +235,45 @@ namespace Paybook.WebUI._Layouts
 
         // Particular
         [WebMethod]
-        public static ParticularModel[] Particular_IsExist(string sParticular, string sCategory_Core)
+        public static InvoiceServiceModel[] Particular_IsExist(string sParticular, string sCategory_Core)
         {
-            IParticularProcessor _processor = new ParticularProcessor();
+            IServiceProcessor _processor = new ServiceProcessor();
 
-            return _processor.Particular_IsExist(sParticular, sCategory_Core);
+            return _processor.InvoiceService_IsExist(sParticular, sCategory_Core);
         }
 
         //Chart
         [WebMethod]
         public static ChartModel[] Dashboard_GetClientCounters()
         {
-            IChartProcessor _processor = new ChartProcessor();
+            IDashboardProcessor _processor = new DashboardProcessor();
 
             return _processor.Dashboard_GetClientCounters();
         }
         [WebMethod]
         public static ChartModel[] Dashboard_GetCountOfInvoicesAndPaymentsByLastWeek()
         {
-            IChartProcessor _processor = new ChartProcessor();
+            IDashboardProcessor _processor = new DashboardProcessor();
 
             return _processor.Dashboard_GetCountOfInvoicesAndPaymentsByLastWeek();
         }
         [WebMethod]
         public static ChartModel[] Dashboard_GetInvoiceAmountsAndPaymentsByLastWeek()
         {
-            IChartProcessor _processor = new ChartProcessor();
+            IDashboardProcessor _processor = new DashboardProcessor();
 
             return _processor.Dashboard_GetInvoiceAmountsAndPaymentsByLastWeek();
         }
         [WebMethod]
         public static ChartModel[] Dashboard_GetPaymentsLast20()
         {
-            IChartProcessor _processor = new ChartProcessor();
+            IDashboardProcessor _processor = new DashboardProcessor();
 
             return _processor.Dashboard_GetPaymentsLast20();
         }
         // Company
         [WebMethod]
-        public static BusinessModel[] CompanyProfile_Insert(string sCreatedBY, string sCompanyName, string sFounded_Date, string sCompanyAddress1, string sCompanyAddress2,
+        public static string CompanyProfile_Insert(string sCreatedBY, string sCompanyName, string sFounded_Date, string sCompanyAddress1, string sCompanyAddress2,
             string sCompanyCity, string sCompanyState_Core, string sCompanyCountry, string sCompanyPhoneNumber1, string sCompanyPhoneNumber2, string sCompanyFaxNumber,
             string sCompanyEmail, string sImageFileName, string sGSTIN)
         {
@@ -298,7 +297,7 @@ namespace Paybook.WebUI._Layouts
                 GSTIN = sGSTIN
             };
 
-            return _processor.CompanyProfile_Insert(businessModel);
+            return _processor.Create(businessModel);
         }
 
         [WebMethod]

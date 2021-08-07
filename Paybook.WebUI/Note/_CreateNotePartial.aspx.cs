@@ -15,10 +15,10 @@ namespace Paybook.WebUI.Note
     {
         private readonly ILogger _logger;
         private readonly INoteProcessor _note;
-        public _CreateNotePartial()
+        public _CreateNotePartial(ILogger logger, INoteProcessor note)
         {
-            _logger = FileLogger.Instance;
-            _note = new NoteProcessor();
+            _logger = logger;
+            _note = note;
         }
         protected void Page_Load(object sender, EventArgs e)
         {

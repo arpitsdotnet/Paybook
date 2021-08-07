@@ -42,94 +42,58 @@ namespace Paybook.WebUI.Business
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl idLabelError;
 
         /// <summary>
-        /// lblTotal_OpenInvoice control.
+        /// idInvoicesOpen control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotal_OpenInvoice;
+        protected global::Paybook.WebUI.UserControls.DashboardCounterUserControl idInvoicesOpen;
 
         /// <summary>
-        /// lblCounts_OpenInvoice control.
+        /// idInvoicesOpenLastWeek control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCounts_OpenInvoice;
+        protected global::Paybook.WebUI.UserControls.DashboardCounterUserControl idInvoicesOpenLastWeek;
 
         /// <summary>
-        /// lblTotal_OpenLastMonth control.
+        /// idInvoicesOverdue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotal_OpenLastMonth;
+        protected global::Paybook.WebUI.UserControls.DashboardCounterUserControl idInvoicesOverdue;
 
         /// <summary>
-        /// lblCounts_OpenLastMonth control.
+        /// idPaymentPaidPartial control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCounts_OpenLastMonth;
+        protected global::Paybook.WebUI.UserControls.DashboardCounterUserControl idPaymentPaidPartial;
 
         /// <summary>
-        /// lblTotal_Overdue control.
+        /// idPaymentPaidLastMonth control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotal_Overdue;
+        protected global::Paybook.WebUI.UserControls.DashboardCounterUserControl idPaymentPaidLastMonth;
 
         /// <summary>
-        /// lblCounts_Overdue control.
+        /// idPaymentTotal control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCounts_Overdue;
-
-        /// <summary>
-        /// lblTotal_Paid_Partial control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotal_Paid_Partial;
-
-        /// <summary>
-        /// lblCounts_Paid_Partial control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCounts_Paid_Partial;
-
-        /// <summary>
-        /// lblTotal_PaidLastMonth control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotal_PaidLastMonth;
-
-        /// <summary>
-        /// lblCounts_PaidLastMonth control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCounts_PaidLastMonth;
+        protected global::Paybook.WebUI.UserControls.DashboardCounterUserControl idPaymentTotal;
 
         /// <summary>
         /// lblCustomerCount control.

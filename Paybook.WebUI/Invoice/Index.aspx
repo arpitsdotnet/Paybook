@@ -11,16 +11,18 @@
     <asp:HiddenField ID="hfSet_btnReset" runat="server" ClientIDMode="Static" />
     <asp:HiddenField ID="hfLogInUser" runat="server" ClientIDMode="Static" />
     <asp:HiddenField ID="hfLogInUser_ID" runat="server" ClientIDMode="Static" />
-    <div class="fwt-container fwt-light-grey">
-        <div class="fwt-row">
-            <div class="fwt-col l2 ">
+    <div class="container-fluid">
+        <div class="row bg-secondary">
+            <div class="col-lg-2">
                 <h2>INVOICES</h2>
             </div>
-            <div class="fwt-right-align">
-                <button clientidmode="Static" class="fwt-btn fwt-round fwt-dark-grey fwt-hover-green fwt-btn-height" title="Sync" onclick="location.href=location.href;">
-                    &nbsp;<i class="fa fa-refresh fwt-large"></i>&nbsp;</button>
-                <button clientidmode="Static" class="fwt-btn fwt-round fwt-dark-grey fwt-hover-green fwt-btn-height" title="Add a Note" onclick="return OpenPartialPagePopup('notes/create','ADD NOTE');">
-                    &nbsp;<i class="fa fa-plus fwt-large"></i>&nbsp; ADD A INVOICE&nbsp;</button>
+            <div class="col-lg-10 text-right">
+                <div class="btn-group" role="group">
+                    <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Sync" onclick="location.href=location.href;">
+                        &nbsp;<i class="fa fa-refresh fwt-large"></i>&nbsp;</button>
+                    <button type="button" clientidmode="Static" class="btn btn-primary fwt-btn-height" title="Create Invoice" onclick="return OpenPartialPagePopup('invoice/create','CREATE INVOICE');">
+                        &nbsp;<i class="fa fa-plus fwt-large"></i>&nbsp; CREATE INVOICE&nbsp;</button>
+                </div>
             </div>
         </div>
     </div>
@@ -177,7 +179,7 @@
 
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Scripts" runat="server">
-    
+
     <script src="<%=Application["Path"] %>_Layouts/JS/custom_invoice.js" type="text/javascript"></script>
     <script type="text/jscript">
         var sOrderBy = "";
@@ -185,7 +187,7 @@
         $(document).ready(function () {
 
             sJsonVar = { 'sAgency_ID': "0" };
-            CallAjaxMethod("Customer_SelectName", sJsonVar, "Customer_SelectName_Complete");
+            CallAjaxMethod("Customer_SelectName", sJsonVar, "Customer_SelectName_Callback");
             $("#ddlAgency").select2();
             $("#ddlCategories").select2();
             $("#ddlInvoiceStatus").select2();
@@ -206,7 +208,7 @@
                     else {
                         sAgency_ID = sAgency_ID == "All" ? sAgency_ID = "" : sAgency_ID;
                         var sJsonVar = { 'sAgency_ID': sAgency_ID };
-                        CallAjaxMethod("Customer_SelectName", sJsonVar, "Customer_SelectName_Complete");
+                        CallAjaxMethod("Customer_SelectName", sJsonVar, "Customer_SelectName_Callback");
                     }
                 }
                 catch (err) {
@@ -320,7 +322,7 @@
             //    try {
 
             //        var jsonVar = { "sParticular": $("#hfParticular").val(), "sCategory_Core": $("#hfCategory_Core").val(), "sStatus_Core": "IS_CLOSE", "sReason": $("#txtInvoiceStatusChangeReason").val(), "sCustomer_ID": $("#hfCustomer_ID").val() };
-            //        CallAjaxMethod("Invoices_Update_CloseStatus", jsonVar, "Invoices_Update_CloseStatus_Complete");
+            //        CallAjaxMethod("Invoices_Update_CloseStatus", jsonVar, "Invoices_Update_CloseStatus_Callback");
 
             //    }
             //    catch (err) {
@@ -384,7 +386,7 @@
             //                "sCreatedBY": $("#hfLogInUser").val(), "sCustomer_ID": $("#lblCustomer_ID").html(), "sPaymentType": $("#txtPaymentMethod").val(), "sReceiptID": $("#txtReceipt_ID").val(), "sPaymentAmount": $("#txtPaymentAmount").val(), "sPaymentDate": $("#txtPaymentDate").val()
             //       , "sPaymentStatus_Core": sPaymentStatus_Core, "sCategory_Core": $("#hfCategory_Core").val()
             //            };
-            //            CallAjaxMethod("Payment_Insert", jsonVar, "Payment_Insert_Complete");
+            //            CallAjaxMethod("Payment_Insert", jsonVar, "Payment_Insert_Callback");
             //        }
             //        else {
             //            ShowMessage(__Messages.Payment_Warrning);
@@ -419,7 +421,7 @@
             }
         }
 
-        function Customer_SelectName_Complete(data) {
+        function Customer_SelectName_Callback(data) {
             try {
                 $('#ddlCustomers').empty();
                 var $Data = data.d;
@@ -446,10 +448,10 @@
 
             }//try
             catch (err) {
-                ShowMessage("There is an issue calling the function (Customer_SelectName_Complete)" + err);
+                ShowMessage("There is an issue calling the function (Customer_SelectName_Callback)" + err);
             }
         }
-        //function Agent_SelectName_Complete(data) {
+        //function Agent_SelectName_Callback(data) {
         //    try {
         //        $('#ddlAgents').empty();
         //        var $Data = data.d;
@@ -477,11 +479,11 @@
 
         //    }
         //    catch (err) {
-        //        ShowMessage("There is an issue calling the function (Agent_SelectName_Complete)" + err);
+        //        ShowMessage("There is an issue calling the function (Agent_SelectName_Callback)" + err);
         //    }
         //}
 
-        //function LastSavedID_Update_Complete() {
+        //function LastSavedID_Update_Callback() {
         //    try {
         //        LastSavedID_Create("Receipt", "txtReceipt_ID");
 
@@ -490,7 +492,7 @@
         //        ShowMessage(err);
         //    }
         //}
-        function Invoices_Update_CloseStatus_Complete(data) {
+        function Invoices_Update_CloseStatus_Callback(data) {
             try {
                 var $Data = data.d;
                 if ($Data.length > 0) {
@@ -505,10 +507,10 @@
                 }
             }
             catch (err) {
-                ShowMessage("There is an issue calling the function (Invoices_Update_CloseStatus_Complete)" + err);
+                ShowMessage("There is an issue calling the function (Invoices_Update_CloseStatus_Callback)" + err);
             }
         }
-        //function Payment_Insert_Complete(data) {
+        //function Payment_Insert_Callback(data) {
         //    try {
         //        var $Data = data.d;
         //        if ($Data.length > 0) {
@@ -517,7 +519,7 @@
         //            }
         //            else {
         //                var jsonVar = { "sID": $("#txtReceipt_ID").val(), "sType": "Receipt" }
-        //                CallAjaxMethod("LastSavedID_Update", jsonVar, "LastSavedID_Update_Complete");
+        //                CallAjaxMethod("LastSavedID_Update", jsonVar, "LastSavedID_Update_Callback");
         //                ShowMessage($Data[0].Message);
 
         //                $("#txtPaymentDate").datepicker({ dateFormat: 'dd-M-yy' }).datepicker("setDate", new Date());

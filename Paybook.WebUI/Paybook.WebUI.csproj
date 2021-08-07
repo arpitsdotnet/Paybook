@@ -56,8 +56,15 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Unity.Abstractions, Version=5.11.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.11.10\lib\net40\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.11.11.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.11.10\lib\net40\Unity.Container.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Invoice\Create.aspx" />
     <Content Include="Site.Master" />
     <Content Include="Identity\Identity.Master" />
     <Content Include="App_Code\dsInvoicePayment.xsc">
@@ -71,12 +78,14 @@
     <Content Include="App_Code\dsInvoicePayment.xss">
       <DependentUpon>dsInvoicePayment.xsd</DependentUpon>
     </Content>
+    <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <Content Include="UserControls\DashboardCounterUserControl.ascx" />
     <Content Include="_Layouts\CSS\images\Thumbs.db" />
     <Content Include="_Layouts\font-awesome-4.7.0\fonts\fontawesome-webfont.eot" />
     <Content Include="_Layouts\font-awesome-4.7.0\fonts\fontawesome-webfont.ttf" />
@@ -111,7 +120,7 @@
     <Content Include="Global.asax" />
     <Content Include="Identity\Login.aspx" />
     <Content Include="Identity\Logout.aspx" />
-    <Content Include="Invoice\Create.aspx" />
+    <Content Include="Invoice\CreateOld.aspx" />
     <Content Include="Invoice\Index.aspx" />
     <Content Include="Note\Index.aspx" />
     <Content Include="Note\_CreateNotePartial.aspx" />
@@ -584,6 +593,13 @@
     <Compile Include="Invoice\Create.aspx.designer.cs">
       <DependentUpon>Create.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Invoice\CreateOld.aspx.cs">
+      <DependentUpon>CreateOld.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Invoice\CreateOld.aspx.designer.cs">
+      <DependentUpon>CreateOld.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Invoice\Index.aspx.cs">
       <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -641,6 +657,13 @@
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\DashboardCounterUserControl.ascx.cs">
+      <DependentUpon>DashboardCounterUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControls\DashboardCounterUserControl.ascx.designer.cs">
+      <DependentUpon>DashboardCounterUserControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="_Layouts\WS_WebService.aspx.cs">
       <DependentUpon>WS_WebService.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -656,7 +679,9 @@
       <Name>Paybook.ServiceLayer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
