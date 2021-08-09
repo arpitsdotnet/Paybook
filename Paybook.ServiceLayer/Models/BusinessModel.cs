@@ -1,31 +1,33 @@
-﻿namespace Paybook.ServiceLayer.Models
-{
-    public class BusinessModel
-    {
-        public string ID { get; set; }
-        public string CreatedDT { get; set; }
-        public string CreatedBY { get; set; }
-        public string ModifiedDT { get; set; }
-        public string ModifiedBY { get; set; }
-        public string IsActive { get; set; }
-        public string CompanyName { get; set; }
-        public string GSTIN { get; set; }
-        public string Founded_Date { get; set; }
-        public string Address1 { get; set; }
-        public string Address2 { get; set; }
-        public string City { get; set; }
-        public string State_Core { get; set; }
-        public string State_Disp { get; set; }
-        public string Country_Core { get; set; }
-        public string EMail { get; set; }
-        public string PhoneNumber1 { get; set; }
-        public string PhoneNumber2 { get; set; }
-        public string FaxNumber { get; set; }
-        public string ImageFileName { get; set; }
-        public string Message { get; set; }
-        public string ERROR { get; set; }
+﻿using System;
 
-        public string UserName { get; set; }
-        public string Password { get; set; }
+namespace Paybook.ServiceLayer.Models
+{
+    public class BusinessModel : BaseResultStatusModel
+    {
+        public int Id { get; set; }
+        public int BusinessId { get; set; }
+        public virtual BusinessModel Businesses { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreateBy { get; set; }
+        public string ModifyBy { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public bool IsSelected { get; set; }
+        public string Image { get; set; }
+        public string GSTNumber { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string City { get; set; }
+        public int StateId { get; set; }
+        public virtual StateMasterModel StateMaster { get; set; }
+        public int CountryId { get; set; }
+        public virtual CountryMasterModel CountryMaster { get; set; }
+        public string Pincode { get; set; }
+        public string AddressComplete => $"{AddressLine1}, {AddressLine2}, {City}, ({StateMaster.Name}, {CountryMaster.Name}) - {Pincode}, ";
     }
 }
+

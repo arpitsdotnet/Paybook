@@ -8,16 +8,16 @@
     @AddressLine1 NVARCHAR(256), 
     @AddressLine2 NVARCHAR(256), 
     @City NVARCHAR(50), 
-    @State NVARCHAR(50), 
-    @Country NVARCHAR(50), 
+    @StateId NVARCHAR(50), 
+    @CountryId NVARCHAR(50), 
     @Pincode NVARCHAR(10)
 AS
 BEGIN
 	BEGIN TRY		
 		BEGIN TRANSACTION
 
-		INSERT INTO [dbo].[Clients]([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[PhoneNumber1],[PhoneNumber2],[Email],[AddressLine1],[AddressLine2],[City],[State],[Country],[Pincode])
-			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@Name,@PhoneNumber1,@PhoneNumber2,@Email,@AddressLine1,@AddressLine2,@City,@State,@Country,@Pincode)
+		INSERT INTO [dbo].[Clients]([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[PhoneNumber1],[PhoneNumber2],[Email],[AddressLine1],[AddressLine2],[City],[StateId],[CountryId],[Pincode])
+			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@Name,@PhoneNumber1,@PhoneNumber2,@Email,@AddressLine1,@AddressLine2,@City,@StateId,@CountryId,@Pincode)
 
 		SELECT SCOPE_IDENTITY() AS ID;
 		

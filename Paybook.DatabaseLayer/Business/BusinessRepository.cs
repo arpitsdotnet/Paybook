@@ -1,4 +1,5 @@
-﻿using Paybook.ServiceLayer.Models;
+﻿using Paybook.ServiceLayer.Logger;
+using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Xml;
 using System;
 using System.Collections.Generic;
@@ -8,137 +9,157 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Business
 {
-    public interface IBusinessRepository
+    public interface IBusinessRepository : IRepository<BusinessModel>
     {
-        BusinessModel[] CompanyProfile_Insert(BusinessModel businessModel);
-        DataTable CompanyProfile_IsExist();
-        DataTable CompanyProfile_Select();
-        string CompanyProfile_Update(BusinessModel businessModel);
-        DataTable Dashboard_GetAllCounters();
+        BusinessModel GetByUserId(int userId);
+        bool IsExist(int businessId);
     }
 
     public class BusinessRepository : IBusinessRepository
     {
         private readonly IDbContext _dbContext;
+        private readonly ILogger _logger;
 
         public BusinessRepository()
         {
+
             _dbContext = DbContextFactory.Instance;
-        }
-        public DataTable Dashboard_GetAllCounters()
-        {
-            DataTable dt;
-            try
-            {
-                dt = _dbContext.LoadDataByProcedure("sps_Dashboard_SelectCounts", null);
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return dt;
+            _logger = LoggerFactory.Instance;
         }
 
-        public BusinessModel[] CompanyProfile_Insert(BusinessModel businessModel)
-        {
-            List<BusinessModel> oCompany = new List<BusinessModel>();
-            try
-            {
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sCreatedBY", businessModel.CreatedBY));
-                oParams.Add(new Parameter("sCompanyName", businessModel.CompanyName));
-                oParams.Add(new Parameter("sFounded_Date", businessModel.Founded_Date));
-                oParams.Add(new Parameter("sCompanyAddress1", businessModel.Address1));
-                oParams.Add(new Parameter("sCompanyAddress2", businessModel.Address2));
-                oParams.Add(new Parameter("sCompanyCity", businessModel.City));
-                oParams.Add(new Parameter("sCompanyState_Core", businessModel.State_Core));
-                oParams.Add(new Parameter("sCompanyCountry", businessModel.Country_Core));
-                oParams.Add(new Parameter("sCompanyPhoneNumber1", businessModel.PhoneNumber1));
-                oParams.Add(new Parameter("sCompanyPhoneNumber2", businessModel.PhoneNumber2));
-                oParams.Add(new Parameter("sCompanyFaxNumber", businessModel.FaxNumber));
-                oParams.Add(new Parameter("sCompanyEmail", businessModel.EMail));
-                oParams.Add(new Parameter("sImageFileName", businessModel.ImageFileName));
-                oParams.Add(new Parameter("sGSTIN", businessModel.GSTIN));
-
-                _dbContext.LoadDataByProcedure("sps_CompanyProfile_Insert", oParams);
-                BusinessModel oDataRows = new BusinessModel();
-                oDataRows.Message = XmlProcessor.ReadXmlFile("CPS401");
-                oCompany.Add(oDataRows);
-            }
-            catch (Exception ex)
-            {
-                BusinessModel oDataRows = new BusinessModel();
-                oDataRows.ERROR = ex.Message;
-                oCompany.Add(oDataRows);
-            }
-            return oCompany.ToArray();
-        }
-
-        public string CompanyProfile_Update(BusinessModel businessModel)
-        {
-            string sMessage = "";
-            List<BusinessModel> oCompany = new List<BusinessModel>();
-            try
-            {
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sModifiedBY", businessModel.ModifiedBY));
-                oParams.Add(new Parameter("sCompanyName", businessModel.CompanyName));
-                oParams.Add(new Parameter("sFounded_Date", businessModel.Founded_Date));
-                oParams.Add(new Parameter("sCompanyAddress1", businessModel.Address1));
-                oParams.Add(new Parameter("sCompanyAddress2", businessModel.Address2));
-                oParams.Add(new Parameter("sCompanyCity", businessModel.City));
-                oParams.Add(new Parameter("sCompanyState_Core", businessModel.State_Core));
-                oParams.Add(new Parameter("sCompanyCountry", businessModel.Country_Core));
-                oParams.Add(new Parameter("sCompanyPhoneNumber1", businessModel.PhoneNumber1));
-                oParams.Add(new Parameter("sCompanyPhoneNumber2", businessModel.PhoneNumber2));
-                oParams.Add(new Parameter("sCompanyFaxNumber", businessModel.FaxNumber));
-                oParams.Add(new Parameter("sCompanyEmail", businessModel.EMail));
-                oParams.Add(new Parameter("sImageFileName", businessModel.ImageFileName));
-                oParams.Add(new Parameter("sGSTIN", businessModel.GSTIN));
-                oParams.Add(new Parameter("sUserName", businessModel.UserName));
-                oParams.Add(new Parameter("sPassword", businessModel.Password));
-
-                DataTable dt = _dbContext.LoadDataByProcedure("sps_CompanyProfile_Update", oParams);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    if (Convert.ToInt32(dt.Rows[0]["id"]) == 1)
-                        sMessage = XmlProcessor.ReadXmlFile("CPS402");
-                    else
-                        sMessage = XmlProcessor.ReadXmlFile("BSW006");
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                sMessage = ex.Message;
-            }
-            return sMessage;
-        }
-        public DataTable CompanyProfile_IsExist()
+        public bool IsExist(int businessId)
         {
             try
             {
-                return _dbContext.LoadDataByProcedure("sps_CompanyProfile_IsExist", null) ;
+                var p = new { BusinessId = businessId };
+
+                var result = _dbContext.SaveDataOutParam<dynamic, bool>("sps_Businesses_IsExist", p, out bool isExist, DbType.Boolean, "IsExist");
+                //return _dbContext.LoadDataByProcedure("sps_CompanyProfile_IsExist", null);
+
+                return isExist;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
             }
         }
-
-        public DataTable CompanyProfile_Select()
+        public BusinessModel GetByUserId(int userId)
         {
             try
             {
+                var p = new { UserId = userId };
 
-                return _dbContext.LoadDataByProcedure("sps_CompanyProfile_Select", null);
+                var result = _dbContext.LoadData<BusinessModel, dynamic>("sps_Businesses_GetByUserId", p);
+                //return _dbContext.LoadData("sps_CompanyProfile_Select", null);
 
+                return result.FirstOrDefault();
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+
+
+        public List<BusinessModel> GetAllByPage(int businessId, int page, string search, string orderBy)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
+
+                var result = _dbContext.LoadData<BusinessModel, dynamic>("sps_Businesses_GetAllByPage", p);
+                //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public BusinessModel GetById(int businessId, int id)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Id = id };
+
+                var result = _dbContext.LoadData<BusinessModel, dynamic>("sps_Businesses_GetById", p);
+
+                return result.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public int Create(BusinessModel model)
+        {
+            try
+            {
+                var result = _dbContext.SaveDataOutParam("spi_Businesses_Insert", model, out int categoryId, DbType.Int32, "Id");
+                //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
+
+                model.Id = categoryId;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+
+        }
+        public int Update(BusinessModel model)
+        {
+            try
+            {
+                var result = _dbContext.SaveData("spu_Businesses_Update", model);
+                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public int Activate(int businessId, int id, bool active)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Id = id, IsActive = active };
+
+                var result = _dbContext.SaveData("spu_Businesses_Activate", p);
+                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public int Delete(int businessId, int id)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Id = id };
+
+                var result = _dbContext.SaveData("spd_Businesses_Delete", p);
+                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
             }
         }
     }

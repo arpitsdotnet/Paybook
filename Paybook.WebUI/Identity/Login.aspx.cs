@@ -51,7 +51,7 @@ namespace Paybook.WebUI.Identity
                 LoginModel loginModel = new LoginModel
                 {
                     Username = txtUserName.Text.Trim(),
-                    Password = txtPassword.Text.Trim()
+                    PasswordHash = txtPassword.Text.Trim()
                 };
 
                 string message = IsModelValid(loginModel);
@@ -61,19 +61,20 @@ namespace Paybook.WebUI.Identity
                     return;
                 }
 
-                DataTable dt = _login.Login_Isvalid(loginModel);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    Session["LoggedInUser"] = dt.Rows[0]["CompanyName"].ToString() + "/" + dt.Rows[0]["UserID"].ToString();
+                string result = _login.IsValid(loginModel);
 
-                    //OverdueInvoicesInsertToActivitiesOnFirstRun();
+                //if (dt != null && dt.Rows.Count > 0)
+                //{
+                //    Session["LoggedInUser"] = dt.Rows[0]["CompanyName"].ToString() + "/" + dt.Rows[0]["UserID"].ToString();
 
-                    Response.Redirect(Application["Path"] + "dashboard", false);
-                }
-                else
-                {
-                    ExceptionMessage(ExceptionType.WARNING, XmlProcessor.ReadXmlFile("BSW006"));
-                }
+                //    //OverdueInvoicesInsertToActivitiesOnFirstRun();
+
+                //    Response.Redirect(Application["Path"] + "dashboard", false);
+                //}
+                //else
+                //{
+                //    ExceptionMessage(ExceptionType.WARNING, XmlProcessor.ReadXmlFile("BSW006"));
+                //}
             }
             catch (Exception ex)
             {
@@ -140,7 +141,7 @@ namespace Paybook.WebUI.Identity
 
         private string IsModelValid(LoginModel loginModel)
         {
-            if (loginModel.Username == "" || loginModel.Password == "")
+            if (loginModel.Username == "" || loginModel.PasswordHash == "")
             {
                 return XmlProcessor.ReadXmlFile("BSW007");
             }

@@ -24,7 +24,7 @@ namespace Paybook.WebUI.Agent
 
         public Create()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _lastSavedID = new LastSavedIdProcessor();
             _category = new CategoryProcessor();
             _agent = new AgentProcessor();

@@ -23,7 +23,7 @@ namespace Paybook.WebUI
 
             IUnityContainer container = new UnityContainer();
 
-            container.RegisterInstance<ILogger>(FileLogger.Instance);
+            container.RegisterInstance<ILogger>(LoggerFactory.Instance);
 
             container.RegisterType<IActivityProcessor, ActivityProcessor>();
             container.RegisterType<IDashboardProcessor, DashboardProcessor>();

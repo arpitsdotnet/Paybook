@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[LastSavedIds]
+﻿CREATE TABLE [dbo].[LastSavedNumbers]
 (
     [Id] INT NOT NULL IDENTITY,
     [BusinessId] INT  NOT NULL, 
@@ -8,6 +8,6 @@
     [Year] NVARCHAR(4) NULL, 
     [LastNumber] NVARCHAR(10) NULL, 
     [Seperator] NVARCHAR(2) NULL, 
-    CONSTRAINT [PK_LastSavedIds] PRIMARY KEY ([Id]), 
-    CONSTRAINT [FK_LastSavedIds_ToBusinesses_BusinessId] FOREIGN KEY ([BusinessId]) REFERENCES [Businesses]([Id]), 
+    CONSTRAINT [PK_LastSavedNumbers] PRIMARY KEY ([Id]), 
+    CONSTRAINT [FK_LastSavedNumbers_ToBusinesses_BusinessId] FOREIGN KEY ([BusinessId]) REFERENCES [Businesses]([Id]), 
 )

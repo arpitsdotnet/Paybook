@@ -18,8 +18,8 @@ namespace Paybook.BusinessLayer.Report
 {
     public interface IReportProcessor
     {
-        ReportModel[] GenrateReport(string sPaymentDateTo, string sPaymentDateFrom, string sAgency_ID, string sCustomer_ID, string sRemainingAmount);
-        ReportModel[] GenrateReportForAgency(string sPaymentDateTo, string sPaymentDateFrom, string sAgency_ID, string sRemainingAmount);
+        ReportModel[] GenrateReport(int businessId, int clientId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount);
+        ReportModel[] GenrateReportForAgency(int businessId, int agencyId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount);
         DataTable InvoicePayment_AgencyReport_Select(string sPaymentDateTo, string sPaymentDateFrom, string sAgencyID);
         DataTable InvoicePayment_CustomerReport_Select(string sPaymentDateTo, string sPaymentDateFrom, string sCustomer_ID);
         DataTable RemainingAmount_BeforeFromDate_Select(string sPaymentDateFrom, string sCustomer_ID, string sAgency_ID);
@@ -38,7 +38,7 @@ namespace Paybook.BusinessLayer.Report
 
         public ReportProcessor()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _reportRepository = new ReportRepository();
 
             _clientProcessor = new ClientProcessor();
@@ -46,7 +46,7 @@ namespace Paybook.BusinessLayer.Report
             _agencyProcessor = new AgencyProcessor();
         }
 
-        public ReportModel[] GenrateReport(string sPaymentDateTo, string sPaymentDateFrom, string sAgency_ID, string sCustomer_ID, string sRemainingAmount)
+        public ReportModel[] GenrateReport(int businessId, int clientId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount)
         {
             List<ReportModel> oReport = new List<ReportModel>();
             try
@@ -55,7 +55,7 @@ namespace Paybook.BusinessLayer.Report
                 sPaymentDateTo = Convert.ToDateTime(sPaymentDateTo).ToString("yyyy-MM-dd");
                 sPaymentDateFrom = Convert.ToDateTime(sPaymentDateFrom).ToString("yyyy-MM-dd");
                 string sTodayDate = DateTime.Now.Date.ToString("yyyy-MM-dd");
-                string SelectedFileName = GetLastFileNameByDateAndCustomerID(sPaymentDateTo, sPaymentDateFrom, sCustomer_ID);
+                string SelectedFileName = GetLastFileNameByDateAndCustomerID(sPaymentDateTo, sPaymentDateFrom, "");
                 if (SelectedFileName != "" && sTodayDate != sPaymentDateTo)
                 {
                     oDataRows.FilePath = _FolderPath.DOC_DocumentsPath + SelectedFileName;
@@ -72,7 +72,7 @@ namespace Paybook.BusinessLayer.Report
 
                     //Get the Invoice,Payment and Advance Amount entries within given date
                     DataTable dt_InvoicePayment = new DataTable();
-                    dt_InvoicePayment = InvoicePayment_CustomerReport_Select(sPaymentDateTo, sPaymentDateFrom, sCustomer_ID);
+                    dt_InvoicePayment = InvoicePayment_CustomerReport_Select(sPaymentDateTo, sPaymentDateFrom, "");
 
 
                     //Calculate  Payment total,Advance and InvoiceTotal for RemainingAmount                        
@@ -125,7 +125,7 @@ namespace Paybook.BusinessLayer.Report
                     }
 
                     //get Remaining Amount Before FromDate
-                    DataTable dt_RemainingAmount_BeforeFromDate = RemainingAmount_BeforeFromDate_Select(sPaymentDateFrom, sCustomer_ID, sAgency_ID);
+                    DataTable dt_RemainingAmount_BeforeFromDate = RemainingAmount_BeforeFromDate_Select(sPaymentDateFrom, "", "");
                     if (dt_RemainingAmount_BeforeFromDate != null && dt_RemainingAmount_BeforeFromDate.Rows.Count > 0)
                     {
                         dAmount = Convert.ToDouble(dt_RemainingAmount_BeforeFromDate.Rows[0]["Amount"]) + dAmount;
@@ -172,59 +172,41 @@ namespace Paybook.BusinessLayer.Report
                     //
 
                     //get Company and customer Information
-                    DataTable dt_CompanyProfile = _businessProcessor.CompanyProfile_Select();
+                    BusinessModel business = _businessProcessor.GetByUserId(businessId);
 
-                    string sAddress = "";
-                    if (dt_CompanyProfile.Rows.Count > 0 && dt_CompanyProfile != null)
-                    {
-                        sAddress = dt_CompanyProfile.Rows[0]["Address1"].ToString() + ", " + (dt_CompanyProfile.Rows[0]["Address2"].ToString() != "" ? (dt_CompanyProfile.Rows[0]["Address2"].ToString() + ", ") : "") + dt_CompanyProfile.Rows[0]["City"].ToString();
-                    }
+                    DataTable dt_CompanyProfile = new DataTable();
                     dt_CompanyProfile.Columns.Add("CustomerName");
                     dt_CompanyProfile.Columns.Add("CustomerAddress");
-                    dt_CompanyProfile.Columns.Add("AgencyName");
 
-                    if (sCustomer_ID != "NONE")
+                    ClientModel customers = _clientProcessor.GetById(businessId, clientId);
+                    if (customers != null)
                     {
-                        DataTable arrCustomer = _clientProcessor.GetByClientID(sCustomer_ID);
-                        if (arrCustomer != null && arrCustomer.Rows.Count > 0)
-                        {
-
-                            string sCustomerName = string.Concat(arrCustomer.Rows[0]["FirstName"] + " ", arrCustomer.Rows[0]["MiddleName"] + " ", arrCustomer.Rows[0]["LastName"]);
-                            dt_CompanyProfile.Rows[0]["CustomerName"] = arrCustomer.Rows[0]["Prefix_Disp"] + " " + sCustomerName + "( " + arrCustomer.Rows[0]["PhoneNumber1"] + ")";
-                            dt_CompanyProfile.Rows[0]["AgencyName"] = arrCustomer.Rows[0]["AgencyName"].ToString();
-                            dt_CompanyProfile.Rows[0]["CustomerAddress"] = string.Concat(arrCustomer.Rows[0]["Address1"] + " ", arrCustomer.Rows[0]["Address2"] + " ", arrCustomer.Rows[0]["City"]);
-
-                        }
+                        dt_CompanyProfile.Rows[0]["CustomerName"] = customers.Name + "( " + customers.PhoneNumber1 + ")";
+                        dt_CompanyProfile.Rows[0]["CustomerAddress"] = customers.AddressComplete;
                     }
-                    else
-                    {
-                        dt_CompanyProfile.Rows[0]["CustomerName"] = "";
-                        dt_CompanyProfile.Rows[0]["AgencyName"] = "";
-                        dt_CompanyProfile.Rows[0]["CustomerAddress"] = "";
 
-                    }
 
                     // Create Invoice/Payment Receipt Report
-                    string sbFileWrite = InvoiceHtmlReportGenerate(dt_InvoicePayment, dt_PaymentTotal, dTotalPayment, dt_CompanyProfile, sAddress);
+                    string sbFileWrite = InvoiceHtmlReportGenerate(dt_InvoicePayment, dt_PaymentTotal, dTotalPayment, dt_CompanyProfile, business.AddressComplete);
                     string sPath = "";
                     if (SelectedFileName == "")
                     {
                         //Save html Report
                         // string sDate = System.DateTime.Today.ToString("yyyyMMdd");
-                        string sVersionNumber = ReportVersionNumber_Select(sCustomer_ID);
-                        int iVersionNumber = sVersionNumber == "" ? 1 : Convert.ToInt32(sVersionNumber) + 1;
-                        string sDateFrom = sPaymentDateFrom.Replace("-", "");
-                        string sDateTo = sPaymentDateTo.Replace("-", "");
-                        string sID = sCustomer_ID.Replace("_", "");
-                        string sNewFileName = sID + "_v" + iVersionNumber + "_" + sDateFrom + "_" + sDateTo + ".html";
-                        sPath = Path.Combine(HttpRuntime.AppDomainAppPath, _FolderPath.DOC_DocumentsPath);
-                        File.WriteAllText(sPath + sNewFileName, sbFileWrite.ToString());
+                        //string sVersionNumber = ReportVersionNumber_Select(sCustomer_ID);
+                        //int iVersionNumber = sVersionNumber == "" ? 1 : Convert.ToInt32(sVersionNumber) + 1;
+                        //string sDateFrom = sPaymentDateFrom.Replace("-", "");
+                        //string sDateTo = sPaymentDateTo.Replace("-", "");
+                        //string sID = sCustomer_ID.Replace("_", "");
+                        //string sNewFileName = sID + "_v" + iVersionNumber + "_" + sDateFrom + "_" + sDateTo + ".html";
+                        //sPath = Path.Combine(HttpRuntime.AppDomainAppPath, _FolderPath.DOC_DocumentsPath);
+                        //File.WriteAllText(sPath + sNewFileName, sbFileWrite.ToString());
 
-                        //Update Version Number and Insert Version Information
-                        ReportVersion_Insert(iVersionNumber.ToString(), sCustomer_ID, sPaymentDateFrom, sPaymentDateTo, sNewFileName);
-                        oDataRows.FilePath = _FolderPath.DOC_DocumentsPath + sNewFileName;
-                        oDataRows.FileName = sNewFileName;
-                        oReport.Add(oDataRows);
+                        ////Update Version Number and Insert Version Information
+                        //ReportVersion_Insert(iVersionNumber.ToString(), sCustomer_ID, sPaymentDateFrom, sPaymentDateTo, sNewFileName);
+                        //oDataRows.FilePath = _FolderPath.DOC_DocumentsPath + sNewFileName;
+                        //oDataRows.FileName = sNewFileName;
+                        //oReport.Add(oDataRows);
                     }
                     else
                     {
@@ -249,7 +231,7 @@ namespace Paybook.BusinessLayer.Report
             return oReport.ToArray();
         }
 
-        public ReportModel[] GenrateReportForAgency(string sPaymentDateTo, string sPaymentDateFrom, string sAgency_ID, string sRemainingAmount)
+        public ReportModel[] GenrateReportForAgency(int businessId, int agencyId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount)
         {
 
             List<ReportModel> reports = new List<ReportModel>();
@@ -259,7 +241,7 @@ namespace Paybook.BusinessLayer.Report
                 sPaymentDateTo = Convert.ToDateTime(sPaymentDateTo).ToString("yyyy-MM-dd").ToString();
                 sPaymentDateFrom = Convert.ToDateTime(sPaymentDateFrom).ToString("yyyy-MM-dd").ToString();
                 string sTodayDate = DateTime.Now.Date.ToString("yyyy-MM-dd");
-                string SelectedFileName = GetLastFileNameByDateAndCustomerID(sPaymentDateTo, sPaymentDateFrom, sAgency_ID);
+                string SelectedFileName = GetLastFileNameByDateAndCustomerID(sPaymentDateTo, sPaymentDateFrom, "");
                 if (SelectedFileName != "" && sTodayDate != sPaymentDateTo)
                 {
                     report.FilePath = _FolderPath.DOC_DocumentsPath + SelectedFileName;
@@ -276,7 +258,7 @@ namespace Paybook.BusinessLayer.Report
 
                     //Get the Invoice,Payment and Advance Amount entries within given date
                     DataTable dt_InvoicePayment = new DataTable();
-                    dt_InvoicePayment = InvoicePayment_AgencyReport_Select(sPaymentDateTo, sPaymentDateFrom, sAgency_ID);
+                    dt_InvoicePayment = InvoicePayment_AgencyReport_Select(sPaymentDateTo, sPaymentDateFrom, "");
 
 
                     //Calculate  Payment total,Advance and InvoiceTotal for RemainingAmount               
@@ -328,7 +310,7 @@ namespace Paybook.BusinessLayer.Report
                     }
 
                     //get Remaining Amount Before FromDate
-                    DataTable dt_RemainingAmount_BeforeFromDate = RemainingAmount_BeforeFromDate_Select(sPaymentDateFrom, "NONE", sAgency_ID);//NONE for Customerid
+                    DataTable dt_RemainingAmount_BeforeFromDate = RemainingAmount_BeforeFromDate_Select(sPaymentDateFrom, "NONE", "");//NONE for Customerid
                     if (dt_RemainingAmount_BeforeFromDate != null && dt_RemainingAmount_BeforeFromDate.Rows.Count > 0)
                     {
                         dAmount = Convert.ToDouble(dt_RemainingAmount_BeforeFromDate.Rows[0]["Amount"]) + dAmount;
@@ -374,28 +356,19 @@ namespace Paybook.BusinessLayer.Report
                     //
 
                     //get Company and customer Information
-                    DataTable dt_CompanyProfile = _businessProcessor.CompanyProfile_Select();
+                    BusinessModel business = _businessProcessor.GetByUserId(businessId);
 
-                    string sAddress = "";
-                    if (dt_CompanyProfile.Rows.Count > 0 && dt_CompanyProfile != null)
+                    DataTable agenctTable = new DataTable();
+                    agenctTable.Columns.Add("AgencyName");
+                    agenctTable.Columns.Add("AgencyAddress");
+
+                    AgencyModel dtAgency = _agencyProcessor.GetById(businessId, agencyId);
+                    agenctTable.Rows[0]["AgencyName"] = "";
+                    agenctTable.Rows[0]["AgencyAddress"] = "";
+                    if (dtAgency != null)
                     {
-                        sAddress = dt_CompanyProfile.Rows[0]["Address1"].ToString() + ", " + (dt_CompanyProfile.Rows[0]["Address2"].ToString() != "" ? (dt_CompanyProfile.Rows[0]["Address2"].ToString() + ", ") : "") + dt_CompanyProfile.Rows[0]["City"].ToString();
-                    }
-
-                    dt_CompanyProfile.Columns.Add("AgencyName");
-                    dt_CompanyProfile.Columns.Add("AgencyAddress");
-
-                    DataTable dtAgency = _agencyProcessor.Agency_Select(sAgency_ID);
-                    if (dtAgency != null && dtAgency.Rows.Count > 0)
-                    {
-                        dt_CompanyProfile.Rows[0]["AgencyName"] = dtAgency.Rows[0]["AgencyName"].ToString();
-                        dt_CompanyProfile.Rows[0]["AgencyAddress"] = string.Concat(dtAgency.Rows[0]["Address1"] + " ", dtAgency.Rows[0]["Address2"] + " ", dtAgency.Rows[0]["City"]);
-                    }
-                    else
-                    {
-                        dt_CompanyProfile.Rows[0]["AgencyName"] = "";
-                        dt_CompanyProfile.Rows[0]["AgencyAddress"] = "";
-
+                        agenctTable.Rows[0]["AgencyName"] = dtAgency.Name;
+                        agenctTable.Rows[0]["AgencyAddress"] = dtAgency.AddressComplete;
                     }
 
                     // Create Invoice/Payment Receipt
@@ -409,34 +382,25 @@ namespace Paybook.BusinessLayer.Report
                         strLine = strLine.Trim();
                         if (strLine == "#COMPANY_NAME#")
                         {
-                            sbFileWrite.Append(strLine.Replace("#COMPANY_NAME#", dt_CompanyProfile.Rows[0]["CompanyName"].ToString()));
+                            sbFileWrite.Append(strLine.Replace("#COMPANY_NAME#", business.Name));
                         }
                         else if (strLine == "#COMPANY_LOGO#")
                         {
 
-                            string sCompanyLogo_Path = "../" + _FolderPath.CompanyLogo_Path + dt_CompanyProfile.Rows[0]["ImageFileName"].ToString();
+                            string sCompanyLogo_Path = "../" + _FolderPath.CompanyLogo_Path + business.Image;
                             sbFileWrite.Append(strLine.Replace("#COMPANY_LOGO#", "<img src=\"" + sCompanyLogo_Path + "\" alt=\"Company Logo\"class=\"CompanyLogo\">"));
                         }
                         else if (strLine == "#ADDRESS#")
                         {
-                            sbFileWrite.Append(strLine.Replace("#ADDRESS#", sAddress));
+                            sbFileWrite.Append(strLine.Replace("#ADDRESS#", business.AddressComplete));
                         }
                         else if (strLine == "#EMAIL#")
                         {
-                            sbFileWrite.Append(strLine.Replace("#EMAIL#", "<b>Email:</b> " + dt_CompanyProfile.Rows[0]["EMail"].ToString()));
+                            sbFileWrite.Append(strLine.Replace("#EMAIL#", "<b>Email:</b> " + business.Email));
                         }
                         else if (strLine == "#PHONE_NUMBER#")
                         {
-                            sbFileWrite.Append(strLine.Replace("#PHONE_NUMBER#", "<b>Ph.No:</b> " + dt_CompanyProfile.Rows[0]["PhoneNumber1"].ToString()));
-                        }
-                        else if (strLine == "#FAX_NUMBER#")
-                        {
-                            string sFaxNo = dt_CompanyProfile.Rows[0]["FaxNumber"].ToString();
-                            sbFileWrite.Append(strLine.Replace("#FAX_NUMBER#", sFaxNo == "" ? " " : "<b>Fax:</b> " + sFaxNo));
-                        }
-                        else if (strLine == "#FAX_NUMBER#")
-                        {
-                            sbFileWrite.Append(strLine.Replace("#FAX_NUMBER#", "<b>Fax:</b> " + dt_CompanyProfile.Rows[0]["FaxNumber"].ToString()));
+                            sbFileWrite.Append(strLine.Replace("#PHONE_NUMBER#", "<b>Ph.No:</b> " + business.PhoneNumber));
                         }
                         //else if (strLine == "#GSTIN#")
                         //{
@@ -445,11 +409,11 @@ namespace Paybook.BusinessLayer.Report
                         //customer information
                         else if (strLine == "#AGENCY_NAME#")
                         {
-                            sbFileWrite.Append(strLine.Replace("#AGENCY_NAME#", dt_CompanyProfile.Rows[0]["AgencyName"].ToString() == "" ? " " : "<b>Agency:</b> " + dt_CompanyProfile.Rows[0]["AgencyName"].ToString()));
+                            sbFileWrite.Append(strLine.Replace("#AGENCY_NAME#", string.IsNullOrEmpty(dtAgency.Name) ? " " : "<b>Agency:</b> " + dtAgency.Name));
                         }
                         else if (strLine == "#AGENCY_ADDRESS#")
                         {
-                            sbFileWrite.Append(strLine.Replace("#AGENCY_ADDRESS#", dt_CompanyProfile.Rows[0]["AgencyAddress"].ToString()));
+                            sbFileWrite.Append(strLine.Replace("#AGENCY_ADDRESS#", dtAgency.AddressComplete));
                         }
 
                         else if (strLine == "#DATE_FROM_TO#")
@@ -532,19 +496,19 @@ namespace Paybook.BusinessLayer.Report
                     {
                         //Save html Report
                         // string sDate = System.DateTime.Today.ToString("yyyyMMdd");
-                        string sVersionNumber = ReportVersionNumber_Select(sAgency_ID);
-                        int iVersionNumber = sVersionNumber == "" ? 1 : Convert.ToInt32(sVersionNumber) + 1;
-                        string sDateFrom = sPaymentDateFrom.Replace("-", "");
-                        string sDateTo = sPaymentDateTo.Replace("-", "");
-                        string sID = sAgency_ID.Replace("_", "");
-                        string sNewFileName = sID + "_v" + iVersionNumber + "_" + sDateFrom + "_" + sDateTo + ".html";
-                        sPath = Path.Combine(HttpRuntime.AppDomainAppPath, _FolderPath.DOC_DocumentsPath);
-                        File.WriteAllText(sPath + sNewFileName, sbFileWrite.ToString());
+                        //string sVersionNumber = ReportVersionNumber_Select(agencyId);
+                        //int iVersionNumber = sVersionNumber == "" ? 1 : Convert.ToInt32(sVersionNumber) + 1;
+                        //string sDateFrom = sPaymentDateFrom.Replace("-", "");
+                        //string sDateTo = sPaymentDateTo.Replace("-", "");
+                        //string sID = agencyId;
+                        //string sNewFileName = sID + "_v" + iVersionNumber + "_" + sDateFrom + "_" + sDateTo + ".html";
+                        //sPath = Path.Combine(HttpRuntime.AppDomainAppPath, _FolderPath.DOC_DocumentsPath);
+                        //File.WriteAllText(sPath + sNewFileName, sbFileWrite.ToString());
 
                         //Update Version Number and Insert Version Information
-                        ReportVersion_Insert(iVersionNumber.ToString(), sAgency_ID, sPaymentDateFrom, sPaymentDateTo, sNewFileName);
-                        report.FilePath = _FolderPath.DOC_DocumentsPath + sNewFileName;
-                        report.FileName = sNewFileName;
+                        //ReportVersion_Insert(iVersionNumber.ToString(), agencyId, sPaymentDateFrom, sPaymentDateTo, sNewFileName);
+                        //report.FilePath = _FolderPath.DOC_DocumentsPath + sNewFileName;
+                        //report.FileName = sNewFileName;
                         reports.Add(report);
                     }
                     else

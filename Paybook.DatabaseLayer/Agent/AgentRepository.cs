@@ -30,37 +30,34 @@ namespace Paybook.DatabaseLayer.Agent
         public AgentRepository()
         {
             _dbContext = DbContextFactory.Instance;
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
         }
 
         public AgentModel[] GetAllActive()
         {
-            List<AgentModel> oAgents = new List<AgentModel>();
             try
             {
+                List<AgentModel> oAgents = new List<AgentModel>();
                 DataTable dt = _dbContext.LoadDataByProcedure("sps_Agents_Active_SelectAll", null);
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     foreach (DataRow dr in dt.Rows)
                     {
-                        AgentModel oDataRows = new AgentModel();
-
-                        oDataRows.Agent_ID = dr["Agent_ID"].ToString();
-                        oDataRows.AgentName = dr["AgentName"].ToString();
+                        AgentModel oDataRows = new AgentModel
+                        {
+                            Agent_ID = dr["Agent_ID"].ToString(),
+                            AgentName = dr["AgentName"].ToString()
+                        };
                         oAgents.Add(oDataRows);
                     }
                 }
-
+                return oAgents.ToArray();
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
-                AgentModel oDataRows = new AgentModel();
-                oDataRows.ERROR = ex.Message;
-                oAgents.Add(oDataRows);
+                throw;
             }
-            return oAgents.ToArray();
         }
 
         public AgentModel[] GetAllActiveIdAndName()
@@ -73,10 +70,11 @@ namespace Paybook.DatabaseLayer.Agent
                 {
                     foreach (DataRow dr in dt.Rows)
                     {
-                        AgentModel oDataRows = new AgentModel();
-
-                        oDataRows.AgentName = dr["AgentName"].ToString();
-                        oDataRows.Agent_ID = dr["Agent_ID"].ToString();
+                        AgentModel oDataRows = new AgentModel
+                        {
+                            AgentName = dr["AgentName"].ToString(),
+                            Agent_ID = dr["Agent_ID"].ToString()
+                        };
                         oAgent.Add(oDataRows);
                     }
                 }
@@ -85,10 +83,7 @@ namespace Paybook.DatabaseLayer.Agent
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
-                AgentModel oDataRows = new AgentModel();
-                oDataRows.ERROR = ex.Message;
-                oAgent.Add(oDataRows);
+                throw;
             }
             return oAgent.ToArray();
         }
@@ -155,7 +150,6 @@ namespace Paybook.DatabaseLayer.Agent
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
                 throw;
             }
         }

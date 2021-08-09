@@ -8,10 +8,10 @@ BEGIN
 	DECLARE @RowDisplay INT = 10;
 
 	SELECT ag.[Id],ag.[CreateDate],ag.[Name],ag.[PhoneNumber1],ag.[PhoneNumber2],ag.[Email],
-		ag.[AddressLine1],ag.[AddressLine2],ag.[City],ag.[State],sm.[Name] AS [StateName],ag.[Country],cm.[Name] AS [CountryName],ag.[Pincode]
+		ag.[AddressLine1],ag.[AddressLine2],ag.[City],ag.[StateId],sm.[Name] AS [StateName],ag.[CountryId],cm.[Name] AS [CountryName],ag.[Pincode]
 	FROM Agencies ag
-		LEFT JOIN StateMaster sm ON ag.[State] = sm.Id
-		LEFT JOIN CountryMaster cm ON ag.[Country] = cm.Id
+		LEFT JOIN StateMaster sm ON ag.[StateId] = sm.Id
+		LEFT JOIN CountryMaster cm ON ag.[CountryId] = cm.Id
 	WHERE ag.BusinessId = @BusinessId AND ag.IsActive = 1 AND
 		ag.[Name] LIKE '%'+@Search+'%'
 	ORDER BY CASE WHEN @OrderBy = 'NameAsc' THEN ag.[Name] END ASC,

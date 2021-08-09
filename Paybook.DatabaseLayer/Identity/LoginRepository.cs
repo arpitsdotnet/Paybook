@@ -10,7 +10,7 @@ namespace Paybook.DatabaseLayer.Identity
 {
     public interface ILoginRepository
     {
-        DataTable Login_Isvalid(LoginModel loginModel);
+        string IsValid(IdentityUserModel loginModel);
     }
 
     public class LoginRepository : ILoginRepository
@@ -20,27 +20,36 @@ namespace Paybook.DatabaseLayer.Identity
 
         public LoginRepository()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _dbContext = DbContextFactory.Instance;
         }
 
-        public DataTable Login_Isvalid(LoginModel loginModel)
+        /// <summary>
+        /// Check if username valid
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>string: UserExist | UserNotExist | UserMatch | UserNotMatch</returns>
+        public string IsValid(IdentityUserModel model)
         {
-            DataTable dt = new DataTable();
             try
             {
-                var parameters = new List<Parameter>();
-                parameters.Add(new Parameter(nameof(loginModel.Username), loginModel.Username));
-                parameters.Add(new Parameter(nameof(loginModel.Password), loginModel.Password));
+                var result = _dbContext.SaveDataOutParam("sps_IdentityUser_IsValid", model, out string message, DbType.String, "Message");
+                //DataTable dt = _dbContext.LoadDataByProcedure("sps_IdentityUser_IsValid", parameters);
+                //if (dt != null && dt.Rows.Count > 0)
+                //{
+                //    if (!(dt.Rows[0]["Message"] is null))
+                //    {
+                //        return dt.Rows[0]["Message"].ToString();
+                //    }
+                //}
 
-                dt = _dbContext.LoadDataByProcedure("sps_Login_IsValid", parameters);
+                return message;
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
                 throw;
             }
-            return dt;
         }
     }
 }

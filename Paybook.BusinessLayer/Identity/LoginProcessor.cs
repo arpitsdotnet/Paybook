@@ -12,7 +12,7 @@ namespace Paybook.BusinessLayer.Identity
 
     public interface ILoginProcessor
     {
-        DataTable Login_Isvalid(LoginModel loginModel);
+        string IsValid(IdentityUserModel loginModel);
     }
 
     public class LoginProcessor : ILoginProcessor
@@ -22,14 +22,14 @@ namespace Paybook.BusinessLayer.Identity
 
         public LoginProcessor()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _loginRepo = new LoginRepository();
         }
-        public DataTable Login_Isvalid(LoginModel loginModel)
+        public string IsValid(IdentityUserModel loginModel)
         {
             try
             {
-                return _loginRepo.Login_Isvalid(loginModel);
+                return _loginRepo.IsValid(loginModel);
             }
             catch (Exception ex)
             {

@@ -22,6 +22,10 @@
     [AddressLine1] NVARCHAR(256) NULL, 
     [AddressLine2] NVARCHAR(256) NULL, 
     [City] NVARCHAR(50) NULL, 
-    [State] NVARCHAR(256) NULL, 
-    CONSTRAINT [PK_IdentityUsers] PRIMARY KEY ([Id]) 
+    [StateId] INT NULL, 
+    [CountryId] INT NULL, 
+    [Pincode] NVARCHAR(10) NULL, 
+    CONSTRAINT [PK_IdentityUsers] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_IdentityUsers_ToStateMaster_StateId] FOREIGN KEY ([StateId]) REFERENCES [StateMaster]([Id]), 
+    CONSTRAINT [FK_IdentityUsers_ToCountryMaster_CountryId] FOREIGN KEY ([CountryId]) REFERENCES [CountryMaster]([Id]), 
 )

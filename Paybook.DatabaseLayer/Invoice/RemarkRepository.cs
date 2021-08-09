@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 
-namespace Paybook.DatabaseLayer.Common
+namespace Paybook.DatabaseLayer.Invoice
 {
     public interface IRemarkRepository
     {
@@ -20,7 +20,7 @@ namespace Paybook.DatabaseLayer.Common
 
         public RemarkRepository()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _dbContext = DbContextFactory.Instance;
         }
 

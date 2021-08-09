@@ -11,17 +11,10 @@ using Paybook.ServiceLayer.Logger;
 
 namespace Paybook.DatabaseLayer.Setting
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository : IRepository<CategoryMasterModel>
     {
-        DataTable Categories_Select();
-        CategoryModel[] SubCategories_Active_Select(string sCategory_Core);
-        bool SubCategories_Insert(CategoryModel categoryModel);
-        CategoryModel[] SubCategories_SelectAll(string sCategory_Core);
-        CategoryModel[] SubCategories_SelectGrid(string sOrderBy, string sGridPageNumber, string sUserName, string sCategory_Core);
-        bool SubCategories_Update(CategoryModel categoryModel);
-        bool SubCategories_UpdateIsActive(string sID, string sISActive);
-        CategoryModel[] SubCategory_IsExist(string sSubCategory_Core, string sCategory_Core);
-        DataTable SubCategory_SelectGstValues(string sCategoryCore);
+        CategoryMasterModel GetByCore(int businessId, string core);
+        List<CategoryMasterModel> GetByTypeCore(int businessId, string typeCore);
     }
 
     public class CategoryRepository : ICategoryRepository
@@ -31,34 +24,19 @@ namespace Paybook.DatabaseLayer.Setting
 
         public CategoryRepository()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _dbContext = DbContextFactory.Instance;
         }
 
-        public CategoryModel[] SubCategories_Active_Select(string sCategory_Core)
+        public List<CategoryMasterModel> GetByTypeCore(int businessId, string typeCore)
         {
             try
             {
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sCategory_Core", sCategory_Core));
+                var p = new { BusinessId = businessId, TypeCore = typeCore };
 
-                List<CategoryModel> categories = new List<CategoryModel>();
-                DataTable dt = _dbContext.LoadDataByProcedure("sps_SubCategories_Active_Select", oParams);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        CategoryModel category = new CategoryModel
-                        {
-                            CreatedBY = dr["CreatedBY"].ToString(),
-                            CreatedDT = dr["CreatedDT"].ToString(),
-                            SubCategory_Core = dr["SubCategory_Core"].ToString(),
-                            SubCategory_Disp = dr["SubCategory_Disp"].ToString()
-                        };
-                        categories.Add(category);
-                    }
-                }
-                return categories.ToArray();
+                var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetByTypeCore", p);
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -66,229 +44,15 @@ namespace Paybook.DatabaseLayer.Setting
                 throw;
             }
         }
-        public CategoryModel[] SubCategories_SelectGrid(string sOrderBy, string sGridPageNumber, string sUserName, string sCategory_Core)
-        {
-            List<CategoryModel> categories = new List<CategoryModel>();
-            try
-            {
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sCategory_Core", sCategory_Core));
-
-                DataTable dt = _dbContext.LoadDataByProcedure("sps_SubCategories_SelectAll", oParams);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    string dtCount = dt.Rows.Count.ToString();
-                    // int dRowTotal = int.Parse(dtCount);
-                    int iPageNumber = Convert.ToInt32(sGridPageNumber);
-                    int iPageStart = iPageNumber == 0 ? 0 : (PagerSetting.iPageSizeDefault * iPageNumber);
-
-                    var list = (from e in dt.AsEnumerable()
-                                select new
-                                {
-                                    RowCount = dtCount,
-                                    ID = e.Field<int>("ID"),
-                                    SubCategory_Core = e.Field<string>("SubCategory_Core"),
-                                    SubCategory_Disp = e.Field<string>("SubCategory_Disp"),
-                                    SubCategory_Prefix = e.Field<string>("SubCategory_Prefix"),
-                                    CreatedDT = e.Field<DateTime>("CreatedDT").ToString(),
-                                    CreatedBY = e.Field<string>("CreatedBY"),
-                                    OrderBy = e.Field<Int32>("OrderBy"),
-                                    IsActive = e.Field<Int32>("IsActive"),
-                                    LastOrderBy = e.Field<string>("LastOrderBy")
-
-                                }).Skip(iPageStart).Take(PagerSetting.iPageSizeDefault);
-
-                    dt = list.ToList().ToDataTable();
-                    if (dt != null && dt.Rows.Count > 0)
-                    {
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            CategoryModel category = new CategoryModel
-                            {
-                                RowCount = dr["RowCount"].ToString(),
-                                ID = dr["ID"].ToString(),
-                                SubCategory_Core = dr["SubCategory_Core"].ToString(),
-                                SubCategory_Disp = dr["SubCategory_Disp"].ToString(),
-                                SubCategory_Prefix = dr["SubCategory_Prefix"].ToString(),
-                                CreatedDT = Convert.ToDateTime(dr["CreatedDT"]).ToString("yyyy-MM-dd HH:mm:ss"),
-                                CreatedBY = dr["CreatedBY"].ToString(),
-                                OrderBy = dr["OrderBy"].ToString(),
-                                IsActive = dr["IsActive"].ToString(),
-                                LastOrderBy = dr["LastOrderBy"].ToString()
-                            };
-                            categories.Add(category);
-                        }
-                    }
-                    else
-                    {
-                        CategoryModel category = new CategoryModel();
-                        category.ID = "0";
-                        categories.Add(category);
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-            return categories.ToArray();
-        }
-        public CategoryModel[] SubCategories_SelectAll(string sCategory_Core)
-        {
-            List<CategoryModel> oCategory = new List<CategoryModel>();
-            try
-            {
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sCategory_Core", sCategory_Core));
-
-                DataTable dt = _dbContext.LoadDataByProcedure("sps_SubCategories_SelectAll", oParams);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        CategoryModel oDataRows = new CategoryModel();
-                        oDataRows.ID = dr["ID"].ToString();
-                        oDataRows.SubCategory_Core = dr["SubCategory_Core"].ToString();
-                        oDataRows.SubCategory_Disp = dr["SubCategory_Disp"].ToString();
-                        oDataRows.SubCategory_Prefix = dr["SubCategory_Prefix"].ToString();
-                        oDataRows.OrderBy = dr["OrderBy"].ToString();
-                        oDataRows.IsActive = dr["IsActive"].ToString();
-                        oDataRows.CreatedDT = dr["CreatedDT"].ToString();
-                        oDataRows.CreatedBY = dr["CreatedBY"].ToString();
-                        oCategory.Add(oDataRows);
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-            return oCategory.ToArray();
-        }
-        public bool SubCategories_Insert(CategoryModel categoryModel)
+        public CategoryMasterModel GetByCore(int businessId, string core)
         {
             try
             {
-                List<Parameter> oParams = new List<Parameter>
-                {
-                    new Parameter("sCreatedBY", categoryModel.CreatedBY),
-                    new Parameter("sCategory_Core", categoryModel.Category_Core),
-                    new Parameter("sCategory_Disp", categoryModel.Category_Disp),
-                    new Parameter("sSubCategory_Core", categoryModel.SubCategory_Core),
-                    new Parameter("sSubCategory_Disp", categoryModel.SubCategory_Disp),
-                    new Parameter("sSubCategory_Prefix", categoryModel.SubCategory_Prefix),
-                    new Parameter("sOrderBy", categoryModel.OrderBy)
-                };
+                var p = new { BusinessId = businessId, Core = core };
 
-                _dbContext.LoadDataByProcedure("sps_SubCategories_Insert", oParams);
+                var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetByCore", p);
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-        }
-        public bool SubCategories_Update(CategoryModel categoryModel)
-        {
-            try
-            {
-                List<Parameter> oParams = new List<Parameter>
-                {
-                    new Parameter("sModifiedBY", categoryModel.ModifiedBY),
-                    new Parameter("sCategory_Core", categoryModel.Category_Core),
-                    new Parameter("sSubCategory_Core", categoryModel.SubCategory_Core),
-                    new Parameter("sSubCategory_Disp", categoryModel.SubCategory_Disp),
-                    new Parameter("sOrderBy", categoryModel.OrderBy)
-                };
-
-                _dbContext.LoadDataByProcedure("sps_SubCategories_Update", oParams);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-        }
-        public bool SubCategories_UpdateIsActive(string sID, string sISActive)
-        {
-            try
-            {
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sID", sID));
-                oParams.Add(new Parameter("sISActive", sISActive));
-                _dbContext.LoadDataByProcedure("sps_SubCategories_UpdateIsActive", oParams);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-        }
-        public DataTable Categories_Select()
-        {
-            try
-            {
-                return _dbContext.LoadDataByProcedure("sps_Categories_Select", null);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-        }
-        public CategoryModel[] SubCategory_IsExist(string sSubCategory_Core, string sCategory_Core)
-        {
-            List<CategoryModel> oCategory = new List<CategoryModel>();
-            try
-            {
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sSubCategory_Core", sSubCategory_Core));
-                oParams.Add(new Parameter("sCategory_Core", sCategory_Core));
-                DataTable dt = _dbContext.LoadDataByProcedure("sps_SubCategory_IsExist", oParams);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        CategoryModel oDataRows = new CategoryModel();
-                        oDataRows.SubCategoryCount = dr["SubCategoryCount"].ToString();
-                        oCategory.Add(oDataRows);
-                    }
-                }
-                else
-                {
-                    CategoryModel oDataRows = new CategoryModel();
-                    oDataRows.SubCategoryCount = "0";
-                    oCategory.Add(oDataRows);
-                }
-            }
-            catch (Exception ex)
-            {
-                CategoryModel oDataRows = new CategoryModel();
-                oDataRows.ERROR = ex.Message;
-                oCategory.Add(oDataRows);
-            }
-            return oCategory.ToArray();
-        }
-        public DataTable SubCategory_SelectGstValues(string sCategoryCore)
-        {
-            try
-            {
-                List<Parameter> parameters = new List<Parameter>
-                {
-                    new Parameter("sGST_Type", sCategoryCore)
-                };
-
-                return _dbContext.LoadDataByProcedure("sps_SubCategory_SelectGstValues", parameters);
+                return result.FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -297,5 +61,104 @@ namespace Paybook.DatabaseLayer.Setting
             }
         }
 
+        public List<CategoryMasterModel> GetAllByPage(int businessId, int page, string search, string orderBy)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
+
+                var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetAllByPage", p);
+                //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public CategoryMasterModel GetById(int businessId, int id)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Id = id };
+
+                var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetById", p);
+
+                return result.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public int Create(CategoryMasterModel model)
+        {
+            try
+            {
+                var result = _dbContext.SaveDataOutParam("spi_CategoryMaster_Insert", model, out int categoryId, DbType.Int32, "Id");
+                //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
+
+                model.Id = categoryId;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+
+        }
+        public int Update(CategoryMasterModel model)
+        {
+            try
+            {
+                var result = _dbContext.SaveData("spu_CategoryMaster_Update", model);
+                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public int Activate(int businessId, int id, bool active)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Id = id, IsActive = active };
+
+                var result = _dbContext.SaveData("spu_CategoryMaster_Activate", p);
+                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public int Delete(int businessId, int id)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Id = id };
+
+                var result = _dbContext.SaveData("spd_CategoryMaster_Delete", p);
+                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
     }
 }

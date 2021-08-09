@@ -14,7 +14,7 @@ namespace Paybook.BusinessLayer.Common
     public interface IActivityProcessor
     {
         string Create(ActivityModel activityModel);
-        DataTable GetAll();
+        List<ActivityModel> GetAllByPage(int businessId, int page, string search, string orderBy);
     }
 
     public class ActivityProcessor : IActivityProcessor
@@ -24,15 +24,15 @@ namespace Paybook.BusinessLayer.Common
 
         public ActivityProcessor()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _activity = new ActivityRepository();
         }
         public string Create(ActivityModel activityModel)
         {
             try
             {
-                bool result = _activity.Create(activityModel);
-                if (result)
+                int result = _activity.Create(activityModel);
+                if (result > 0)
                 {
                     return XmlProcessor.ReadXmlFile("AGES104");
                 }
@@ -46,11 +46,11 @@ namespace Paybook.BusinessLayer.Common
             }
         }
 
-        public DataTable GetAll()
+        public List<ActivityModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-                return _activity.GetAll();
+                return _activity.GetAllByPage(businessId, page, search, orderBy);
             }
             catch (Exception ex)
             {

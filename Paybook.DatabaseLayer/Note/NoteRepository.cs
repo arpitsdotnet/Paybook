@@ -10,14 +10,9 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Note
 {
-    interface INoteRepository
+    interface INoteRepository : IRepository<NoteModel>
     {
-        NoteModel[] GetAllByPage(string sGridPageNumber);
-        NoteModel GetByNoteID(string sDataID);
-        int GetTotalCount();
-        bool Create(NoteModel noteModel);
-        bool Update(NoteModel noteModel);
-        bool Delete(string sDataID);
+        int GetTotalCount(int businessId);
     }
 
     public class NoteRepository : INoteRepository
@@ -27,118 +22,19 @@ namespace Paybook.DatabaseLayer.Note
 
         public NoteRepository()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _dbContext = DbContextFactory.Instance;
         }
 
-
-        public NoteModel[] GetAllByPage(string sGridPageNumber)
-        {
-            List<NoteModel> oDailyNotes = new List<NoteModel>();
-            try
-            {
-                List<Parameter> oParams = new List<Parameter>();
-                string sDataID = "";
-                oParams.Add(new Parameter("sDataID", sDataID));
-                DataTable dt = _dbContext.LoadDataByProcedure("sps_DailyNotes_Select", oParams);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    string dtCount = dt.Rows.Count.ToString();
-                    // int dRowTotal = int.Parse(dtCount);
-                    int iPageNumber = Convert.ToInt32(sGridPageNumber);
-                    int iPageStart = iPageNumber == 0 ? 0 : (PagerSetting.iPageSizeDefault * iPageNumber);
-
-                    var list = (from e in dt.AsEnumerable()
-                                select new
-                                {
-                                    RowCount = dtCount,
-                                    ID = e.Field<int>("ID"),
-                                    CreatedDT = e.Field<DateTime>("CreatedDT").ToString(),
-                                    Name = e.Field<string>("Name"),
-                                    VehicleNumber = e.Field<string>("VehicleNumber"),
-                                    MobileNumber = e.Field<string>("MobileNumber"),
-                                    Work = e.Field<string>("Work"),
-                                    TotalAmount = e.Field<string>("TotalAmount"),
-                                    Awak = e.Field<string>("Awak"),
-                                    Jawak = e.Field<string>("Jawak"),
-                                    Balance = e.Field<string>("Balance"),
-                                    Note = e.Field<string>("Note")
-                                }).Skip(iPageStart).Take(PagerSetting.iPageSizeDefault);
-
-                    dt = list.ToList().ToDataTable();
-                    if (dt != null && dt.Rows.Count > 0)
-                    {
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            NoteModel oDataRows = new NoteModel();
-                            oDataRows.RowCount = dr["RowCount"].ToString();
-                            oDataRows.ID = dr["ID"].ToString();
-                            oDataRows.CreatedDT = Convert.ToDateTime(dr["CreatedDT"]).ToString("yyyy-MM-dd HH:mm:ss");
-                            oDataRows.Name = dr["Name"].ToString();
-                            oDataRows.VehicleNumber = dr["VehicleNumber"].ToString();
-                            oDataRows.MobileNumber = dr["MobileNumber"].ToString();
-                            oDataRows.Work = dr["Work"].ToString();
-                            oDataRows.TotalAmount = dr["TotalAmount"].ToString();
-                            oDataRows.Awak = dr["Awak"].ToString();
-                            oDataRows.Jawak = dr["Jawak"].ToString();
-                            oDataRows.Balance = dr["Balance"].ToString();
-                            oDataRows.Note = dr["Note"].ToString();
-                            oDailyNotes.Add(oDataRows);
-
-                        }
-                    }
-                    else
-                    {
-                        NoteModel oDataRows = new NoteModel();
-                        oDataRows.ID = "0";
-                        oDailyNotes.Add(oDataRows);
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-            return oDailyNotes.ToArray();
-        }
-        public NoteModel GetByNoteID(string sDataID)
+        public int GetTotalCount(int businessId)
         {
             try
             {
+                var p = new { BusinessId = businessId };
 
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sDataID", sDataID));
-                DataTable dt = _dbContext.LoadDataByProcedure("sps_DailyNotes_Select", oParams);
-                if (dt != null && dt.Rows.Count > 0)
-                {
+                var result = _dbContext.SaveDataOutParam("sps_Notes_GetTotalCount", p, out int count, DbType.Int32, "Count");
 
-                    NoteModel note = new NoteModel
-                    {
-                        ID = dt.Rows[0]["ID"].ToString(),
-                        CreatedDT = Convert.ToDateTime(dt.Rows[0]["CreatedDT"]).ToString("yyyy-MM-dd HH:mm:ss"),
-                        Name = dt.Rows[0]["Name"].ToString(),
-                        VehicleNumber = dt.Rows[0]["VehicleNumber"].ToString(),
-                        MobileNumber = dt.Rows[0]["MobileNumber"].ToString(),
-                        Work = dt.Rows[0]["Work"].ToString(),
-                        TotalAmount = dt.Rows[0]["TotalAmount"].ToString(),
-                        Awak = dt.Rows[0]["Awak"].ToString(),
-                        Jawak = dt.Rows[0]["Jawak"].ToString(),
-                        Balance = dt.Rows[0]["Balance"].ToString(),
-                        Note = dt.Rows[0]["Note"].ToString()
-                    };
-
-                    return note;
-                }
-                else
-                {
-                    NoteModel note = new NoteModel();
-                    note.ID = "0";
-
-                    return note;
-                }
+                return count;
             }
             catch (Exception ex)
             {
@@ -147,99 +43,106 @@ namespace Paybook.DatabaseLayer.Note
                 throw;
             }
         }
-        public int GetTotalCount()
+
+        public List<NoteModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-                DataTable dt = _dbContext.LoadDataByProcedure("sps_Notes_GetTotalCount", null);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    return (int)dt.Rows[0]["Count"];
-                }
-                return 0;
+                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
+
+                var result = _dbContext.LoadData<NoteModel, dynamic>("sps_Notes_GetAllByPage", p);
+                //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
+
+                return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
                 throw;
             }
         }
-        public bool Create(NoteModel noteModel)
+        public NoteModel GetById(int businessId, int id)
         {
             try
             {
-                List<Parameter> oParams = new List<Parameter>
-                {
-                    new Parameter("sNote", noteModel.Note),
-                    new Parameter("sVehicleNumber", noteModel.VehicleNumber),
-                    new Parameter("sName", noteModel.Name),
-                    new Parameter("sMobileNumber", noteModel.MobileNumber),
-                    new Parameter("sAwak", noteModel.Awak),
-                    new Parameter("sJawak", noteModel.Jawak),
-                    new Parameter("sBalance", noteModel.Balance),
-                    new Parameter("sTotalAmount", noteModel.TotalAmount),
-                    new Parameter("sWork", noteModel.Work),
-                    new Parameter("sCreatedBY", noteModel.CreatedBY)
-                };
+                var p = new { BusinessId = businessId, Id = id };
 
-                _dbContext.LoadDataByProcedure("sps_DailyNotes_Insert", oParams);
-                return true;
+                var result = _dbContext.LoadData<NoteModel, dynamic>("sps_Notes_GetById", p);
+
+                return result.FirstOrDefault();
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
                 throw;
             }
         }
-        public bool Update(NoteModel noteModel)
+        public int Create(NoteModel model)
         {
             try
             {
-                List<Parameter> oParams = new List<Parameter>
-                {
-                    new Parameter("sNote", noteModel.Note),
-                    new Parameter("sVehicleNumber", noteModel.VehicleNumber),
-                    new Parameter("sName", noteModel.Name),
-                    new Parameter("sMobileNumber", noteModel.MobileNumber),
-                    new Parameter("sAwak", noteModel.Awak),
-                    new Parameter("sJawak", noteModel.Jawak),
-                    new Parameter("sBalance", noteModel.Balance),
-                    new Parameter("sTotalAmount", noteModel.TotalAmount),
-                    new Parameter("sWork", noteModel.Work),
-                    new Parameter("sModifiedBY", noteModel.CreatedBY),
-                    new Parameter("sDataID", noteModel.ID)
-                };
+                var result = _dbContext.SaveDataOutParam("spi_Notes_Insert", model, out int noteId, DbType.Int32, "Id");
+                //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
 
-                _dbContext.LoadDataByProcedure("sps_DailyNotes_Update", oParams);
-                return true;
+                model.Id = noteId;
+
+                return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
 
+        }
+        public int Update(NoteModel model)
+        {
+            try
+            {
+                var result = _dbContext.SaveData("spu_Notes_Update", model);
+                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
                 throw;
             }
         }
-        public bool Delete(string sDataID)
+        public int Activate(int businessId, int id, bool active)
         {
             try
             {
-                //Get invoice id
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sDataID", sDataID));
-                _dbContext.LoadDataByProcedure("sps_DailyNotes_Delete", oParams);
+                var p = new { BusinessId = businessId, Id = id, IsActive = active };
 
-                return true;
+                var result = _dbContext.SaveData("spu_Notes_Activate", p);
+                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+
+                return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
                 throw;
             }
+        }
+        public int Delete(int businessId, int id)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Id = id };
 
+                var result = _dbContext.SaveData("spd_Notes_Delete", p);
+                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
         }
     }
 }

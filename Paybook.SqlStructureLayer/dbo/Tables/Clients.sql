@@ -14,9 +14,11 @@
     [AddressLine1] NVARCHAR(256) NULL, 
     [AddressLine2] NVARCHAR(256) NULL, 
     [City] NVARCHAR(50) NULL, 
-    [State] NVARCHAR(50) NULL, 
-    [Country] NVARCHAR(50) NULL, 
+    [StateId] INT NULL, 
+    [CountryId] INT NULL, 
     [Pincode] NVARCHAR(10) NULL, 
     CONSTRAINT [PK_Clients] PRIMARY KEY ([Id]), 
     CONSTRAINT [FK_Clients_ToBusinesses_BusinessId] FOREIGN KEY ([BusinessId]) REFERENCES [Businesses]([Id]), 
+    CONSTRAINT [FK_Clients_ToStateMaster_StateId] FOREIGN KEY ([StateId]) REFERENCES [StateMaster]([Id]), 
+    CONSTRAINT [FK_Clients_ToCountryMaster_CountryId] FOREIGN KEY ([CountryId]) REFERENCES [CountryMaster]([Id]), 
 )

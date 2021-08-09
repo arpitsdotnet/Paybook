@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paybook.WebUI", "Paybook.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "epayamit_20210731.1", "epayamit_20210731.1\epayamit_20210731.1.csproj", "{F96CF560-7E8A-4EE2-A399-C0D556EF4FFB}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Paybook.SqlStructureLayer", "Paybook.SqlStructureLayer\Paybook.SqlStructureLayer.sqlproj", "{D0771108-2DE5-4049-A9FF-FCA710539AD9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataManager", "DataManager", "{E2AD70F5-6DBF-4A14-A582-B4D8AA7B4FDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +43,19 @@ Global
 		{F96CF560-7E8A-4EE2-A399-C0D556EF4FFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F96CF560-7E8A-4EE2-A399-C0D556EF4FFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F96CF560-7E8A-4EE2-A399-C0D556EF4FFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0771108-2DE5-4049-A9FF-FCA710539AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0771108-2DE5-4049-A9FF-FCA710539AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0771108-2DE5-4049-A9FF-FCA710539AD9}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{D0771108-2DE5-4049-A9FF-FCA710539AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0771108-2DE5-4049-A9FF-FCA710539AD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0771108-2DE5-4049-A9FF-FCA710539AD9}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E1BD3697-61C5-4C7B-9F99-303074044A88} = {E2AD70F5-6DBF-4A14-A582-B4D8AA7B4FDB}
+		{D0771108-2DE5-4049-A9FF-FCA710539AD9} = {E2AD70F5-6DBF-4A14-A582-B4D8AA7B4FDB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C57E63F4-3930-4818-A1EF-2511AABF8A20}

@@ -1,35 +1,45 @@
-﻿namespace Paybook.ServiceLayer.Models
-{
-    public class InvoiceModel
-    {
-        public string RowCount { get; set; }
+﻿using System;
 
-        public string ID { get; set; }
-        public string CreatedDT { get; set; }
-        public string CreatedBY { get; set; }
-        public string ModifiedDT { get; set; }
-        public string ModifiedBY { get; set; }
-        public string IsActive { get; set; }
-        public string Customer_ID { get; set; }
-        public string CustomerName { get; set; }
-        public string Agent_ID { get; set; }
-        public string AgentName { get; set; }
-        public string ReceiptID { get; set; }
-        public string Category_Core { get; set; }
-        public string Category_Disp { get; set; }
-        public string Particular { get; set; }
-        public string Amount { get; set; }
-        public string ERROR { get; set; }
-        public string idSearchResult { get; set; }
-        public string sSearchFrom { get; set; }
-        public string idTxtSearch { get; set; }
-        public string FirstName { get; set; }
-        public string Paid { get; set; }
-        public string InvoiceStatus_Disp { get; set; }
-        public string InvoiceStatus_Core { get; set; }
-        public string Invoice_Date { get; set; }
-        public string Invoice_ID { get; set; }
+namespace Paybook.ServiceLayer.Models
+{
+    public class InvoiceModel : BaseResultStatusModel
+    {
+        public int Id { get; set; }
+        public int BusinessId { get; set; }
+        public virtual BusinessModel Businesses { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreateBy { get; set; }
+        public string ModifyBy { get; set; }
+
+        public string InvoiceNumber { get; set; }
+        public string Description { get; set; }
+        public DateTime? InvoiceDate { get; set; }
+        public int StatusId { get; set; }
+        public virtual CategoryMasterModel StatusCategoryMaster { get; set; }
+        public int UserId { get; set; }
+        public virtual IdentityUserModel Users { get; set; }
+        public int AgencyId { get; set; }
+        public virtual AgencyModel Agencies { get; set; }
+        public int ClientId { get; set; }
+        public virtual ClientModel Clients { get; set; }
+        public string ClientEmail { get; set; }
+        public bool IsEmailSend { get; set; }
+        public bool IsEmailSentSuccess { get; set; }
+        public string BillingAddress { get; set; }
+        public int TermsId { get; set; }
+        public virtual CategoryMasterModel TermsCategoryMaster { get; set; }
+        public DateTime? DueDate { get; set; }
+        public bool IsOverdue { get; set; }
+        public int OverdueSteps { get; set; }
         public string Message { get; set; }
-        public string PaymentMethod { get; set; }
+        public decimal Subtotal { get; set; }
+        public decimal TaxableTotal { get; set; }
+        public int DiscountTypeId { get; set; }
+        public virtual CategoryMasterModel DiscountTypeCategoryMaster { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal DiscountTotal { get; set; }
+        public decimal Total { get; set; }
     }
 }

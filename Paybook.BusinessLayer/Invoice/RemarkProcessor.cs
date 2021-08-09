@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Paybook.BusinessLayer.Common
+namespace Paybook.BusinessLayer.Invoice
 {
     public interface IRemarkProcessor
     {
@@ -21,7 +21,7 @@ namespace Paybook.BusinessLayer.Common
 
         public RemarkProcessor()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _remarkRepo = new RemarkRepository();
         }
         public string InvoiceRemark_Select(string sInvoice_ID)

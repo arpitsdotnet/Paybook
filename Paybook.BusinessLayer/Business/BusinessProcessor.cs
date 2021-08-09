@@ -2,6 +2,7 @@
 using Paybook.DatabaseLayer.Business;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
+using Paybook.ServiceLayer.Xml;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,11 +13,10 @@ namespace Paybook.BusinessLayer.Business
 {
     public interface IBusinessProcessor
     {
-        BusinessModel[] CompanyProfile_Insert(BusinessModel businessModel);
-        DataTable CompanyProfile_IsExist();
-        DataTable CompanyProfile_Select();
-        string CompanyProfile_Update(BusinessModel businessModel);
-        DataTable Dashboard_GetAllCounters();
+        bool IsExist(int businessId);
+        BusinessModel GetByUserId(int userId);
+        string Create(BusinessModel businessModel);
+        string Update(BusinessModel businessModel);
     }
 
     public class BusinessProcessor : IBusinessProcessor
@@ -26,15 +26,29 @@ namespace Paybook.BusinessLayer.Business
 
         public BusinessProcessor()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _businessRepo = new BusinessRepository();
         }
 
-        public BusinessModel[] CompanyProfile_Insert(BusinessModel businessModel)
+
+        public bool IsExist(int businessId)
         {
             try
             {
-                return _businessRepo.CompanyProfile_Insert(businessModel);
+                return _businessRepo.IsExist(businessId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public BusinessModel GetByUserId(int userId)
+        {
+            try
+            {
+                return _businessRepo.GetByUserId(userId);
             }
             catch (Exception ex)
             {
@@ -44,11 +58,15 @@ namespace Paybook.BusinessLayer.Business
             }
         }
 
-        public DataTable CompanyProfile_IsExist()
+        public string Create(BusinessModel businessModel)
         {
             try
             {
-                return _businessRepo.CompanyProfile_IsExist();
+                int result = _businessRepo.Create(businessModel);
+                if (result > 0)
+                    return XmlProcessor.ReadXmlFile("CPS401");
+
+                return string.Empty;
             }
             catch (Exception ex)
             {
@@ -57,40 +75,15 @@ namespace Paybook.BusinessLayer.Business
                 throw;
             }
         }
-
-        public DataTable CompanyProfile_Select()
+        public string Update(BusinessModel businessModel)
         {
             try
             {
-                return _businessRepo.CompanyProfile_Select();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
+                int result = _businessRepo.Update(businessModel);
+                if (result > 0)
+                    return XmlProcessor.ReadXmlFile("CPS401");
 
-                throw;
-            }
-        }
-
-        public string CompanyProfile_Update(BusinessModel businessModel)
-        {
-            try
-            {
-                return _businessRepo.CompanyProfile_Update(businessModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-
-        public DataTable Dashboard_GetAllCounters()
-        {
-            try
-            {
-                return _businessRepo.Dashboard_GetAllCounters();
+                return string.Empty;
             }
             catch (Exception ex)
             {

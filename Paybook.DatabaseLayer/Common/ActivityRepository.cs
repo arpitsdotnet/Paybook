@@ -11,8 +11,8 @@ namespace Paybook.DatabaseLayer.Common
 {
     public interface IActivityRepository
     {
-        bool Create(ActivityModel activityModel);
-        DataTable GetAll();
+        List<ActivityModel> GetAllByPage(int businessId, int page, string search, string orderBy);
+        int Create(ActivityModel activityModel);
     }
 
     public class ActivityRepository : IActivityRepository
@@ -22,52 +22,38 @@ namespace Paybook.DatabaseLayer.Common
 
         public ActivityRepository()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _dbContext = DbContextFactory.Instance;
         }
 
-        public bool Create(ActivityModel activityModel)
+        public List<ActivityModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-                var parameters = new List<Parameter>
-                {
-                   new Parameter("sCreatedBY", activityModel.CreatedBY),
-                   new Parameter("sActivity_Date", activityModel.Activity_Date),
-                   new Parameter("sAgency_ID", activityModel.Agency_ID),
-                   new Parameter("sCustomer_ID", activityModel.Customer_ID),
-                   new Parameter("sPaymentAmount", activityModel.PaymentAmount),
-                   new Parameter("sCategory_Core", activityModel.Category_Core),
-                   new Parameter("sInvoice_ID", activityModel.Invoice_ID),
-                   new Parameter("sInvoiceStatus_Core", activityModel.InvoiceStatus_Core)
+                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
 
-                };
+                var result = _dbContext.LoadData<ActivityModel, dynamic>("sps_Activities_GetAllByPage", p);
 
-                _dbContext.LoadDataByProcedure("sps_Activity_Insert", parameters);
-
-                return true;
+                return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
                 throw;
             }
-
         }
 
-        public DataTable GetAll()
+        public int Create(ActivityModel activityModel)
         {
             try
             {
-                //select overdue and overpaid from activity              
-                return _dbContext.LoadDataByProcedure("sps_Activity_SelectAll", null);
+                int result = _dbContext.SaveData("spi_Activities_Insert", activityModel);
 
+                return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
                 throw;
             }
         }

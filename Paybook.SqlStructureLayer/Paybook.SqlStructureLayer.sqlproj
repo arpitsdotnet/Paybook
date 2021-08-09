@@ -80,7 +80,7 @@
     <Build Include="dbo\Tables\Payments.sql" />
     <Build Include="dbo\Tables\InvoicePayments.sql" />
     <Build Include="dbo\Tables\Notes.sql" />
-    <Build Include="dbo\Tables\LastSavedIds.sql" />
+    <Build Include="dbo\Tables\LastSavedNumbers.sql" />
     <Build Include="dbo\Tables\Activities.sql" />
     <Build Include="dbo\Stored Procedures\spi_Activities_Insert.sql" />
     <Build Include="dbo\Tables\DBLogs.sql" />
@@ -92,14 +92,17 @@
     <Build Include="dbo\Stored Procedures\sps_IdentityUser_IsValid.sql" />
     <Build Include="dbo\Stored Procedures\sps_IdentityUser_GetByUsername.sql" />
     <Build Include="dbo\Stored Procedures\sps_Businesses_GetAllByUserId.sql" />
-    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetInvoiceCountByDays.sql" />
-    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetPaymentsByDays.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetInvoiceCountAndAmountByDays.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetPaymentCountAndAmountByDays.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetPaymentsLast10.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetCounters.sql" />
     <Build Include="dbo\Functions\Table-valued Functions\fns_Category_GetByCore.sql" />
     <Build Include="dbo\Stored Procedures\sps_Clients_GetAllByPage.sql" />
     <Build Include="dbo\Stored Procedures\sps_Agencies_GetAllByPage.sql" />
     <Build Include="dbo\Stored Procedures\spi_Clients_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\spi_Agencies_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Clients_GetCount.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetClientCountByDays.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Paybook.SqlStructureLayer.refactorlog" />

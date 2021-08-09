@@ -1,23 +1,19 @@
-﻿namespace Paybook.ServiceLayer.Models
-{
-    public class ActivityModel
-    {
-        public string ID { get; set; }
-        public string CreatedDT { get; set; }
-        public string CreatedBY { get; set; }
-        public string ModifiedDT { get; set; }
-        public string ModifiedBY { get; set; }
-        public string IsActive { get; set; }
-        public string Agency_ID { get; set; }
-        public string Customer_ID { get; set; }
-        public string Invoice_ID { get; set; }
-        public string Activity_Date { get; set; }
-        public string InvoiceStatus_Core { get; set; }
-        public string Category_Core { get; set; }
-        public string PaymentAmount { get; set; }
-        public string Particular { get; set; }
+﻿using System;
 
-        public string ERROR { get; set; }
-        public string CustomerName { get; set; }
+namespace Paybook.ServiceLayer.Models
+{
+    public class ActivityModel : BaseResultStatusModel
+    {
+        public int ID { get; set; }
+        public int BusinessId { get; set; }
+        public virtual BusinessModel Businesses { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public string CreateBy { get; set; }
+        public string Text { get; set; }
+        public string HtmlText { get; set; }
+        public int UserId { get; set; }
+        public virtual IdentityUserModel Users { get; set; }
+        public string Status { get; set; }
     }
 }

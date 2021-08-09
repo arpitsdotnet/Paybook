@@ -12,11 +12,12 @@ namespace Paybook.BusinessLayer.Note
 {
     public interface INoteProcessor
     {
-        NoteModel[] GetAllByPage(string sGridPageNumber);
-        NoteModel GetByNoteID(string sDataID);
-        string Create(NoteModel noteModel);
-        string Update(NoteModel noteModel);
-        string Delete(string sDataID);
+        List<NoteModel> GetAllByPage(int businessId, int page, string search, string orderBy);
+        NoteModel GetById(int businessId, int id);
+        NoteModel Create(NoteModel model);
+        NoteModel Update(NoteModel model);
+        NoteModel Activate(int businessId, int id, bool active);
+        NoteModel Delete(int businessId, int id);
     }
     public class NoteProcessor : INoteProcessor
     {
@@ -25,15 +26,15 @@ namespace Paybook.BusinessLayer.Note
 
         public NoteProcessor()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _noteRepo = new NoteRepository();
         }
 
-        public NoteModel[] GetAllByPage(string pageNumber)
+        public List<NoteModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-                return _noteRepo.GetAllByPage(pageNumber);
+                return _noteRepo.GetAllByPage(businessId, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -42,11 +43,11 @@ namespace Paybook.BusinessLayer.Note
                 throw;
             }
         }
-        public NoteModel GetByNoteID(string noteId)
+        public NoteModel GetById(int businessId, int id)
         {
             try
             {
-                return _noteRepo.GetByNoteID(noteId);
+                return _noteRepo.GetById(businessId, id);
             }
             catch (Exception ex)
             {
@@ -55,15 +56,19 @@ namespace Paybook.BusinessLayer.Note
                 throw;
             }
         }
-        public string Create(NoteModel noteModel)
+        public NoteModel Create(NoteModel model)
         {
             try
             {
-                bool result = _noteRepo.Create(noteModel);
-                if (result)
-                    return XmlProcessor.ReadXmlFile("NDS901");
-
-                return string.Empty;
+                NoteModel output = new NoteModel { IsSucceeded = false };
+                int result = _noteRepo.Create(model);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                }
+                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+                return output;
             }
             catch (Exception ex)
             {
@@ -72,15 +77,19 @@ namespace Paybook.BusinessLayer.Note
                 throw;
             }
         }
-        public string Update(NoteModel noteModel)
+        public NoteModel Update(NoteModel model)
         {
             try
             {
-                bool result = _noteRepo.Update(noteModel);
-                if (result)
-                    return XmlProcessor.ReadXmlFile("NDS903");
-
-                return string.Empty;
+                NoteModel output = new NoteModel { IsSucceeded = false };
+                int result = _noteRepo.Update(model);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                }
+                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+                return output;
             }
             catch (Exception ex)
             {
@@ -89,15 +98,41 @@ namespace Paybook.BusinessLayer.Note
                 throw;
             }
         }
-        public string Delete(string sDataID)
+        public NoteModel Activate(int businessId, int id, bool active)
         {
             try
             {
-                bool result = _noteRepo.Delete(sDataID);
-                if (result)
-                    return XmlProcessor.ReadXmlFile("NDS902");
+                NoteModel output = new NoteModel { IsSucceeded = false };
+                int result = _noteRepo.Activate(businessId, id, active);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                }
+                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteActivateFail");
+                return output;
 
-                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public NoteModel Delete(int businessId, int id)
+        {
+            try
+            {
+                NoteModel output = new NoteModel { IsSucceeded = false };
+                int result = _noteRepo.Delete(businessId, id);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                }
+                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteDeleteFail");
+                return output;
 
             }
             catch (Exception ex)

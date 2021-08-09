@@ -13,18 +13,19 @@ namespace Paybook.BusinessLayer.Client
 {
     public interface IClientProcessor
     {
-        ClientModel[] GetAllByText(string SearchText);
-        ClientModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBy);
-        string Create(ClientModel customerModel);
         string IsExists(ClientModel customerModel);
-        DataTable GetByClientID(string sCustomer_ID);
-        DataTable GetCount();
+        int GetCount(int businessId);
+        ClientModel[] GetAllByText(string SearchText);
         ClientModel[] GetAllNamesByAgencyID(string sAgency_ID);
         ClientModel[] Customer_SelectRemainingAmount(string sCustomer_ID);
-        string Customer_UpdateRemainingAmount(string customerId, double amount);
-        string Customer_Update(ClientModel customerModel);
-        string Customer_UpdateIsActive(string sCustomer_ID, string sIsActive, string sCreatedBY, string sReason);
-        string Customer_Update_AdvancePayment(string sTotalAdvancePayment, string sCustomer_ID, string sTotalRemainigAmount);
+
+
+        List<ClientModel> GetAllByPage(int businessId, int page, string search, string orderBy);
+        ClientModel GetById(int businessId, int id);
+        string Create(ClientModel customerModel);
+        string Update(ClientModel customerModel);
+        string Activate(int businessId, int id, bool active);
+        string Delete(int businessId, int id);
     }
 
     public class ClientProcessor : IClientProcessor
@@ -34,55 +35,8 @@ namespace Paybook.BusinessLayer.Client
 
         public ClientProcessor()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _clientRepo = new ClientRepository();
-        }
-
-        public ClientModel[] GetAllByText(string SearchText)
-        {
-            try
-            {
-                return _clientRepo.GetAllByText(SearchText);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-
-        public ClientModel[] GetAllByPage(string sOrderBy, string sGridPageNumber, string sUserName, string sIsActive, string sSearchText, string sSearchBy)
-        {
-            try
-            {
-                return _clientRepo.GetAllByPage(sOrderBy, sGridPageNumber, sUserName, sIsActive, sSearchText, sSearchBy);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-
-        public string Create(ClientModel customerModel)
-        {
-            try
-            {
-                bool result = _clientRepo.Create(customerModel);
-                if (result)
-                {
-                    return XmlProcessor.ReadXmlFile("CUS103");
-                }
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
         }
 
         public string IsExists(ClientModel customerModel)
@@ -103,12 +57,11 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-
-        public DataTable GetByClientID(string sCustomer_ID)
+        public int GetCount(int businessId)
         {
             try
             {
-                return _clientRepo.GetByClientID(sCustomer_ID);
+                return _clientRepo.GetCount(businessId);
             }
             catch (Exception ex)
             {
@@ -117,12 +70,11 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-
-        public DataTable GetCount()
+        public ClientModel[] GetAllByText(string SearchText)
         {
             try
             {
-                return _clientRepo.GetCount();
+                return null;// _clientRepo.GetAllByText(SearchText);
             }
             catch (Exception ex)
             {
@@ -131,12 +83,11 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-
         public ClientModel[] GetAllNamesByAgencyID(string sAgency_ID)
         {
             try
             {
-                return _clientRepo.GetAllNamesByAgencyID(sAgency_ID);
+                return null;// _clientRepo.GetAllNamesByAgencyID(sAgency_ID);
             }
             catch (Exception ex)
             {
@@ -145,7 +96,6 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-
         public ClientModel[] Customer_SelectRemainingAmount(string sCustomer_ID)
         {
             try
@@ -160,12 +110,56 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public string Customer_Update(ClientModel customerModel)
+        public List<ClientModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-                bool result = _clientRepo.Customer_Update(customerModel);
-                if (result)
+                return _clientRepo.GetAllByPage(businessId, page, search, orderBy);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public ClientModel GetById(int businessId, int id)
+        {
+            try
+            {
+                return _clientRepo.GetById(businessId, id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public string Create(ClientModel customerModel)
+        {
+            try
+            {
+                int result = _clientRepo.Create(customerModel);
+                if (result > 0)
+                {
+                    return XmlProcessor.ReadXmlFile("CUS103");
+                }
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public string Update(ClientModel customerModel)
+        {
+            try
+            {
+                int result = _clientRepo.Update(customerModel);
+                if (result > 0)
                 {
                     return XmlProcessor.ReadXmlFile("CUS104");
                 }
@@ -178,13 +172,12 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-
-        public string Customer_UpdateIsActive(string sCustomer_ID, string sIsActive, string sCreatedBY, string sReason)
+        public string Activate(int businessId, int id, bool active)
         {
             try
             {
-                bool result = _clientRepo.Customer_UpdateIsActive(sCustomer_ID, sIsActive, sCreatedBY, sReason);
-                if (result)
+                int result = _clientRepo.Activate(businessId, id, active);
+                if (result > 0)
                 {
                     return XmlProcessor.ReadXmlFile("CUS106");
                 }
@@ -197,34 +190,14 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-
-        public string Customer_UpdateRemainingAmount(string customerId, double amount)
+        public string Delete(int businessId, int id)
         {
             try
             {
-                bool result = _clientRepo.UpdatePayment(customerId, amount);
-                if (result)
+                int result = _clientRepo.Delete(businessId, id);
+                if (result > 0)
                 {
-                    return XmlProcessor.ReadXmlFile("PTS501");
-                }
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-
-        public string Customer_Update_AdvancePayment(string sTotalAdvancePayment, string sCustomer_ID, string sTotalRemainigAmount)
-        {
-            try
-            {
-                bool result = _clientRepo.Customer_Update_AdvancePayment(sTotalAdvancePayment, sCustomer_ID, sTotalRemainigAmount);
-                if (result)
-                {
-                    return XmlProcessor.ReadXmlFile("PTS501");
+                    return XmlProcessor.ReadXmlFile("CUS106");
                 }
                 return string.Empty;
             }

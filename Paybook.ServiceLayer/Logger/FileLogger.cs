@@ -11,23 +11,7 @@ namespace Paybook.ServiceLayer.Logger
 
     public class FileLogger : ILogger
     {
-
-        #region Design Pattern: Singleton (Single Instance)
-
-        private FileLogger() { }
-        private static readonly Lazy<ILogger> _Instance = new Lazy<ILogger>(() => new FileLogger());
-
-        public static ILogger Instance
-        {
-            get
-            {
-                return _Instance.Value;
-            }
-        }
-
-
-        #endregion
-
+        public FileLogger() { }
 
         private readonly DateTime _dateTime = DateTime.Now;
         private readonly object lockStreamWriter = new object();

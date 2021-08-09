@@ -173,12 +173,12 @@ namespace Paybook.WebUI.Agency
                 {
                     var oAgency = new AgencyModel
                     {
-                        Agency_ID = lblAgency_ID.Text.Trim(),
+                        AgencyNumber = lblAgency_ID.Text.Trim(),
                         AgencyName = txtAgencyName.Text.Trim(),
-                        Address1 = txtAgencyAddress1.Text.Trim(),
-                        Address2 = txtAgencyAddress2.Text.Trim(),
+                        AddressLine1 = txtAgencyAddress1.Text.Trim(),
+                        AddressLine2 = txtAgencyAddress2.Text.Trim(),
                         City = txtAgencyCity.Text.Trim(),
-                        State_Core = ddlAgencyState.SelectedValue.ToString(),
+                        State = ddlAgencyState.SelectedValue.ToString(),
                         Country_Core = txtAgencyCountry.Text.Trim(),
                         PhoneNumber1 = txtAgencyPhoneNumber1.Text.Trim(),
                         PhoneNumber2 = txtAgencyPhoneNumber2.Text.Trim(),
@@ -191,7 +191,7 @@ namespace Paybook.WebUI.Agency
                         //Insert New Agency  
                         sMessage = _agency.Agency_Insert(oAgency);
                         //update LastSavedId                
-                        _lastSavedId.LastSavedID_Update(oAgency.Agency_ID, "Agency");
+                        _lastSavedId.LastSavedID_Update(oAgency.AgencyNumber, "Agency");
                         SetDefault();
                         //show new Agency id
                         string sAgency_ID = _lastSavedId.GetLastSavedID(LastIdTypes.Agency);

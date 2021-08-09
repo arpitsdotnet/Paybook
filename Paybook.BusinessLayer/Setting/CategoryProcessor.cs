@@ -13,33 +13,44 @@ namespace Paybook.BusinessLayer.Setting
 {
     public interface ICategoryProcessor
     {
-        DataTable Categories_Select();
-        CategoryModel[] SubCategories_Active_Select(string sCategory_Core);
-        string SubCategories_Insert(CategoryModel categoryModel);
-        CategoryModel[] SubCategories_SelectAll(string sCategory_Core);
-        CategoryModel[] SubCategories_SelectGrid(string sOrderBy, string sGridPageNumber, string sUserName, string sCategory_Core);
-        string SubCategories_Update(CategoryModel categoryModel);
-        string SubCategories_UpdateIsActive(string sID, string sISActive);
-        CategoryModel[] SubCategory_IsExist(string sSubCategory_Core, string sCategory_Core);
-        DataTable SubCategory_SelectGstValues(string sCategoryCore);
+        List<CategoryMasterModel> GetByTypeCore(int businessId, string typeCore);
+        CategoryMasterModel GetByCore(int businessId, string core);
+        List<CategoryMasterModel> GetAllByPage(int businessId, int page, string search, string orderBy);
+        CategoryMasterModel GetById(int businessId, int id);
+        string Create(CategoryMasterModel model);
+        string Update(CategoryMasterModel model);
+        string Activate(int businessId, int id, bool active);
+        string Delete(int businessId, int id);
     }
 
     public class CategoryProcessor : ICategoryProcessor
     {
-        private ILogger _logger;
+        private readonly ILogger _logger;
         private readonly ICategoryRepository _category;
 
         public CategoryProcessor()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _category = new CategoryRepository();
         }
 
-        public DataTable Categories_Select()
+        public List<CategoryMasterModel> GetByTypeCore(int businessId, string typeCore)
         {
             try
             {
-                return _category.Categories_Select();
+                return _category.GetByTypeCore(businessId, typeCore);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public CategoryMasterModel GetByCore(int businessId, string core)
+        {
+            try
+            {
+                return _category.GetByCore(businessId, core);
             }
             catch (Exception ex)
             {
@@ -48,11 +59,12 @@ namespace Paybook.BusinessLayer.Setting
             }
         }
 
-        public CategoryModel[] SubCategories_Active_Select(string sCategory_Core)
+
+        public List<CategoryMasterModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-                return _category.SubCategories_Active_Select(sCategory_Core);
+                return _category.GetAllByPage(businessId, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -60,13 +72,24 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-
-        public string SubCategories_Insert(CategoryModel categoryModel)
+        public CategoryMasterModel GetById(int businessId, int id)
         {
             try
             {
-                bool result= _category.SubCategories_Insert(categoryModel);
-                if (result)
+                return _category.GetById(businessId, id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public string Create(CategoryMasterModel model)
+        {
+            try
+            {
+                int result = _category.Create(model);
+                if (result > 0)
                     return XmlProcessor.ReadXmlFile("BSS003");
 
                 return string.Empty;
@@ -77,39 +100,12 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-
-        public CategoryModel[] SubCategories_SelectAll(string sCategory_Core)
+        public string Update(CategoryMasterModel model)
         {
             try
             {
-                return _category.SubCategories_SelectAll(sCategory_Core);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-        }
-
-        public CategoryModel[] SubCategories_SelectGrid(string sOrderBy, string sGridPageNumber, string sUserName, string sCategory_Core)
-        {
-            try
-            {
-                return _category.SubCategories_SelectGrid(sOrderBy, sGridPageNumber, sUserName, sCategory_Core);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-        }
-
-        public string SubCategories_Update(CategoryModel categoryModel)
-        {
-            try
-            {
-                bool result = _category.SubCategories_Update(categoryModel);
-                if (result)
+                int result = _category.Update(model);
+                if (result > 0)
                     return XmlProcessor.ReadXmlFile("BSS004");
 
                 return string.Empty;
@@ -120,13 +116,12 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-
-        public string SubCategories_UpdateIsActive(string sID, string sISActive)
+        public string Activate(int businessId, int id, bool active)
         {
             try
             {
-                bool result = _category.SubCategories_UpdateIsActive(sID, sISActive);
-                if (result)
+                int result = _category.Activate(businessId, id, active);
+                if (result > 0)
                     return XmlProcessor.ReadXmlFile("BSS004");
 
                 return string.Empty;
@@ -137,25 +132,15 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-
-        public CategoryModel[] SubCategory_IsExist(string sSubCategory_Core, string sCategory_Core)
+        public string Delete(int businessId, int id)
         {
             try
             {
-                return _category.SubCategory_IsExist(sSubCategory_Core, sCategory_Core);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-        }
+                int result = _category.Delete(businessId, id);
+                if (result > 0)
+                    return XmlProcessor.ReadXmlFile("BSS004");
 
-        public DataTable SubCategory_SelectGstValues(string sCategoryCore)
-        {
-            try
-            {
-                return _category.SubCategory_SelectGstValues(sCategoryCore);
+                return string.Empty;
             }
             catch (Exception ex)
             {

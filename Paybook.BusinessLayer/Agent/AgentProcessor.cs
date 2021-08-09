@@ -29,7 +29,7 @@ namespace Paybook.BusinessLayer.Agent
 
         public AgentProcessor()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _agentRepo = new AgentRepository();
         }
         public AgentModel[] GetAllActive()

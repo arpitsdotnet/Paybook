@@ -14,31 +14,86 @@ namespace Paybook.BusinessLayer.Agency
 
     public interface IAgencyProcessor
     {
-        string Agency_Insert(AgencyModel agencyModel);
-        DataTable Agency_Select(string sAgency_ID);
-        DataTable Agency_SelectName();
         AgencyModel[] Agency_SelectRemainingAmount(string sAgency_ID);
-        string Agency_UpdateRemainingAmount(string agencyId, double amount);
-        string Agency_Update(AgencyModel agencyModel);
-        string Agency_Update_AdvancePayment(string sTotalAdvancePayment, string sAgency_ID, string sTotalRemainigAmount);
+        List<AgencyModel> GetAllName(int businessId);
+
+        List<AgencyModel> GetAllByPage(int businessId, int page, string search, string orderBy);
+        AgencyModel GetById(int businessId, int agencyId);
+        string Create(AgencyModel agencyModel);
+        string Update(AgencyModel agencyModel);
+        string Activate(int businessId, int id, bool active);
+        string Delete(int businessId, int id);
     }
 
     public class AgencyProcessor : IAgencyProcessor
     {
-        private readonly IAgencyRepository _agencyRepository;
+        private readonly IAgencyRepository _agencyRepo;
         private readonly ILogger _logger;
 
         public AgencyProcessor()
         {
-            _agencyRepository = new AgencyRepository();
-            _logger = FileLogger.Instance;
+            _agencyRepo = new AgencyRepository();
+            _logger = LoggerFactory.Instance;
         }
-        public string Agency_Insert(AgencyModel agencyModel)
+
+        public AgencyModel[] Agency_SelectRemainingAmount(string sAgency_ID)
         {
             try
             {
-                bool result = _agencyRepository.Agency_Insert(agencyModel);
-                if (result)
+                return null;// _agencyRepo.Agency_SelectRemainingAmount(sAgency_ID);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public List<AgencyModel> GetAllName(int businessId)
+        {
+            try
+            {
+                return _agencyRepo.GetAllName(businessId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+
+        public List<AgencyModel> GetAllByPage(int businessId, int page, string search, string orderBy)
+        {
+            try
+            {
+                return _agencyRepo.GetAllByPage(businessId, page, search, orderBy);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public AgencyModel GetById(int businessId, int agencyId)
+        {
+            try
+            {
+                return _agencyRepo.GetById(businessId, agencyId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public string Create(AgencyModel agencyModel)
+        {
+            try
+            {
+                int result = _agencyRepo.Create(agencyModel);
+                if (result > 0)
                 {
                     return XmlProcessor.ReadXmlFile("AGES103");
                 }
@@ -51,54 +106,12 @@ namespace Paybook.BusinessLayer.Agency
                 throw;
             }
         }
-
-        public DataTable Agency_Select(string sAgency_ID)
+        public string Update(AgencyModel agencyModel)
         {
             try
             {
-                return _agencyRepository.Agency_Select(sAgency_ID);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-
-        public DataTable Agency_SelectName()
-        {
-            try
-            {
-                return _agencyRepository.Agency_SelectName();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-
-        public AgencyModel[] Agency_SelectRemainingAmount(string sAgency_ID)
-        {
-            try
-            {
-                return _agencyRepository.Agency_SelectRemainingAmount(sAgency_ID);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-        public string Agency_UpdateRemainingAmount(string agencyId, double amount)
-        {
-            try
-            {
-                bool result = _agencyRepository.Agency_UpdateRemainingAmount(agencyId, amount);
-                if (result)
+                int result = _agencyRepo.Update(agencyModel);
+                if (result > 0)
                 {
                     return XmlProcessor.ReadXmlFile("AGES104");
                 }
@@ -111,41 +124,37 @@ namespace Paybook.BusinessLayer.Agency
                 throw;
             }
         }
-
-        public string Agency_Update(AgencyModel agencyModel)
+        public string Activate(int businessId, int id, bool active)
         {
             try
             {
-                bool result = _agencyRepository.Agency_Update(agencyModel);
-                if (result)
+                int result= _agencyRepo.Activate(businessId, id, active);
+                if (result > 0)
                 {
-                    return XmlProcessor.ReadXmlFile("AGES104");
+                    return XmlProcessor.ReadXmlFile("AgencyActivateSuccess");
                 }
-                return string.Empty;
+                return XmlProcessor.ReadXmlFile("AgencyActivateFail");
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
                 throw;
             }
         }
-
-        public string Agency_Update_AdvancePayment(string sTotalAdvancePayment, string sAgency_ID, string sTotalRemainigAmount)
+        public string Delete(int businessId, int id)
         {
             try
             {
-                bool result = _agencyRepository.Agency_Update_AdvancePayment(sTotalAdvancePayment, sAgency_ID, sTotalRemainigAmount);
-                if (result)
+                int result = _agencyRepo.Delete(businessId, id);
+                if (result > 0)
                 {
-                    return XmlProcessor.ReadXmlFile("PTS501");
+                    return XmlProcessor.ReadXmlFile("AgencyDeleteSuccess");
                 }
-                return string.Empty;
+                return XmlProcessor.ReadXmlFile("AgencyDeleteFail");
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
                 throw;
             }
         }

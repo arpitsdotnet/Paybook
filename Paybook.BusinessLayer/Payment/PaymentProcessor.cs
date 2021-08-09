@@ -7,6 +7,7 @@ using Paybook.DatabaseLayer.Payment;
 using Paybook.ServiceLayer;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
+using Paybook.ServiceLayer.Services;
 using Paybook.ServiceLayer.Xml;
 using System;
 using System.Collections.Generic;
@@ -18,14 +19,14 @@ namespace Paybook.BusinessLayer.Payment
 {
     public interface IPaymentProcessor
     {
-        string AdvancePayment_Insert(string sCurrentAdvancePayment, string sAgency_ID, string sCustomer_ID, string sAdvancePayment_Date, string sCreatedBy, string sTotalAdvancePayment, string sAdvancePaymentType);
-        PaymentModel[] Payments_ForInvoice(string sOrderBy, string sGridPageNumber, string sUserName, string sCustomer_ID, string sInvoice_ID, string sCategory_Core);
-        InvoiceModel[] Payments_Search(string sOrderBy, string sGridPageNumber, string sUserName, string sAgency_ID, string sCustomer_ID, string sPaymentDateTo, string sPaymentDateFrom);
-        int Payments_SelectCount();
         string Payments_SelectMonthsales();
-        string Payment_Insert(string sCreatedBY, string sAgency_ID, string sCustomer_ID, string sPaymentAmount, string sPaymentDate, string sPaymentStatus_Core, string sCategory_Core, string sAgent_ID, string sInvoice_ID);
-        DataTable Dashboard_GetPaymentsByLastWeek();
-        DataTable Dashboard_GetPaymentsLast20();
+        List<PaymentModel> GetAllByInvoiceId(int businessId, int invoiceId, int page, string search, string orderBy);
+        List<PaymentModel> GetAllByPage(int businessId, int page, string search, string orderBy);
+        PaymentModel GetById(int businessId, int id);
+        PaymentModel Create(PaymentModel model);
+        PaymentModel Update(PaymentModel model);
+        PaymentModel Activate(int businessId, int id, bool active);
+        PaymentModel Delete(int businessId, int id);
     }
 
     public class PaymentProcessor : IPaymentProcessor
@@ -33,102 +34,22 @@ namespace Paybook.BusinessLayer.Payment
         private readonly ILogger _logger;
         private readonly IPaymentRepository _paymentRepo;
 
-        private readonly ILastSavedIdProcessor _lastSavedIdProcessor;
+        private readonly ILastSavedNumberProcessor _lastSavedIdProcessor;
         private readonly IAgencyProcessor _agencyProcessor;
         private readonly IClientProcessor _clientProcessor;
         private readonly IInvoiceProcessor _invoiceProcessor;
-        private readonly IActivityProcessor _activityProcessor;
 
         public PaymentProcessor()
         {
-            _logger = FileLogger.Instance;
+            _logger = LoggerFactory.Instance;
             _paymentRepo = new PaymentRepository();
 
-            _lastSavedIdProcessor = new LastSavedIdProcessor();
+            _lastSavedIdProcessor = new LastSavedNumberProcessor();
             _agencyProcessor = new AgencyProcessor();
             _clientProcessor = new ClientProcessor();
             _invoiceProcessor = new InvoiceProcessor();
-            _activityProcessor = new ActivityProcessor();
         }
 
-        public string AdvancePayment_Insert(string sCurrentAdvancePayment, string sAgency_ID, string sCustomer_ID, string sAdvancePayment_Date, string sCreatedBy, string sTotalAdvancePayment, string sAdvancePaymentType)
-        {
-            try
-            {
-                string sAdvance_ID = _lastSavedIdProcessor.GetLastSavedID(LastIdTypes.Advance);
-
-                bool result = _paymentRepo.CreateAdvance(sAdvance_ID, sCurrentAdvancePayment, sAgency_ID, sCustomer_ID, sAdvancePayment_Date, sCreatedBy, sTotalAdvancePayment, sAdvancePaymentType);
-
-                if (result == true)
-                {
-
-                    //Update Advance into customer/agency table
-                    string sTotalRemainigAmount = "";
-                    if (sAgency_ID != "0")
-                        _agencyProcessor.Agency_Update_AdvancePayment(sTotalAdvancePayment, sAgency_ID, sTotalRemainigAmount);
-                    else
-                        _clientProcessor.Customer_Update_AdvancePayment(sTotalAdvancePayment, sCustomer_ID, sTotalRemainigAmount);
-
-                    //Update LastSavedID
-                    _lastSavedIdProcessor.LastSavedID_Update(sAdvance_ID, LastIdTypes.Advance);
-
-                    return XmlProcessor.ReadXmlFile("PTS504"); //Success
-                }
-                else
-                {
-                    return XmlProcessor.ReadXmlFile("OTW901"); //Internal Error
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-        public PaymentModel[] Payments_ForInvoice(string sOrderBy, string sGridPageNumber, string sUserName, string sCustomer_ID, string sInvoice_ID, string sCategory_Core)
-        {
-            try
-            {
-                return _paymentRepo.GetAllByInvoiceID(sOrderBy, sGridPageNumber, sUserName, sCustomer_ID, sInvoice_ID, sCategory_Core);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-        public InvoiceModel[] Payments_Search(string sOrderBy, string sGridPageNumber, string sUserName, string sAgency_ID, string sCustomer_ID, string sPaymentDateTo, string sPaymentDateFrom)
-        {
-            try
-            {
-                return _paymentRepo.GetAllByPage(sOrderBy, sGridPageNumber, sUserName, sAgency_ID, sCustomer_ID, sPaymentDateTo, sPaymentDateFrom);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
-        public int Payments_SelectCount()
-        {
-            try
-            {
-                DataTable dt = _paymentRepo.Payments_SelectCount();
-                if (dt != null && dt.Rows.Count > 0)
-                    return (int)dt.Rows[0]["IDCount"];
-
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-
-                throw;
-            }
-        }
         public string Payments_SelectMonthsales()
         {
             try
@@ -142,40 +63,91 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public string Payment_Insert(string sCreatedBY, string sAgency_ID, string sCustomer_ID, string sPaymentAmount, string sPaymentDate, string sPaymentStatus_Core, string sCategory_Core, string sAgent_ID, string sInvoice_ID)
+
+        public List<PaymentModel> GetAllByInvoiceId(int businessId, int invoiceId, int page, string search, string orderBy)
         {
             try
             {
-                string sReceipt_ID = _lastSavedIdProcessor.GetLastSavedID(LastIdTypes.Receipt);
-                string sReceiptID = sReceipt_ID;
+                return _paymentRepo.GetAllByInvoiceId(businessId, invoiceId, page, search, orderBy);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
 
+                throw;
+            }
+        }
+        public List<PaymentModel> GetAllByPage(int businessId, int page, string search, string orderBy)
+        {
+            try
+            {
+                return _paymentRepo.GetAllByPage(businessId, page, search, orderBy);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
 
-                bool result = _paymentRepo.Create(sReceipt_ID, sCreatedBY, sAgency_ID, sCustomer_ID, sPaymentAmount, sPaymentDate, sPaymentStatus_Core, sCategory_Core, sAgent_ID, sInvoice_ID);
-                if (result)
+                throw;
+            }
+        }
+        public PaymentModel GetById(int businessId, int id)
+        {
+            try
+            {
+                return _paymentRepo.GetById(businessId, id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public PaymentModel Create(PaymentModel model)
+        {
+            try
+            {
+                PaymentModel output = new PaymentModel { IsSucceeded = false };
+
+                int result = _paymentRepo.Create(model);
+                if (result > 0)
                 {
 
-                    //Update LastSavedID
-                    _lastSavedIdProcessor.LastSavedID_Update(sReceiptID, LastIdTypes.Receipt);
-
-                    //Update Invoice Table status            
-                    _invoiceProcessor.Invoices_Update_PaymentStatus(sCreatedBY, sCategory_Core, sPaymentStatus_Core, sPaymentDate, sInvoice_ID);
-
                     //Insert Into Activity Table
-                    _activityProcessor.Create(new ActivityModel
-                    {
-                        CreatedBY = sCreatedBY,
-                        Activity_Date = sPaymentDate,
-                        Agency_ID = sAgency_ID,
-                        Customer_ID = sCustomer_ID,
-                        PaymentAmount = sPaymentAmount,
-                        Category_Core = sCategory_Core,
-                        Invoice_ID = sInvoice_ID,
-                        InvoiceStatus_Core = sPaymentStatus_Core
-                    });
+                    //ActivityBuilder activityBuilder = new ActivityBuilder();
+                    //var activity = activityBuilder
+                    //    .AddHeader(sPaymentStatus_Core, invoiceModel.Invoice_Date, statusClass)
+                    //    .AddBody("Payment", sInvoice_ID, invoiceModel.CustomerName, invoiceModel.InvoiceStatus_Disp, invoiceModel.Amount);
 
-                    return XmlProcessor.ReadXmlFile("PTS501");
+                    //string text = activity.ToString();
+
+                    //string textHtml = activity.ToStringHtml();
+
+                    //var model = new ActivityModel
+                    //{
+                    //    CreateBy = sCreatedBY,
+                    //    UserID = invoiceModel.CreatedBY,
+                    //    //BusinessID = invoiceModel.BusinessID,
+                    //    Status = invoiceModel.InvoiceStatus_Disp,
+                    //    Text = text,
+                    //    HtmlText = textHtml
+                    //};
+
+                    //_activityProcessor.Create(new ActivityModel
+                    //{
+                    //    CreatedBY = sCreatedBY,
+                    //    Activity_Date = sPaymentDate,
+                    //    Agency_ID = sAgency_ID,
+                    //    Customer_ID = sCustomer_ID,
+                    //    PaymentAmount = sPaymentAmount,
+                    //    Category_Core = sCategory_Core,
+                    //    Invoice_ID = sInvoice_ID,
+                    //    InvoiceStatus_Core = sPaymentStatus_Core
+                    //});
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = XmlProcessor.ReadXmlFile("PTS501");
                 }
-                return string.Empty;
+                return output;
             }
             catch (Exception ex)
             {
@@ -184,11 +156,19 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public DataTable Dashboard_GetPaymentsByLastWeek()
+        public PaymentModel Update(PaymentModel model)
         {
             try
             {
-                return _paymentRepo.Dashboard_GetPaymentsByLastWeek();
+                PaymentModel output = new PaymentModel { IsSucceeded = false };
+                int result = _paymentRepo.Update(model);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                }
+                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+                return output;
             }
             catch (Exception ex)
             {
@@ -197,11 +177,42 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public DataTable Dashboard_GetPaymentsLast20()
+        public PaymentModel Activate(int businessId, int id, bool active)
         {
             try
             {
-                return _paymentRepo.Dashboard_GetPaymentsLast20();
+                PaymentModel output = new PaymentModel { IsSucceeded = false };
+                int result = _paymentRepo.Activate(businessId, id, active);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                }
+                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteActivateFail");
+                return output;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public PaymentModel Delete(int businessId, int id)
+        {
+            try
+            {
+                PaymentModel output = new PaymentModel { IsSucceeded = false };
+                int result = _paymentRepo.Delete(businessId, id);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                }
+                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteDeleteFail");
+                return output;
+
             }
             catch (Exception ex)
             {
