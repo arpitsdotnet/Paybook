@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Invoice
 {
-    public interface IInvoiceRepository : IRepository<InvoiceModel>
+    public interface IInvoiceRepository : IBaseRepository<InvoiceModel>
     {
         InvoiceModel[] Invoices_Search(string sOrderBy, string sGridPageNumber, string sUserName, string sAgency_ID, string sCustomer_ID, string sReceiptID, string sCategory_Core, string sInvoiceDateTo, string sInvoiceDateFrom, string sInvoiceStatus_Core);
         bool Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID);
@@ -352,7 +352,7 @@ namespace Paybook.DatabaseLayer.Invoice
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_Invoices_Insert", model, out int invoiceId, DbType.Int32, "Id");
+                var result = _dbContext.SaveDataOutParam("spi_Invoices_Insert", model, out int invoiceId, DbType.Int32, null, "Id");
 
                 model.Id = invoiceId;
 

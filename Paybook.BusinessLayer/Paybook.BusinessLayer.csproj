@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Paybook.BusinessLayer</RootNamespace>
     <AssemblyName>Paybook.BusinessLayer</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -55,11 +58,14 @@
     <Compile Include="Common\DashboardProcessor.cs" />
     <Compile Include="Common\LastSavedNumberProcessor.cs" />
     <Compile Include="Identity\LoginProcessor.cs" />
+    <Compile Include="Identity\UserProcessor.cs" />
     <Compile Include="Invoice\InvoiceProcessor.cs" />
     <Compile Include="Note\NoteProcessor.cs" />
     <Compile Include="Payment\PaymentProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report\ReportProcessor.cs" />
+    <Compile Include="Setting\StateProcessor.cs" />
+    <Compile Include="Setting\CountryProcessor.cs" />
     <Compile Include="Setting\CategoryTypeProcessor.cs" />
     <Compile Include="Setting\CategoryProcessor.cs" />
     <Compile Include="Invoice\InvoiceServiceProcessor.cs" />

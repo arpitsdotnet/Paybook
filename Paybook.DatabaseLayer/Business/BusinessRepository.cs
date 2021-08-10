@@ -9,10 +9,17 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Business
 {
-    public interface IBusinessRepository : IRepository<BusinessModel>
+    public interface IBusinessRepository
     {
-        BusinessModel GetByUserId(int userId);
         bool IsExist(int businessId);
+
+        List<BusinessModel> GetAllByUsername(string username); 
+        BusinessModel GetSelectedByUsername(string username); 
+         BusinessModel GetById(int id);
+        int Create(BusinessModel model);
+        int Update(BusinessModel model);
+        int Activate(int id, bool active);
+        int Delete(int id);
     }
 
     public class BusinessRepository : IBusinessRepository
@@ -33,7 +40,7 @@ namespace Paybook.DatabaseLayer.Business
             {
                 var p = new { BusinessId = businessId };
 
-                var result = _dbContext.SaveDataOutParam<dynamic, bool>("sps_Businesses_IsExist", p, out bool isExist, DbType.Boolean, "IsExist");
+                var result = _dbContext.SaveDataOutParam<dynamic, bool>("sps_Businesses_IsExist", p, out bool isExist, DbType.Boolean, null, "IsExist");
                 //return _dbContext.LoadDataByProcedure("sps_CompanyProfile_IsExist", null);
 
                 return isExist;
@@ -44,32 +51,14 @@ namespace Paybook.DatabaseLayer.Business
                 throw;
             }
         }
-        public BusinessModel GetByUserId(int userId)
+
+        public List<BusinessModel> GetAllByUsername(string username)
         {
             try
             {
-                var p = new { UserId = userId };
+                var p = new { Username = username };
 
-                var result = _dbContext.LoadData<BusinessModel, dynamic>("sps_Businesses_GetByUserId", p);
-                //return _dbContext.LoadData("sps_CompanyProfile_Select", null);
-
-                return result.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                throw;
-            }
-        }
-
-
-        public List<BusinessModel> GetAllByPage(int businessId, int page, string search, string orderBy)
-        {
-            try
-            {
-                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
-
-                var result = _dbContext.LoadData<BusinessModel, dynamic>("sps_Businesses_GetAllByPage", p);
+                var result = _dbContext.LoadData<BusinessModel, dynamic>("sps_Businesses_GetAllByUsername", p);
                 //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
 
                 return result;
@@ -80,11 +69,28 @@ namespace Paybook.DatabaseLayer.Business
                 throw;
             }
         }
-        public BusinessModel GetById(int businessId, int id)
+        public BusinessModel GetSelectedByUsername(string username)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id };
+                var p = new { Username = username };
+
+                var result = _dbContext.LoadData<BusinessModel, dynamic>("sps_Businesses_GetSelectedByUsername", p);
+                //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
+
+                return result.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+        public BusinessModel GetById(int id)
+        {
+            try
+            {
+                var p = new { Id = id };
 
                 var result = _dbContext.LoadData<BusinessModel, dynamic>("sps_Businesses_GetById", p);
 
@@ -100,7 +106,7 @@ namespace Paybook.DatabaseLayer.Business
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_Businesses_Insert", model, out int categoryId, DbType.Int32, "Id");
+                var result = _dbContext.SaveDataOutParam("spi_Businesses_Insert", model, out int categoryId, DbType.Int32, null, "Id");
                 //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
 
                 model.Id = categoryId;
@@ -128,11 +134,11 @@ namespace Paybook.DatabaseLayer.Business
                 throw;
             }
         }
-        public int Activate(int businessId, int id, bool active)
+        public int Activate(int id, bool active)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id, IsActive = active };
+                var p = new { Id = id, IsActive = active };
 
                 var result = _dbContext.SaveData("spu_Businesses_Activate", p);
                 //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
@@ -145,11 +151,11 @@ namespace Paybook.DatabaseLayer.Business
                 throw;
             }
         }
-        public int Delete(int businessId, int id)
+        public int Delete(int id)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id };
+                var p = new { Id = id };
 
                 var result = _dbContext.SaveData("spd_Businesses_Delete", p);
                 //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);

@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Client
 {
-    public interface IClientRepository : IRepository<ClientModel>
+    public interface IClientRepository : IBaseRepository<ClientModel>
     {
         bool IsExists(ClientModel customerModel);
         int GetCount(int businessId);
@@ -121,7 +121,7 @@ namespace Paybook.DatabaseLayer.Client
             {
                 var p = new { BusinessId = businessId };
 
-                var result = _dbContext.SaveDataOutParam("sps_Clients_GetCount", p, out int count, DbType.Int32, "Count");
+                var result = _dbContext.SaveDataOutParam("sps_Clients_GetCount", p, out int count, DbType.Int32, null, "Count");
 
                 return count;
             }
@@ -135,7 +135,7 @@ namespace Paybook.DatabaseLayer.Client
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("sps_Clients_IsExist", customerModel, out bool isExist, DbType.Boolean, "IsExist");
+                var result = _dbContext.SaveDataOutParam("sps_Clients_IsExist", customerModel, out bool isExist, DbType.Boolean, null, "IsExist");
                 //DataTable dt = _dbContext.LoadDataByProcedure("sps_Customer_IsExist", oParams);
                 //if (dt.Rows.Count > 0 && dt != null)
                 //{
@@ -192,7 +192,7 @@ namespace Paybook.DatabaseLayer.Client
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_Clients_Insert", model, out int categoryId, DbType.Int32, "Id");
+                var result = _dbContext.SaveDataOutParam("spi_Clients_Insert", model, out int categoryId, DbType.Int32, null, "Id");
                 //_dbContext.LoadDataByProcedure("sps_Customer_Insert", oParams);
 
                 model.Id = categoryId;

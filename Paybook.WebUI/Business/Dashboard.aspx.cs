@@ -67,16 +67,16 @@ namespace Paybook.WebUI.Business
                         string clientName = dr["CustomerName"].ToString();
                         string categoryCore = dr["Category_Core"].ToString();
 
-                        string statusClass = ActivityStatusCssConst.DEFAULT;
+                        string statusClass = ActivityStatusCss.DEFAULT;
 
                         if (invoiceStatusCore == InvoiceStatusConst.Overdue)
-                            statusClass = ActivityStatusCssConst.DANGER;
+                            statusClass = ActivityStatusCss.DANGER;
                         else if (invoiceStatusCore == InvoiceStatusConst.Paid || invoiceStatusCore == InvoiceStatusConst.PaidPartial)
-                            statusClass = ActivityStatusCssConst.SUCCESS;
+                            statusClass = ActivityStatusCss.SUCCESS;
                         else if (invoiceStatusCore == InvoiceStatusConst.Open)
-                            statusClass = ActivityStatusCssConst.INFO;
+                            statusClass = ActivityStatusCss.INFO;
                         else if (invoiceStatusCore == InvoiceStatusConst.Close)
-                            statusClass = ActivityStatusCssConst.DEFAULT;
+                            statusClass = ActivityStatusCss.DEFAULT;
 
                         sb.AppendFormat("<li>{0}</li>", ActivityListViewGenerate(statusClass, invoiceID, sActivityDate, paymentAmount, clientName, invoiceStatus, categoryCore));
                     }
@@ -84,7 +84,7 @@ namespace Paybook.WebUI.Business
                 }
                 else
                 {
-                    sb.AppendLine("<div class=\"" + ActivityStatusCssConst.INFO + " pt-5\">Ooh! We did not find any activity till last month. </div>");
+                    sb.AppendLine("<div class=\"" + ActivityStatusCss.INFO + " pt-5\">Ooh! We did not find any activity till last month. </div>");
                 }
                 idActivitiesList.InnerHtml = sb.ToString();
             }

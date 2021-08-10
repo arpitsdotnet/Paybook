@@ -9,6 +9,7 @@ using Paybook.ServiceLayer.Xml;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Web.Security;
 
 namespace Paybook.WebUI.Identity
 {
@@ -48,38 +49,41 @@ namespace Paybook.WebUI.Identity
         {
             try
             {
-                LoginModel loginModel = new LoginModel
+                var userModel = new IdentityUserModel
                 {
                     Username = txtUserName.Text.Trim(),
                     PasswordHash = txtPassword.Text.Trim()
                 };
 
-                string message = IsModelValid(loginModel);
+                string message = IsModelValid(userModel);
                 if (!string.IsNullOrWhiteSpace(message))
                 {
                     ExceptionMessage(ExceptionType.WARNING, message);
                     return;
                 }
 
-                string result = _login.IsValid(loginModel);
+                string result = _login.IsValid(userModel);
+                if(result == LoginResultConst.UserNotMatch)
+                {
+                    ExceptionMessage(ExceptionType.WARNING, XmlProcessor.ReadXmlFile("UserNotMatch"));
+                    return;
+                }
+                else if (result == LoginResultConst.UserNotFound)
+                {
+                    ExceptionMessage(ExceptionType.WARNING, XmlProcessor.ReadXmlFile("UserNotFound"));
+                    return;
+                }
+                else if (result == LoginResultConst.UserMatch)
+                {
+                    FormsAuthentication.SetAuthCookie(userModel.Username, true);
+                    Response.Redirect(Application["Path"] + "dashboard", false);
+                }
 
-                //if (dt != null && dt.Rows.Count > 0)
-                //{
-                //    Session["LoggedInUser"] = dt.Rows[0]["CompanyName"].ToString() + "/" + dt.Rows[0]["UserID"].ToString();
-
-                //    //OverdueInvoicesInsertToActivitiesOnFirstRun();
-
-                //    Response.Redirect(Application["Path"] + "dashboard", false);
-                //}
-                //else
-                //{
-                //    ExceptionMessage(ExceptionType.WARNING, XmlProcessor.ReadXmlFile("BSW006"));
-                //}
+                ExceptionMessage(ExceptionType.WARNING, XmlProcessor.ReadXmlFile("BSW006"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(_logger.MethodName, ex);
-
                 ExceptionMessage(ExceptionType.ERROR, XmlProcessor.ReadXmlFile("OTW901"));
             }
         }
@@ -139,7 +143,7 @@ namespace Paybook.WebUI.Identity
                 return true;
         }
 
-        private string IsModelValid(LoginModel loginModel)
+        private string IsModelValid(IdentityUserModel loginModel)
         {
             if (loginModel.Username == "" || loginModel.PasswordHash == "")
             {

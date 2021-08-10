@@ -3,6 +3,7 @@ using Paybook.BusinessLayer.Business;
 using Paybook.BusinessLayer.Client;
 using Paybook.DatabaseLayer.Report;
 using Paybook.ServiceLayer;
+using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Xml;
@@ -172,7 +173,7 @@ namespace Paybook.BusinessLayer.Report
                     //
 
                     //get Company and customer Information
-                    BusinessModel business = _businessProcessor.GetByUserId(businessId);
+                    BusinessModel business = null;// _businessProcessor.GetAllByUserId(businessId);
 
                     DataTable dt_CompanyProfile = new DataTable();
                     dt_CompanyProfile.Columns.Add("CustomerName");
@@ -356,7 +357,7 @@ namespace Paybook.BusinessLayer.Report
                     //
 
                     //get Company and customer Information
-                    BusinessModel business = _businessProcessor.GetByUserId(businessId);
+                    BusinessModel business = null;// _businessProcessor.GetAllByUserId(businessId);
 
                     DataTable agenctTable = new DataTable();
                     agenctTable.Columns.Add("AgencyName");

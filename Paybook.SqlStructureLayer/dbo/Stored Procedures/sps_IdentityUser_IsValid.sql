@@ -6,7 +6,6 @@ AS
 BEGIN
 	IF EXISTS(SELECT Id FROM IdentityUsers WHERE Username=@UserName AND IsActive = 1)
 	BEGIN 	
-		SET	@Message = 'UserExist';
 		IF EXISTS(SELECT Id FROM IdentityUsers WHERE Username=@UserName AND [PasswordHash]=@PasswordHash)
 		BEGIN
 			SET	@Message = 'UserMatch';
@@ -18,7 +17,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		SET	@Message = 'UserNotExist'
+		SET	@Message = 'UserNotFound'
 	END
 END
 GO

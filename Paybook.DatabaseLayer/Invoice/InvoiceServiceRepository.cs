@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Invoice
 {
-    public interface IInvoiceServiceRepository:IRepository<InvoiceServiceModel>
+    public interface IInvoiceServiceRepository:IBaseRepository<InvoiceServiceModel>
     {
         List<InvoiceServiceModel> GetAllByInvoiceId(int businessId, int invoiceId);
         bool IsExist(string businessId, int id);
@@ -47,7 +47,7 @@ namespace Paybook.DatabaseLayer.Invoice
             {
                 var p = new { BusinessId = businessId, Id = id };
 
-                var result = _dbContext.SaveDataOutParam("sps_InvoiceServices_IsExist", p, out bool isExist, DbType.Boolean, "IsExist");
+                var result = _dbContext.SaveDataOutParam("sps_InvoiceServices_IsExist", p, out bool isExist, DbType.Boolean, null, "IsExist");
                 //DataTable dt = _dbContext.LoadDataByProcedure("sps_Particular_IsExist", oParams);
                 //if (dt != null && dt.Rows.Count > 0)
                 //{
@@ -93,7 +93,7 @@ namespace Paybook.DatabaseLayer.Invoice
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_InvoiceServices_Insert", model, out int serviceId, DbType.Int32, "Id");
+                var result = _dbContext.SaveDataOutParam("spi_InvoiceServices_Insert", model, out int serviceId, DbType.Int32, null, "Id");
 
                 model.Id = serviceId;
 

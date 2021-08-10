@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Dapper.Contrib.Extensions;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 
@@ -13,7 +15,8 @@ namespace Paybook.ServiceLayer.Models
         public DateTime? ModifyDate { get; set; }
         public string CreateBy { get; set; }
         public string ModifyBy { get; set; }
-        public string Username { get; set; }
+        public string Username { get; set; }        
+        public string Password { get; set; }
         public string PasswordHash { get; set; }
         public string Email { get; set; }
         public bool IsEmailConfirmed { get; set; }

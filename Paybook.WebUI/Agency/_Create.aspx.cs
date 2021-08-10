@@ -17,11 +17,11 @@ namespace Paybook.WebUI.Agency
     public partial class Create : System.Web.UI.Page
     {
         private readonly ILogger _logger;
-        private readonly ILastSavedIdProcessor _lastSavedId;
+        private readonly ILastSavedNumberProcessor _lastSavedId;
         private readonly ICategoryProcessor _category;
         private readonly IAgencyProcessor _agency;
 
-        public Create(ILogger logger, ILastSavedIdProcessor lastSavedId, ICategoryProcessor category, IAgencyProcessor agency)
+        public Create(ILogger logger, ILastSavedNumberProcessor lastSavedId, ICategoryProcessor category, IAgencyProcessor agency)
         {
             _logger = logger;
             _lastSavedId = lastSavedId;

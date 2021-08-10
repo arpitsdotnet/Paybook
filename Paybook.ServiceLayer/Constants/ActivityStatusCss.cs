@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Paybook.ServiceLayer.Constants
 {
-    public class ActivityStatusCssConst
+    public class ActivityStatusCss
     {
         public const string DANGER = "text-danger";
         public const string SUCCESS = "text-success";

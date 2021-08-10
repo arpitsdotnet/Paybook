@@ -11,7 +11,7 @@ namespace Paybook.WebUI.Business
 {
 
 
-    public partial class Profile
+    public partial class Create
     {
 
         /// <summary>

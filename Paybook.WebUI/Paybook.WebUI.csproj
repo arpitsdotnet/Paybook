@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Identity\Create.aspx" />
     <Content Include="Invoice\Create.aspx" />
     <Content Include="Site.Master" />
     <Content Include="Identity\Identity.Master" />
@@ -111,10 +112,8 @@
   <ItemGroup>
     <Content Include="Agency\_Create.aspx" />
     <Content Include="Agency\_CreateAgencyPartial.aspx" />
-    <Content Include="Agent\Create.aspx" />
-    <Content Include="Agent\Index.aspx" />
     <Content Include="Business\Dashboard.aspx" />
-    <Content Include="Business\Profile.aspx" />
+    <Content Include="Business\Create.aspx" />
     <Content Include="Client\Create.aspx" />
     <Content Include="Client\Index.aspx" />
     <Content Include="Global.asax" />
@@ -126,7 +125,7 @@
     <Content Include="Note\_CreateNotePartial.aspx" />
     <Content Include="Payment\Create.aspx" />
     <Content Include="Setting\Category.aspx" />
-    <Content Include="Invoice\Particular.aspx" />
+    <Content Include="Invoice\_CreateServicePartial.aspx" />
     <Content Include="Setting\_CreateCategoryPartial.aspx" />
     <Content Include="Web.config" />
     <Content Include="_Documents\AC20170002_v1_20170401_20171104.html" />
@@ -515,20 +514,6 @@
     <Compile Include="Agency\_CreateAgencyPartial.aspx.designer.cs">
       <DependentUpon>_CreateAgencyPartial.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Agent\Create.aspx.cs">
-      <DependentUpon>Create.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Agent\Create.aspx.designer.cs">
-      <DependentUpon>Create.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Agent\Index.aspx.cs">
-      <DependentUpon>Index.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Agent\Index.aspx.designer.cs">
-      <DependentUpon>Index.aspx</DependentUpon>
-    </Compile>
     <Content Include="App_Code\dsInvoicePayment.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -541,12 +526,12 @@
     <Compile Include="Business\Dashboard.aspx.designer.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Business\Profile.aspx.cs">
-      <DependentUpon>Profile.aspx</DependentUpon>
+    <Compile Include="Business\Create.aspx.cs">
+      <DependentUpon>Create.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Business\Profile.aspx.designer.cs">
-      <DependentUpon>Profile.aspx</DependentUpon>
+    <Compile Include="Business\Create.aspx.designer.cs">
+      <DependentUpon>Create.aspx</DependentUpon>
     </Compile>
     <Compile Include="Client\Create.aspx.cs">
       <DependentUpon>Create.aspx</DependentUpon>
@@ -564,6 +549,13 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Identity\Create.aspx.cs">
+      <DependentUpon>Create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Identity\Create.aspx.designer.cs">
+      <DependentUpon>Create.aspx</DependentUpon>
     </Compile>
     <Compile Include="Identity\Identity.Master.cs">
       <DependentUpon>Identity.Master</DependentUpon>
@@ -636,12 +628,12 @@
     <Compile Include="Setting\Category.aspx.designer.cs">
       <DependentUpon>Category.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Invoice\Particular.aspx.cs">
-      <DependentUpon>Particular.aspx</DependentUpon>
+    <Compile Include="Invoice\_CreateServicePartial.aspx.cs">
+      <DependentUpon>_CreateServicePartial.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Invoice\Particular.aspx.designer.cs">
-      <DependentUpon>Particular.aspx</DependentUpon>
+    <Compile Include="Invoice\_CreateServicePartial.aspx.designer.cs">
+      <DependentUpon>_CreateServicePartial.aspx</DependentUpon>
     </Compile>
     <Compile Include="Setting\_CreateCategoryPartial.aspx.cs">
       <DependentUpon>_CreateCategoryPartial.aspx</DependentUpon>

@@ -8,7 +8,7 @@ BEGIN
 	WHERE BusinessId = @BusinessId AND IsActive = 1 AND 
 		(InvoiceDate BETWEEN DATEADD(DAY, -(@Days), GETDATE()) AND GETDATE())
 	GROUP BY CONVERT(DATE, InvoiceDate)
-	ORDER BY InvoiceDate DESC;
+	ORDER BY CONVERT(DATE, InvoiceDate) DESC;
 END
 
 

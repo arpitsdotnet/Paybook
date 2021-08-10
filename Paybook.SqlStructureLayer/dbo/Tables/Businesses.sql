@@ -16,8 +16,10 @@
     [AddressLine1] NVARCHAR(256) NOT NULL, 
     [AddressLine2] NVARCHAR(256) NULL, 
     [City] NVARCHAR(50) NOT NULL, 
-    [State] NVARCHAR(50) NOT NULL, 
-    [Country] NVARCHAR(50) NOT NULL, 
+    [StateId] INT NOT NULL, 
+    [CountryId] INT NOT NULL, 
     [Pincode] NVARCHAR(10) NOT NULL, 
     CONSTRAINT [PK_Businesses] PRIMARY KEY ([Id]), 
+    CONSTRAINT [FK_Businesses_ToStateMaster_StateId] FOREIGN KEY ([StateId]) REFERENCES [StateMaster]([Id]), 
+    CONSTRAINT [FK_Businesses_ToCountryMaster_StateId] FOREIGN KEY ([CountryId]) REFERENCES [CountryMaster]([Id]), 
 )

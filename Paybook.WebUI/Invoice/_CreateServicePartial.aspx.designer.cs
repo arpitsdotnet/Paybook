@@ -11,7 +11,7 @@ namespace Paybook.WebUI.Invoice
 {
 
 
-    public partial class Particular
+    public partial class _CreateServicePartial
     {
 
         /// <summary>

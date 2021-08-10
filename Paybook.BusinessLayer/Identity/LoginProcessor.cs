@@ -1,6 +1,7 @@
 ﻿using Paybook.DatabaseLayer.Identity;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
+using Paybook.ServiceLayer.Xml;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,7 +13,13 @@ namespace Paybook.BusinessLayer.Identity
 
     public interface ILoginProcessor
     {
+        /// <summary>
+        /// Check if username valid
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>string: UserMatch | UserNotMatch | UserNotExist</returns>
         string IsValid(IdentityUserModel loginModel);
+
     }
 
     public class LoginProcessor : ILoginProcessor
@@ -25,6 +32,7 @@ namespace Paybook.BusinessLayer.Identity
             _logger = LoggerFactory.Instance;
             _loginRepo = new LoginRepository();
         }
+
         public string IsValid(IdentityUserModel loginModel)
         {
             try
@@ -38,5 +46,6 @@ namespace Paybook.BusinessLayer.Identity
                 throw;
             }
         }
+
     }
 }

@@ -1,0 +1,13 @@
+﻿@model Paybook.Web.MvcUI.Models.DashboardCounterWidgetModel
+
+<div class="col-lg-2 col-md-12 @Model.BgColorClass @Model.BgColorHoverClass" style="border-bottom: solid 5px rgba(0, 0, 0, .3);">
+    <div class="fwt-container-small fwt-padding-8" style="position: relative;">
+        <div class="fwt-bold fwt-large fwt-padding-8">
+            @Model.Total
+        </div>
+        <div class="fwt-tiny">
+            @Model.Count&nbsp;@Model.CountText
+        </div>
+        <div style="font-size: 30px; position: absolute; top: 0px; right: 10px; @Model.RsSymbolColor"><i class="fa fa-inr"></i></div>
+    </div>
+</div>

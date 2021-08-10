@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Dapper.Contrib.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Paybook.ServiceLayer.Models
 {
-    public class StateMasterModel
+    public class StateMasterModel : BaseResultStatusModel
     {
         public int Id { get; set; }
         public bool IsActive { get; set; }

@@ -13,19 +13,18 @@ using System.Web.UI;
 
 namespace Paybook.WebUI.Invoice
 {
-    public partial class Particular : System.Web.UI.Page
+    public partial class _CreateServicePartial : System.Web.UI.Page
     {
         private readonly ILogger _logger;
         private readonly IInvoiceProcessor _invoice;
         private readonly IClientProcessor _client;
-        private readonly IRemarkProcessor _remark;
+        //private readonly IRemarkProcessor _remark;
 
-        public Particular(ILogger logger, IInvoiceProcessor invoice, IClientProcessor client, IRemarkProcessor remark)
+        public _CreateServicePartial(ILogger logger, IInvoiceProcessor invoice, IClientProcessor client)
         {
             _logger = logger;
             _invoice = invoice;
             _client = client;
-            _remark = remark;
         }
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -56,22 +55,6 @@ namespace Paybook.WebUI.Invoice
                 _logger.LogError(_logger.MethodName, ex);
                 ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("OTW901") + "');});", true);
             }
-        }
-        protected void btnSubmitRemark_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string sInvoice_ID = hfInvoice_ID.Value;
-                string sRemark = txtRemak.Text.Trim();
-                string message = _remark.Invoice_RemarkUpdate(sInvoice_ID, sRemark);
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + message + "');});", true);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(_logger.MethodName, ex);
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("OTW901") + "');});", true);
-            }
-
         }
         protected void btnBack_ServerClick1(object sender, EventArgs e)
         {

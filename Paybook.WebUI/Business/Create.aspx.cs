@@ -2,6 +2,7 @@
 using Paybook.BusinessLayer.Business;
 using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer;
+using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Xml;
@@ -15,13 +16,13 @@ using System.Web.UI.WebControls;
 
 namespace Paybook.WebUI.Business
 {
-    public partial class Profile : System.Web.UI.Page
+    public partial class Create : System.Web.UI.Page
     {
         private readonly ILogger _logger;
         private readonly ICategoryProcessor _category;
         private readonly IBusinessProcessor _business;
 
-        public Profile(ILogger logger, ICategoryProcessor category, IBusinessProcessor business)
+        public Create(ILogger logger, ICategoryProcessor category, IBusinessProcessor business)
         {
             _logger = logger;
             _category = category;
@@ -106,7 +107,7 @@ namespace Paybook.WebUI.Business
         {
             try
             {
-                DataTable dt = _business.IsExist();
+                DataTable dt = _business.IsExist(0);
                 if (dt.Rows.Count > 0 && dt != null)
                 {
                     if (Int32.Parse(dt.Rows[0]["Company_ID"].ToString()) == 0)

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Setting
 {
-    public interface ICategoryTypeRepository : IRepository<CategoryTypeMasterModel>
+    public interface ICategoryTypeRepository : IBaseRepository<CategoryTypeMasterModel>
     {
     }
 
@@ -60,7 +60,7 @@ namespace Paybook.DatabaseLayer.Setting
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_CategoryTypeMaster_Insert", model, out int categoryId, DbType.Int32, "Id");
+                var result = _dbContext.SaveDataOutParam("spi_CategoryTypeMaster_Insert", model, out int categoryId, DbType.Int32, null, "Id");
                 //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
 
                 model.Id = categoryId;

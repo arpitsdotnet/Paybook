@@ -33,7 +33,9 @@ namespace Paybook.DatabaseLayer.Identity
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("sps_IdentityUser_IsValid", model, out string message, DbType.String, "Message");
+                var p = new { Username = model.Username, PasswordHash = model.PasswordHash };
+
+                var result = _dbContext.SaveDataOutParam("sps_IdentityUser_IsValid", p, out string message, DbType.String, 20, "Message");
                 //DataTable dt = _dbContext.LoadDataByProcedure("sps_IdentityUser_IsValid", parameters);
                 //if (dt != null && dt.Rows.Count > 0)
                 //{
@@ -51,5 +53,38 @@ namespace Paybook.DatabaseLayer.Identity
                 throw;
             }
         }
+        public bool IsForgetPassword(string email)
+        {
+            try
+            {
+                var p = new { Email = email };
+
+                // Is Email Exists
+
+                // If exists, send password link to that emailid
+
+                // Check if valid link is clicked to update password
+                
+                // Update the new password
+
+                var result = _dbContext.SaveDataOutParam("sps_IdentityUser_IsValid", p, out bool isExist, DbType.String, 20, "IsExist");
+                //DataTable dt = _dbContext.LoadDataByProcedure("sps_IdentityUser_IsValid", parameters);
+                //if (dt != null && dt.Rows.Count > 0)
+                //{
+                //    if (!(dt.Rows[0]["Message"] is null))
+                //    {
+                //        return dt.Rows[0]["Message"].ToString();
+                //    }
+                //}
+
+                return isExist;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+                throw;
+            }
+        }
+
     }
 }

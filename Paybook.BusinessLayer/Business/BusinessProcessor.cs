@@ -14,9 +14,14 @@ namespace Paybook.BusinessLayer.Business
     public interface IBusinessProcessor
     {
         bool IsExist(int businessId);
-        BusinessModel GetByUserId(int userId);
-        string Create(BusinessModel businessModel);
-        string Update(BusinessModel businessModel);
+
+        List<BusinessModel> GetAllByUsername(string username);
+        BusinessModel GetSelectedByUsername(string username);
+        BusinessModel GetById(int id);
+        BusinessModel Create(BusinessModel model);
+        BusinessModel Update(BusinessModel model);
+        BusinessModel Activate(int id, bool active);
+        BusinessModel Delete(int id);
     }
 
     public class BusinessProcessor : IBusinessProcessor
@@ -44,11 +49,11 @@ namespace Paybook.BusinessLayer.Business
                 throw;
             }
         }
-        public BusinessModel GetByUserId(int userId)
+        public List<BusinessModel> GetAllByUsername(string username)
         {
             try
             {
-                return _businessRepo.GetByUserId(userId);
+                return _businessRepo.GetAllByUsername(username);
             }
             catch (Exception ex)
             {
@@ -57,16 +62,44 @@ namespace Paybook.BusinessLayer.Business
                 throw;
             }
         }
-
-        public string Create(BusinessModel businessModel)
+        public BusinessModel GetSelectedByUsername(string username)
         {
             try
             {
+                return _businessRepo.GetSelectedByUsername(username);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public BusinessModel GetById(int id)
+        {
+            try
+            {
+                return _businessRepo.GetById(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public BusinessModel Create(BusinessModel businessModel)
+        {
+            try
+            {
+                var output = new BusinessModel { IsSucceeded = false, ReturnMessage = "Current request failed due to technical issue, please try again later." };
                 int result = _businessRepo.Create(businessModel);
                 if (result > 0)
-                    return XmlProcessor.ReadXmlFile("CPS401");
-
-                return string.Empty;
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = "Business has been created successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                }
+                return output;
             }
             catch (Exception ex)
             {
@@ -75,15 +108,58 @@ namespace Paybook.BusinessLayer.Business
                 throw;
             }
         }
-        public string Update(BusinessModel businessModel)
+        public BusinessModel Update(BusinessModel businessModel)
         {
             try
             {
+                var output = new BusinessModel { IsSucceeded = false, ReturnMessage = "Current request failed due to technical issue, please try again later." };
                 int result = _businessRepo.Update(businessModel);
                 if (result > 0)
-                    return XmlProcessor.ReadXmlFile("CPS401");
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = "Business has been updated successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                }
+                return output;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
 
-                return string.Empty;
+                throw;
+            }
+        }
+        public BusinessModel Activate(int id, bool active)
+        {
+            try
+            {
+                var output = new BusinessModel { IsSucceeded = false, ReturnMessage = "Current request failed due to technical issue, please try again later." };
+                int result = _businessRepo.Activate(id, active);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = "Business has been activated/deactivated successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                }
+                return output;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(_logger.MethodName, ex);
+
+                throw;
+            }
+        }
+        public BusinessModel Delete(int id)
+        {
+            try
+            {
+                var output = new BusinessModel { IsSucceeded = false, ReturnMessage = "Current request failed due to technical issue, please try again later." };
+                int result = _businessRepo.Delete(id);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = "Business has been deleted successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                }
+                return output;
             }
             catch (Exception ex)
             {

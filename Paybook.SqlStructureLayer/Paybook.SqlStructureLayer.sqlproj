@@ -16,7 +16,7 @@
     <ModelCollation>1033, CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetLanguage>CS</TargetLanguage>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <SqlServerVerification>False</SqlServerVerification>
@@ -72,7 +72,6 @@
     <Build Include="dbo\Tables\Businesses.sql" />
     <Build Include="dbo\Tables\Agencies.sql" />
     <Build Include="dbo\Tables\Clients.sql" />
-    <Build Include="dbo\Tables\UserBusinesses.sql" />
     <Build Include="dbo\Tables\Invoices.sql" />
     <Build Include="dbo\Tables\CategoryMaster.sql" />
     <Build Include="dbo\Tables\CategoryTypeMaster.sql" />
@@ -103,6 +102,11 @@
     <Build Include="dbo\Stored Procedures\spi_Agencies_Insert.sql" />
     <Build Include="dbo\Stored Procedures\sps_Clients_GetCount.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetClientCountByDays.sql" />
+    <Build Include="dbo\Tables\UserBusinesses.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Businesses_GetSelectedByUsername.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Businesses_GetAllByUsername.sql" />
+    <Build Include="dbo\Stored Procedures\sps_CountryMaster_GetAllByPage.sql" />
+    <Build Include="dbo\Stored Procedures\sps_StateMaster_GetAllByPage.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Paybook.SqlStructureLayer.refactorlog" />

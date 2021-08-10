@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Note
 {
-    interface INoteRepository : IRepository<NoteModel>
+    interface INoteRepository : IBaseRepository<NoteModel>
     {
         int GetTotalCount(int businessId);
     }
@@ -32,7 +32,7 @@ namespace Paybook.DatabaseLayer.Note
             {
                 var p = new { BusinessId = businessId };
 
-                var result = _dbContext.SaveDataOutParam("sps_Notes_GetTotalCount", p, out int count, DbType.Int32, "Count");
+                var result = _dbContext.SaveDataOutParam("sps_Notes_GetTotalCount", p, out int count, DbType.Int32, null, "Count");
 
                 return count;
             }
@@ -81,7 +81,7 @@ namespace Paybook.DatabaseLayer.Note
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_Notes_Insert", model, out int noteId, DbType.Int32, "Id");
+                var result = _dbContext.SaveDataOutParam("spi_Notes_Insert", model, out int noteId, DbType.Int32, null, "Id");
                 //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
 
                 model.Id = noteId;

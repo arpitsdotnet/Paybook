@@ -11,7 +11,7 @@ using Paybook.ServiceLayer.Logger;
 
 namespace Paybook.DatabaseLayer.Setting
 {
-    public interface ICategoryRepository : IRepository<CategoryMasterModel>
+    public interface ICategoryRepository : IBaseRepository<CategoryMasterModel>
     {
         CategoryMasterModel GetByCore(int businessId, string core);
         List<CategoryMasterModel> GetByTypeCore(int businessId, string typeCore);
@@ -98,7 +98,7 @@ namespace Paybook.DatabaseLayer.Setting
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_CategoryMaster_Insert", model, out int categoryId, DbType.Int32, "Id");
+                var result = _dbContext.SaveDataOutParam("spi_CategoryMaster_Insert", model, out int categoryId, DbType.Int32, null, "Id");
                 //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
 
                 model.Id = categoryId;

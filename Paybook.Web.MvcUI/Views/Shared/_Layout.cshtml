@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="navbar-brand">
+                    <img src="~/Content/IMG/PaybookLogo.png" alt="Paybook Logo" class="" />
+                </div>
+            </div>
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="@Url.Action("Login","Identity",new { area = "" })"><i class="fa fa-dashboard"></i>&nbsp; Login</a></li>
+                    </ul>
+                </div>
+            }
+            else if (User.Identity.IsAuthenticated)
+            {
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="@Url.Action("Dashboard","Business",new { area = "Chief" })"><i class="fa fa-dashboard"></i>&nbsp; Dashboard</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="fa fa-user-circle"></i>&nbsp; Clients <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                @*<li><a href="/agencies">Agency List</a></li>
+                                    <li><a onclick="return OpenPartialPagePopup('agency/create','CREATE AGENCY');" href="#">Create a Agency</a></li>
+                                    <li class="divider"></li>*@
+                                <li><a href="@Url.Action("Index","Client",new { area = "Chief" })">Client List</a></li>
+                                <li><a href="@Url.Action("Create","Client",new { area = "Chief" })">Create a Client</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="fa fa-credit-card"></i>&nbsp; Sales <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="@Url.Action("Index","Invoice",new { area = "Chief" })">Invoice List</a></li>
+                                <li><a href="@Url.Action("Create","Invoice",new { area = "Chief" })">Create a Invoice</a></li>
+                                <li class="divider"></li>
+                                <li><a href="@Url.Action("Index","Payment",new { area = "Chief" })">Payment List</a></li>
+                                <li><a href="@Url.Action("Create","Payment",new { area = "Chief" })">Create a Payment</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="fa fa-sticky-note-o"></i>&nbsp; Notes <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="@Url.Action("Index","Note",new { area = "Chief" })">Note List</a></li>
+                                <li><a href="@Url.Action("Create","Note",new { area = "Chief" })">Create a Note</a></li>
+                                <li class="divider"></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="fa fa-gears"></i>&nbsp; Settings <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="@Url.Action("Index","Business",new { area = "Chief" })">Businesses</a></li>
+                                <li><a href="@Url.Action("Index","CategoryType",new { area = "Chief" })">Category Type List</a></li>
+                                <li><a href="@Url.Action("Index","Category",new { area = "Chief" })">Category List</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="pr-5">
+                            <div id="idDateTimeShow">
+                                <div class='time left p-1 large'></div>
+                                <div class='left tiny'>
+                                    <div class="apm"></div>
+                                    <div class="seconds"></div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="day left small text-warning" style="margin-left: 10px"></div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </li>
+                        <li class="dropdown" style="height: 50px!important">
+                            <div class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <div class="chip unselect">
+                                    <asp:Image ID="hlLoggedInControlsProfile" runat="server"
+                                               AlternateText="Person" ClientIDMode="Static" CssClass="pointer" Style="position: relative;" />
+                                    <asp:Label ID="lblUsername" runat="server" Text="Guest User" ClientIDMode="Static"> </asp:Label>
+                                </div>
+                            </div>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="@Url.Action("Index","Business",new { area = "Chief" })">Businesses</a></li>
+                                <li class="divider"></li>
+                                <li><a href="@Url.Action("Logout","Identity",new { area = "" })">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="container-fluid body-content" style="min-height: 700px">
+        @RenderBody()
+        <hr />
+    </div>
+    <footer class="container-fluid navbar navbar-default text-right ">
+        <div class="row">
+            <div class="col-lg-10 text-right">
+                <p class="h3 text-info">&copy; @DateTime.Now.Year - Paybook</p>
+            </div>
+            <div class="col-lg-2 text-left">
+                <div class="text-info small">Powered By:</div>
+                <div>
+                    <a href="http://www.floydwebtech.com/">
+                        <img src="/Content/IMG/FwtLogo.png" height="40" alt="Floyd Web Techsoft Logo" />
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript" src="~/Scripts/Site.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("nav li a[href]").each(function () {
+                $(this).parent().removeClass("active");
+                if (this.href == window.location.href) {
+                    $(this).parent().parent().parent().addClass("active");
+                    $(this).parent().addClass("active");
+                }
+            });
+            startTime();
+        });
+    </script>
+</body>
+</html>

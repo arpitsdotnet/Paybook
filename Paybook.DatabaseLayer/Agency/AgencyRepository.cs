@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Agency
 {
-    public interface IAgencyRepository : IRepository<AgencyModel>
+    public interface IAgencyRepository : IBaseRepository<AgencyModel>
     {
         List<AgencyModel> GetAllName(int businessId);
     }
@@ -78,7 +78,7 @@ namespace Paybook.DatabaseLayer.Agency
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_Agencies_Insert", agencyModel, out int agencyId, DbType.Int32, "Id");
+                var result = _dbContext.SaveDataOutParam("spi_Agencies_Insert", agencyModel, out int agencyId, DbType.Int32, null, "Id");
                 //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
 
                 agencyModel.ID = agencyId;

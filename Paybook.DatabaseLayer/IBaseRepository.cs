@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer
 {
-  public  interface IRepository<T>
+  public  interface IBaseRepository<T>
     {
         List<T> GetAllByPage(int businessId, int page, string search, string orderBy);
         T GetById(int businessId, int id);

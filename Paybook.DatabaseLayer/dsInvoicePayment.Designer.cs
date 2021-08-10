@@ -10,8 +10,7 @@
 
 #pragma warning disable 1591
 
-namespace Paybook.DatabaseLayer
-{
+namespace Paybook.DatabaseLayer {
     
     
     /// <summary>

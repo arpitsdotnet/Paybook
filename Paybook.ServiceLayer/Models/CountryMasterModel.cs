@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Paybook.ServiceLayer.Models
 {
-    public class CountryMasterModel
+    public class CountryMasterModel : BaseResultStatusModel
     {
         public int Id { get; set; }
         public bool IsActive { get; set; }

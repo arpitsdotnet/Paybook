@@ -93,20 +93,20 @@ namespace Paybook.BusinessLayer.Invoice
                         switch (model.StatusCategoryMaster.Core)
                         {
                             case InvoiceStatusConst.Overdue:
-                                statusClass = ActivityStatusCssConst.DANGER;
+                                statusClass = ActivityStatusCss.DANGER;
                                 break;
                             case InvoiceStatusConst.Paid:
                             case InvoiceStatusConst.PaidPartial:
-                                statusClass = ActivityStatusCssConst.SUCCESS;
+                                statusClass = ActivityStatusCss.SUCCESS;
                                 break;
                             case InvoiceStatusConst.Open:
-                                statusClass = ActivityStatusCssConst.INFO;
+                                statusClass = ActivityStatusCss.INFO;
                                 break;
                             case InvoiceStatusConst.Close:
-                                statusClass = ActivityStatusCssConst.DEFAULT;
+                                statusClass = ActivityStatusCss.DEFAULT;
                                 break;
                             default:
-                                statusClass = ActivityStatusCssConst.DEFAULT;
+                                statusClass = ActivityStatusCss.DEFAULT;
                                 break;
                         }
 

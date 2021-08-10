@@ -1,4 +1,4 @@
-﻿namespace Paybook.ServiceLayer
+﻿namespace Paybook.ServiceLayer.Constants
 {
     public class _FolderPath
     {

@@ -100,7 +100,7 @@ namespace Paybook.DatabaseLayer
         /// <param name="storedProcedure">Pass stored procedure name.</param>
         /// <param name="parameters">Pass T type of generics object as parameters, type "new { }" for no parameters and T as dynamics.</param>
         /// <returns>Returns an integer about how many rows updated.</returns>
-        public int SaveDataOutParam<T, U>(string storedProcedure, T parameters, out U returnVar, DbType outputDbType, string outputVarName)
+        public int SaveDataOutParam<T, U>(string storedProcedure, T parameters, out U returnVar, DbType outputDbType, int? size, string outputVarName)
         {
             string sConnectionString = GetConnectionString();
 
@@ -108,11 +108,11 @@ namespace Paybook.DatabaseLayer
             {
                 var dynamicp = new Dapper.DynamicParameters();
                 dynamicp.AddDynamicParams(parameters);
-                dynamicp.Add(outputVarName, dbType: outputDbType, direction: ParameterDirection.Output);
+                dynamicp.Add(outputVarName, null, dbType: outputDbType, direction: ParameterDirection.Output, size);
 
                 using (SqlConnection con = new SqlConnection(sConnectionString))
                 {
-                    int i = con.Execute(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
+                    int i = con.Execute(storedProcedure, dynamicp, commandType: CommandType.StoredProcedure);
 
                     returnVar = dynamicp.Get<U>(outputVarName);
 

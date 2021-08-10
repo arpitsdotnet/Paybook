@@ -13,7 +13,7 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Payment
 {
-    public interface IPaymentRepository : IRepository<PaymentModel>
+    public interface IPaymentRepository : IBaseRepository<PaymentModel>
     {
         string Payments_SelectMonthsales();
         List<PaymentModel> GetAllByInvoiceId(int businessId, int invoiceId, int page, string search, string orderBy);
@@ -132,7 +132,7 @@ namespace Paybook.DatabaseLayer.Payment
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_Payments_Insert", model, out int paymentId, DbType.Int32, "Id");
+                var result = _dbContext.SaveDataOutParam("spi_Payments_Insert", model, out int paymentId, DbType.Int32, null, "Id");
 
                 model.Id = paymentId;
 

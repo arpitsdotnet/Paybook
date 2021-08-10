@@ -38,15 +38,6 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li><a href="/dashboard"><i class="fa fa-dashboard"></i>&nbsp; Dashboard</a></li>
-                        <%--<li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                <i class="fa fa-user-md"></i>&nbsp; Agents <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="/agent/search">Agent List</a></li>
-                                <li><a onclick="return OpenPartialPagePopup('agent/create','CREATE NOTE');" href="#">Create a Agent</a></li>
-                                <li class="divider"></li>
-                            </ul>
-                        </li>--%>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <i class="fa fa-user-circle"></i>&nbsp; Clients <span class="caret"></span></a>
