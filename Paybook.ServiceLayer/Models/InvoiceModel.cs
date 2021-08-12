@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Paybook.ServiceLayer.Models
 {
@@ -7,30 +8,62 @@ namespace Paybook.ServiceLayer.Models
         public int Id { get; set; }
         public int BusinessId { get; set; }
         public virtual BusinessModel Businesses { get; set; }
+
+        [Display(Name = "Active")]
         public bool IsActive { get; set; }
+
+        
+        [Display(Name = "Create date")]
         public DateTime? CreateDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
         public string CreateBy { get; set; }
+        public DateTime? ModifyDate { get; set; }
         public string ModifyBy { get; set; }
 
+        [Required]
+        [Display(Name = "Invoice number")]
         public string InvoiceNumber { get; set; }
+
+        [Required]
         public string Description { get; set; }
+
+        [Required]
+        [Display(Name = "Invoice date")]
         public DateTime? InvoiceDate { get; set; }
+
+        [Required]
+        [Display(Name = "Status")]
         public int StatusId { get; set; }
         public virtual CategoryMasterModel StatusCategoryMaster { get; set; }
-        public int UserId { get; set; }
-        public virtual IdentityUserModel Users { get; set; }
         public int AgencyId { get; set; }
         public virtual AgencyModel Agencies { get; set; }
+
+        [Required]
+        [Display(Name = "Client")]
         public int ClientId { get; set; }
         public virtual ClientModel Clients { get; set; }
+
+        [Required]
+        [Display(Name = "Client's email")]
         public string ClientEmail { get; set; }
+
+        [Display(Name = "Send email invoice")]
         public bool IsEmailSend { get; set; }
         public bool IsEmailSentSuccess { get; set; }
+
+        [Required]
+        [Display(Name = "Billing address")]
         public string BillingAddress { get; set; }
+
+        [Required]
+        [Display(Name = "Terms")]
         public int TermsId { get; set; }
         public virtual CategoryMasterModel TermsCategoryMaster { get; set; }
+
+        [Required]
+        [Display(Name = "Due date")]
         public DateTime? DueDate { get; set; }
+
+        [Display(Name = "Overdue")]
         public bool IsOverdue { get; set; }
         public int OverdueSteps { get; set; }
         public string Message { get; set; }
@@ -40,6 +73,8 @@ namespace Paybook.ServiceLayer.Models
         public virtual CategoryMasterModel DiscountTypeCategoryMaster { get; set; }
         public decimal DiscountAmount { get; set; }
         public decimal DiscountTotal { get; set; }
+
+        [Required]
         public decimal Total { get; set; }
     }
 }
