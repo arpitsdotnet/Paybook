@@ -13,7 +13,6 @@ namespace Paybook.DatabaseLayer.Invoice
 {
     public interface IInvoiceRepository : IBaseRepository<InvoiceModel>
     {
-        InvoiceModel[] Invoices_Search(string sOrderBy, string sGridPageNumber, string sUserName, string sAgency_ID, string sCustomer_ID, string sReceiptID, string sCategory_Core, string sInvoiceDateTo, string sInvoiceDateFrom, string sInvoiceStatus_Core);
         bool Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID);
         bool Invoices_Update_OverdueStatus(string sInvoice_ID, string sCategory_Core, string sStatus_Core);
         bool CreateInvoiceActivity(string sCreatedBY, string sStatus_Core);
@@ -33,112 +32,6 @@ namespace Paybook.DatabaseLayer.Invoice
             _activityRepo = new ActivityRepository();
         }
 
-        public InvoiceModel[] Invoices_Search(string sOrderBy, string sGridPageNumber, string sUserName, string sAgency_ID, string sCustomer_ID, string sReceiptID, string sCategory_Core, string sInvoiceDateTo, string sInvoiceDateFrom, string sInvoiceStatus_Core)
-        {
-            List<InvoiceModel> oPayment = new List<InvoiceModel>();
-            //try
-            //{
-            //    StringBuilder query = new StringBuilder();
-
-            //    if (sInvoiceDateTo != "" && sInvoiceDateFrom != "")
-            //    {
-            //        string dInvoiceDateTo = "", dInvoiceDateFrom = "";
-            //        sInvoiceDateFrom = $"{sInvoiceDateFrom} 00:00:00";
-            //        sInvoiceDateTo = $"{sInvoiceDateTo} 23:59:59";
-            //        dInvoiceDateFrom = Convert.ToDateTime(sInvoiceDateFrom).ToString("yyyy-MM-dd HH:mm:ss");
-            //        dInvoiceDateTo = Convert.ToDateTime(sInvoiceDateTo).ToString("yyyy-MM-dd HH:mm:ss");
-            //        query.Append($" AND (Invoice_Date BETWEEN '{dInvoiceDateFrom}' AND '{dInvoiceDateTo}')");
-            //    }
-
-            //    if (sAgency_ID != "All")
-            //        query.Append($" AND TC.Agency_ID='{sAgency_ID}'");
-            //    if (sCustomer_ID != "All")
-            //        query.Append($" AND TIN.Customer_ID='{sCustomer_ID}'");
-            //    if (sCategory_Core != "All")
-            //        query.Append($" AND TIN.Category_Core='{sCategory_Core}'");
-            //    if (sInvoiceStatus_Core != "All")
-            //        query.Append($" AND TIN.InvoiceStatus_Core='{sInvoiceStatus_Core}'");
-            //    if (sReceiptID != "")
-            //        query.Append($" AND TP.ReceiptID='{sReceiptID}'");
-
-            //    List<Parameter> oParams = new List<Parameter>();
-            //    oParams.Add(new Parameter("Where", query.ToString()));
-            //    DataTable dt = _dbContext.LoadDataByProcedure("sps_Invoice_Search", oParams);
-
-            //    //start
-            //    if (dt != null && dt.Rows.Count > 0)
-            //    {
-            //        string dtcount = dt.Rows.Count.ToString();
-            //        //int drowtotal = int.Parse(dtcount);
-            //        //getpagerange(convert.todouble(sgridpagenumber), drowtotal, out dpagenumber_start, out dpagenumber_end);
-
-            //        int iPageNumber = Convert.ToInt32(sGridPageNumber);
-            //        int iPageStart = iPageNumber == 0 ? 0 : (PagerSetting.iPageSizeDefault * iPageNumber);
-
-            //        var list = (from e in dt.AsEnumerable()
-            //                    select new
-            //                    {
-            //                        RowCount = dtcount,
-            //                        ID = e.Field<int>("ID"),
-            //                        Invoice_ID = e.Field<string>("Invoice_ID"),
-            //                        Customer_ID = e.Field<string>("Customer_ID"),
-            //                        CustomerName = e.Field<string>("CustomerName"),
-            //                        Agent_ID = e.Field<string>("Agent_ID"),
-            //                        AgentName = e.Field<string>("AgentName"),
-            //                        Particular = e.Field<string>("Particular"),
-            //                        Category_Disp = e.Field<string>("Category_Disp"),
-            //                        Category_Core = e.Field<string>("Category_Core"),
-            //                        CreatedBY = e.Field<string>("CreatedBY"),
-            //                        CreatedDT = e.Field<DateTime>("CreatedDT").ToString(),
-            //                        Amount = e.Field<string>("Amount").ToString(),
-            //                        Paid = e.Field<double>("Paid").ToString(),
-            //                        InvoiceStatus_Disp = e.Field<string>("InvoiceStatus_Disp"),
-            //                        InvoiceStatus_Core = e.Field<string>("InvoiceStatus_Core")
-            //                    }).Skip(iPageStart).Take(PagerSetting.iPageSizeDefault);
-
-            //        dt = list.ToList().ToDataTable();
-
-            //        foreach (DataRow dr in dt.Rows)
-            //        {
-            //            InvoiceModel oDataRows = new InvoiceModel();
-            //            oDataRows.RowCount = dr["RowCount"].ToString();
-            //            oDataRows.ID = dr["ID"].ToString();
-            //            oDataRows.Invoice_ID = dr["Invoice_ID"].ToString();
-            //            oDataRows.Customer_ID = dr["Customer_ID"].ToString();
-            //            oDataRows.CustomerName = dr["CustomerName"].ToString();
-            //            oDataRows.Agent_ID = dr["Agent_ID"].ToString();
-            //            oDataRows.AgentName = dr["AgentName"].ToString();
-            //            oDataRows.Particular = dr["Particular"].ToString();
-            //            // oDataRows.ReceiptID = dr["ReceiptID"].ToString();
-            //            oDataRows.Category_Disp = dr["Category_Disp"].ToString();
-            //            oDataRows.Category_Core = dr["Category_Core"].ToString();
-            //            oDataRows.CreatedBY = dr["CreatedBY"].ToString();
-            //            oDataRows.CreatedDT = Convert.ToDateTime(dr["CreatedDT"]).ToString("yyyy-MM-dd HH:mm:ss");
-            //            oDataRows.Amount = dr["Amount"].ToString();
-            //            oDataRows.Paid = dr["Paid"].ToString();
-            //            oDataRows.InvoiceStatus_Disp = dr["InvoiceStatus_Disp"].ToString();
-            //            oDataRows.InvoiceStatus_Core = dr["InvoiceStatus_Core"].ToString();
-            //            oPayment.Add(oDataRows);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        InvoiceModel oDataRows = new InvoiceModel();
-            //        oDataRows.ID = "0";
-            //        oPayment.Add(oDataRows);
-
-            //    }
-            //    //end                            
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.LogError(_logger.MethodName, ex);
-
-            //    throw;
-            //}
-            return oPayment.ToArray();
-        }
         //public static clsInvoices[] Invoice_SelectParticular()
         //{
         //    List<clsInvoices> oInvoice = new List<clsInvoices>();
