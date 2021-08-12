@@ -72,7 +72,7 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-       
+
         public string Activity_Insert_Overdue(string sCreatedBY, string sStatus_Core)
         {
             try
@@ -117,7 +117,6 @@ namespace Paybook.BusinessLayer.Invoice
                         var activityModel = new ActivityModel
                         {
                             CreateBy = model.CreateBy,
-                            UserId = model.UserId,
                             //BusinessID = invoiceModel.BusinessID,
                             Status = model.StatusCategoryMaster.Name,
                             Text = activity.ToString(),
@@ -182,151 +181,95 @@ namespace Paybook.BusinessLayer.Invoice
         }
         public InvoiceModel Create(InvoiceModel model)
         {
-            InvoiceModel output = new InvoiceModel();
-            output.IsSucceeded = false;
             try
             {
+                var output = new InvoiceModel { IsSucceeded = false };
                 int result = _invoiceRepo.Create(model);
                 if (result == 0)
                 {
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("OTW901");
+                    output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
                     return output;
                 }
-                else if (result > 0)
-                {
-                    //LastSavedNumberModel numberModel = new LastSavedNumberModel
-                    //{
-                    //    BusinessId = model.BusinessId,
-                    //    LastNumber = model.InvoiceNumber,
-                    //    Type = LastIdTypes.Invoice
-                    //};
-                    ////Update invoice id
-                    //_lastSavedNumberProcessor.Update(numberModel);
 
-                    //insert into invoice_tx table
-                    //DataTable dt = _categoryProcessor.GetByCore(sGST_Type);
-                    //if (dt != null && dt.Rows.Count > 0)
-                    //{
-                    //    foreach (DataRow dr in dt.Rows)
-                    //    {
-                    //        string sTaxType = dr["SubCategory_Core"].ToString();
-                    //        double dPercentage = Convert.ToDouble(dr["SubCategory_Disp"].ToString());
-                    //        double dAmount = (Convert.ToDouble(sMRP) * dPercentage) / 100;
+                output.IsSucceeded = true;
+                output.ReturnMessage = "Invoice has been created successfully.";// XmlProcessor.ReadXmlFile("INS302");
 
-                    //        _invoiceRepo.CreateTax(new InvoiceTaxModel
-                    //        {
-                    //            CreatedBY = sCreatedBY,
-                    //            TaxType = sTaxType,
-                    //            Percentage = dPercentage,
-                    //            Amount = dAmount,
-                    //            CustomerID = sCustomerID,
-                    //            InvoiceID = invoiceNumber,
-                    //            Invoice_Date = sInvoice_Date,
-                    //            AgencyID = sAgencyID
-                    //        });
-                    //    }
-                    //}
-                    //Amount Insert Into Customer/Agency Table 
-                    //double dTotalRemainingAmount = Convert.ToDouble(sRemainingAmount) + Convert.ToDouble(sAmount);
-
-                    //if (sAgencyID == "0")
-                    //{
-                    //    _clientProcessor.Customer_UpdateRemainingAmount(sCustomerID, dTotalRemainingAmount);
-                    //}
-                    //else
-                    //{
-                    //    _agencyProcessor.Agency_UpdateRemainingAmount(sAgencyID, dTotalRemainingAmount);
-
-                    //}
-                    output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("INS302");
-                }
+                return output;
             }
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-
                 throw;
             }
-            return output;
         }
         public InvoiceModel Update(InvoiceModel model)
         {
-            InvoiceModel output = new InvoiceModel();
-            output.IsSucceeded = false;
             try
             {
+                var output = new InvoiceModel { IsSucceeded = false };
                 int result = _invoiceRepo.Update(model);
                 if (result == 0)
                 {
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("OTW901");
+                    output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
                     return output;
                 }
-                else if (result > 0)
-                {
-                    output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("INS302");
-                }
+
+                output.IsSucceeded = true;
+                output.ReturnMessage = "Invoice has been updated successfully.";// XmlProcessor.ReadXmlFile("INS302");
+
+                return output;
             }
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-
                 throw;
             }
-            return output;
         }
         public InvoiceModel Activate(int businessId, int id, bool active)
         {
-            InvoiceModel output = new InvoiceModel();
-            output.IsSucceeded = false;
             try
             {
+                var output = new InvoiceModel { IsSucceeded = false };
                 int result = _invoiceRepo.Activate(businessId, id, active);
                 if (result == 0)
                 {
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("OTW901");
+                    output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
                     return output;
                 }
-                else if (result > 0)
-                {
-                    output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("INS302");
-                }
+
+                output.IsSucceeded = true;
+                output.ReturnMessage = "Invoice has been activated/deactivated successfully.";// XmlProcessor.ReadXmlFile("INS302");
+
+                return output;
             }
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-
                 throw;
             }
-            return output;
         }
         public InvoiceModel Delete(int businessId, int id)
         {
-            InvoiceModel output = new InvoiceModel();
-            output.IsSucceeded = false;
             try
             {
+                var output = new InvoiceModel { IsSucceeded = false };
                 int result = _invoiceRepo.Delete(businessId, id);
                 if (result == 0)
                 {
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("InvoiecDeleteSuccess");
+                    output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
                     return output;
                 }
-                else if (result > 0)
-                {
-                    output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("InvoiceDeleteFail");
-                }
+
+                output.IsSucceeded = true;
+                output.ReturnMessage = "Invoice has been deleted successfully.";// XmlProcessor.ReadXmlFile("INS302");
+
+                return output;
             }
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-
                 throw;
             }
-            return output;
         }
     }
 }
