@@ -1,4 +1,6 @@
-﻿using Paybook.ServiceLayer.Constants;
+﻿using Paybook.BusinessLayer.Invoice;
+using Paybook.ServiceLayer.Constants;
+using Paybook.ServiceLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +13,23 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 
     public class InvoiceController : Controller
     {
+        private readonly InvoiceProcessor _invoice;
+
+        public InvoiceController(InvoiceProcessor invoice)
+        {
+            _invoice = invoice;
+        }
         public ActionResult Index()
         {
-            //int? businessId = GetSelectedBusinessId();
+            int? businessId = GetSelectedBusinessId();
 
-            //if (businessId == null)
-                //return RedirectToAction("Create", "Business");
+            if (businessId == null)
+                return RedirectToAction("Create", "Business");
 
-            //List<ClientModel> model = _client.GetAllByPage(businessId.Value, 0, "", "");
+            List<InvoiceModel> model = _invoice.GetAllByPage(businessId.Value, 0, "", "");
 
 
-            return View();
+            return View(model);
         }
 
 
