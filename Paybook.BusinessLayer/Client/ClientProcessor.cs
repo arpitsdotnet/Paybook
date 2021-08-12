@@ -13,7 +13,7 @@ namespace Paybook.BusinessLayer.Client
 {
     public interface IClientProcessor
     {
-        string IsExists(ClientModel customerModel);
+        string IsExist(string createBy, string clientName);
         int GetCount(int businessId);
         ClientModel[] GetAllByText(string SearchText);
         ClientModel[] GetAllNamesByAgencyID(string sAgency_ID);
@@ -22,10 +22,10 @@ namespace Paybook.BusinessLayer.Client
 
         List<ClientModel> GetAllByPage(int businessId, int page, string search, string orderBy);
         ClientModel GetById(int businessId, int id);
-        string Create(ClientModel customerModel);
-        string Update(ClientModel customerModel);
-        string Activate(int businessId, int id, bool active);
-        string Delete(int businessId, int id);
+        ClientModel Create(ClientModel customerModel);
+        ClientModel Update(ClientModel customerModel);
+        ClientModel Activate(int businessId, int id, bool active);
+        ClientModel Delete(int businessId, int id);
     }
 
     public class ClientProcessor : IClientProcessor
@@ -39,11 +39,11 @@ namespace Paybook.BusinessLayer.Client
             _clientRepo = new ClientRepository();
         }
 
-        public string IsExists(ClientModel customerModel)
+        public string IsExist(string createBy, string clientName)
         {
             try
             {
-                bool result = _clientRepo.IsExists(customerModel);
+                bool result = _clientRepo.IsExist(createBy, clientName);
                 if (result)
                 {
                     return XmlProcessor.ReadXmlFile("CUW110");
@@ -52,7 +52,7 @@ namespace Paybook.BusinessLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -65,7 +65,7 @@ namespace Paybook.BusinessLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -78,7 +78,7 @@ namespace Paybook.BusinessLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -91,7 +91,7 @@ namespace Paybook.BusinessLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -104,7 +104,7 @@ namespace Paybook.BusinessLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -118,7 +118,7 @@ namespace Paybook.BusinessLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -131,80 +131,106 @@ namespace Paybook.BusinessLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
         }
-        public string Create(ClientModel customerModel)
+        public ClientModel Create(ClientModel model)
         {
             try
             {
-                int result = _clientRepo.Create(customerModel);
-                if (result > 0)
+                var output = new ClientModel { IsSucceeded = false };
+
+                string returnMessage = IsExist(model.CreateBy, model.Name);
+                if (!string.IsNullOrEmpty(returnMessage))
                 {
-                    return XmlProcessor.ReadXmlFile("CUS103");
+                    output.ReturnMessage = "Client name already exist, please enter a new name";
+                    return output;
                 }
-                return string.Empty;
+                int result = _clientRepo.Create(model);
+                if (result == 0)
+                {
+                    output.ReturnMessage = "Current request failed due to technical issue, please try again later.";
+                    return output;
+                }
+
+                output.IsSucceeded = true;
+                output.ReturnMessage = "Client has been created successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                return output;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
-
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
-        public string Update(ClientModel customerModel)
+        public ClientModel Update(ClientModel model)
         {
             try
             {
-                int result = _clientRepo.Update(customerModel);
-                if (result > 0)
+                var output = new ClientModel { IsSucceeded = false };
+                int result = _clientRepo.Update(model);
+                if (result == 0)
                 {
-                    return XmlProcessor.ReadXmlFile("CUS104");
+                    output.ReturnMessage = "Current request failed due to technical issue, please try again later.";
+                    //return XmlProcessor.ReadXmlFile("CUS104");
+                    return output;
                 }
-                return string.Empty;
+
+                output.IsSucceeded = true;
+                output.ReturnMessage = "Client has been updated successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                return output;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
-
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
-        public string Activate(int businessId, int id, bool active)
+        public ClientModel Activate(int businessId, int id, bool active)
         {
             try
             {
+                var output = new ClientModel { IsSucceeded = false };
                 int result = _clientRepo.Activate(businessId, id, active);
                 if (result > 0)
                 {
-                    return XmlProcessor.ReadXmlFile("CUS106");
+                    output.ReturnMessage = "Current request failed due to technical issue, please try again later.";
+                    //return XmlProcessor.ReadXmlFile("CUS104");
+                    return output;
                 }
-                return string.Empty;
+
+                output.IsSucceeded = true;
+                output.ReturnMessage = "Client has been activated/deactivated successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                return output;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
-
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
-        public string Delete(int businessId, int id)
+        public ClientModel Delete(int businessId, int id)
         {
             try
             {
+                var output = new ClientModel { IsSucceeded = false };
                 int result = _clientRepo.Delete(businessId, id);
                 if (result > 0)
                 {
-                    return XmlProcessor.ReadXmlFile("CUS106");
+                    output.ReturnMessage = "Current request failed due to technical issue, please try again later.";
+                    //return XmlProcessor.ReadXmlFile("CUS104");
+                    return output;
                 }
-                return string.Empty;
+
+                output.IsSucceeded = true;
+                output.ReturnMessage = "Client has been deleted successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                return output;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
-
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }

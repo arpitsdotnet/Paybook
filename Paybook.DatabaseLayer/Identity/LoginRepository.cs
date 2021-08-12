@@ -35,7 +35,7 @@ namespace Paybook.DatabaseLayer.Identity
             {
                 var p = new { Username = model.Username, PasswordHash = model.PasswordHash };
 
-                var result = _dbContext.SaveDataOutParam("sps_IdentityUser_IsValid", p, out string message, DbType.String, 20, "Message");
+                var result = _dbContext.SaveDataOutParam("sps_IdentityUsers_IsValid", p, out string message, DbType.String, 20, "Message");
                 //DataTable dt = _dbContext.LoadDataByProcedure("sps_IdentityUser_IsValid", parameters);
                 //if (dt != null && dt.Rows.Count > 0)
                 //{
@@ -49,7 +49,7 @@ namespace Paybook.DatabaseLayer.Identity
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -67,7 +67,7 @@ namespace Paybook.DatabaseLayer.Identity
                 
                 // Update the new password
 
-                var result = _dbContext.SaveDataOutParam("sps_IdentityUser_IsValid", p, out bool isExist, DbType.String, 20, "IsExist");
+                var result = _dbContext.SaveDataOutParam("sps_IdentityUsers_IsValid", p, out bool isExist, DbType.String, 20, "IsExist");
                 //DataTable dt = _dbContext.LoadDataByProcedure("sps_IdentityUser_IsValid", parameters);
                 //if (dt != null && dt.Rows.Count > 0)
                 //{
@@ -81,7 +81,7 @@ namespace Paybook.DatabaseLayer.Identity
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }

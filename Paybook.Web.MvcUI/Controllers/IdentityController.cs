@@ -16,11 +16,13 @@ namespace Paybook.Web.MvcUI.Controllers
     {
         private readonly ILogger _logger;
         private readonly ILoginProcessor _login;
+        private readonly IUserProcessor _user;
 
-        public IdentityController(ILogger logger, ILoginProcessor login)
+        public IdentityController(ILogger logger, ILoginProcessor login, IUserProcessor user)
         {
             _logger = logger;
             _login = login;
+            _user = user;
         }
 
         public ActionResult Login()
@@ -41,7 +43,11 @@ namespace Paybook.Web.MvcUI.Controllers
                     ModelState.AddModelError(string.Empty, "Username and Password does not match in our system. " + model.Password);
                 else if (result == LoginResultConst.UserMatch)
                 {
+                    IdentityUserModel userData = _user.GetByUsername(model.Username);
+                    TempData[TempdataNames.LoginUserFullname] = $"{userData.FirstName} {userData.LastName}";
+
                     FormsAuthentication.SetAuthCookie(model.Username, true);
+
                     return RedirectToAction("Dashboard", "Business", new { area = "Chief" });
                 }
             }

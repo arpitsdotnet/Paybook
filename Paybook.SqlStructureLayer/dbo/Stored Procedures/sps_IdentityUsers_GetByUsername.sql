@@ -1,5 +1,5 @@
-﻿CREATE PROCEDURE [dbo].[sps_IdentityUser_GetByUsername]
-	@Username int
+﻿CREATE PROCEDURE [dbo].[sps_IdentityUsers_GetByUsername]
+	@Username NVARCHAR(256)
 AS
 BEGIN
 	SELECT [Id],[Username],[Email],[PhoneNumber],[Image],[FirstName],[LastName],[AddressLine1],[AddressLine2],[City],[StateId],[CountryId],[Pincode]

@@ -5,17 +5,27 @@
 	@OrderBy NVARCHAR(50) = 'NameAsc'
 AS
 BEGIN
-	DECLARE @RowDisplay INT = 10;
+	IF(@Page = 0)
+	BEGIN
+		SELECT [Id],[CreateDate],[Name],[PhoneNumber1],[Email],[City]
+		FROM Clients 
+		WHERE BusinessId = @BusinessId AND IsActive = 1
+		ORDER BY [Name] ASC;
+	END
+	ELSE
+	BEGIN
+		DECLARE @RowDisplay INT = 10;
 
-	SELECT cl.[Id],cl.[CreateDate],cl.[Name],cl.[PhoneNumber1],cl.[PhoneNumber2],cl.[Email],
-		cl.[AddressLine1],cl.[AddressLine2],cl.[City],cl.[StateId],sm.[Name] AS [StateName],cl.[CountryId],cm.[Name] AS [CountryName],cl.[Pincode]
-	FROM Clients cl
-		LEFT JOIN StateMaster sm ON cl.[StateId] = sm.Id
-		LEFT JOIN CountryMaster cm ON cl.[CountryId] = cm.Id
-	WHERE cl.BusinessId = @BusinessId AND cl.IsActive = 1 AND
-		cl.[Name] LIKE '%'+@Search+'%'
-	ORDER BY CASE WHEN @OrderBy = 'NameAsc' THEN cl.[Name] END ASC,
-			 CASE WHEN @OrderBy = 'NameDesc' THEN cl.[Name] END DESC
-	OFFSET (@Page * @RowDisplay) ROWS
-	FETCH NEXT @RowDisplay ROWS ONLY
+		SELECT cl.[Id],cl.[CreateDate],cl.[Name],cl.[PhoneNumber1],cl.[PhoneNumber2],cl.[Email],
+			cl.[AddressLine1],cl.[AddressLine2],cl.[City],cl.[StateId],sm.[Name] AS [StateName],cl.[CountryId],cm.[Name] AS [CountryName],cl.[Pincode]
+		FROM Clients cl
+			LEFT JOIN StateMaster sm ON cl.[StateId] = sm.Id
+			LEFT JOIN CountryMaster cm ON cl.[CountryId] = cm.Id
+		WHERE cl.BusinessId = @BusinessId AND cl.IsActive = 1 AND
+			cl.[Name] LIKE '%'+@Search+'%'
+		ORDER BY CASE WHEN @OrderBy = 'NameAsc' THEN cl.[Name] END ASC,
+					CASE WHEN @OrderBy = 'NameDesc' THEN cl.[Name] END DESC
+		OFFSET (@Page * @RowDisplay) ROWS
+		FETCH NEXT @RowDisplay ROWS ONLY;
+	END
 END

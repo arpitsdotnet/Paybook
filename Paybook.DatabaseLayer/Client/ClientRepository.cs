@@ -13,7 +13,7 @@ namespace Paybook.DatabaseLayer.Client
 {
     public interface IClientRepository : IBaseRepository<ClientModel>
     {
-        bool IsExists(ClientModel customerModel);
+        bool IsExist(string createBy, string name);
         int GetCount(int businessId);
 
         [Obsolete]
@@ -127,15 +127,16 @@ namespace Paybook.DatabaseLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
-        public bool IsExists(ClientModel customerModel)
+        public bool IsExist(string createBy, string name)
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("sps_Clients_IsExist", customerModel, out bool isExist, DbType.Boolean, null, "IsExist");
+                var p = new { createBy, Name = name };
+                var result = _dbContext.SaveDataOutParam("sps_Clients_IsExist", p, out bool isExist, DbType.Boolean, null, "IsExist");
                 //DataTable dt = _dbContext.LoadDataByProcedure("sps_Customer_IsExist", oParams);
                 //if (dt.Rows.Count > 0 && dt != null)
                 //{
@@ -149,7 +150,7 @@ namespace Paybook.DatabaseLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -168,7 +169,7 @@ namespace Paybook.DatabaseLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -184,7 +185,7 @@ namespace Paybook.DatabaseLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -192,16 +193,32 @@ namespace Paybook.DatabaseLayer.Client
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_Clients_Insert", model, out int categoryId, DbType.Int32, null, "Id");
+                var p = new
+                {
+                    model.BusinessId,
+                    model.CreateBy,
+                    model.Name,
+                    model.PhoneNumber1,
+                    model.PhoneNumber2,
+                    model.Email,
+                    model.AddressLine1,
+                    model.AddressLine2,
+                    model.City,
+                    model.StateId,
+                    model.CountryId,
+                    model.Pincode
+                };
+
+                var result = _dbContext.SaveDataOutParam("spi_Clients_Insert", p, out int client, DbType.Int32, null, "Id");
                 //_dbContext.LoadDataByProcedure("sps_Customer_Insert", oParams);
 
-                model.Id = categoryId;
+                model.Id = client;
 
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
 
@@ -210,14 +227,30 @@ namespace Paybook.DatabaseLayer.Client
         {
             try
             {
-                var result = _dbContext.SaveData("spu_Clients_Update", model);
+                var p = new
+                {
+                    model.Id,
+                    model.BusinessId,
+                    model.ModifyBy,
+                    model.Name,
+                    model.PhoneNumber1,
+                    model.PhoneNumber2,
+                    model.Email,
+                    model.AddressLine1,
+                    model.AddressLine2,
+                    model.City,
+                    model.StateId,
+                    model.CountryId,
+                    model.Pincode
+                };
+                var result = _dbContext.SaveData("spu_Clients_Update", p);
                 //_dbContext.LoadDataByProcedure("sps_Customers_Update", oParams);
 
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -234,7 +267,7 @@ namespace Paybook.DatabaseLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -251,7 +284,7 @@ namespace Paybook.DatabaseLayer.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }

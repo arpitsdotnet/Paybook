@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[sps_IdentityUser_IsValid]
+﻿CREATE PROCEDURE [dbo].[sps_IdentityUsers_IsValid]
 	@Username VARCHAR(50),
 	@PasswordHash VARCHAR(50),
 	@Message NVARCHAR(20) OUT

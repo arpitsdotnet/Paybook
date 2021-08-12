@@ -158,7 +158,7 @@ namespace Paybook.DatabaseLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
             return dt;
@@ -282,7 +282,7 @@ namespace Paybook.DatabaseLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
             return dt;
@@ -406,7 +406,7 @@ namespace Paybook.DatabaseLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -425,7 +425,7 @@ namespace Paybook.DatabaseLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }

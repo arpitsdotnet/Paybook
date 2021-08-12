@@ -58,6 +58,7 @@
     <Compile Include="Constants\LastIdTypes.cs" />
     <Compile Include="Constants\LoginResultConst.cs" />
     <Compile Include="Constants\PagerSetting.cs" />
+    <Compile Include="Constants\TempdataNames.cs" />
     <Compile Include="Constants\_FolderPath.cs" />
     <Compile Include="Enums\ExceptionType.cs" />
     <Compile Include="Enums\_FileExtension.cs" />
@@ -71,10 +72,10 @@
     <Compile Include="Models\BusinessModel.cs" />
     <Compile Include="Models\CategoryMasterModel.cs" />
     <Compile Include="Models\CategoryTypeMasterModel.cs" />
-    <Compile Include="Models\ChartModel.cs" />
+    <Compile Include="Models\DashboardInvoiceChartModel.cs" />
     <Compile Include="Models\ClientModel.cs" />
     <Compile Include="Models\CountryMasterModel.cs" />
-    <Compile Include="Models\DashboardChartModel.cs" />
+    <Compile Include="Models\DashboardCustomerChartModel.cs" />
     <Compile Include="Models\DashboardCountersModel.cs" />
     <Compile Include="Models\InvoiceTaxModel.cs" />
     <Compile Include="Models\InvoiceModel.cs" />

@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[spi_Agencies_Insert]
+	@Id INT = 0 OUTPUT,
     @BusinessId INT,
-    @CreateBy NVARCHAR(50), 
+    @CreateBy NVARCHAR(256), 
     @Name NVARCHAR(256), 
     @Type NVARCHAR(256), 
     @ContactName NVARCHAR(256), 
@@ -20,8 +21,8 @@ BEGIN
 
 		INSERT INTO [dbo].[Agencies]([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[Type],[ContactName],[PhoneNumber1],[PhoneNumber2],[Email],[AddressLine1],[AddressLine2],[City],[StateId],[CountryId],[Pincode])
 			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@Name,@Type,@ContactName,@PhoneNumber1,@PhoneNumber2,@Email,@AddressLine1,@AddressLine2,@City,@StateId,@CountryId,@Pincode)
-
-		SELECT SCOPE_IDENTITY() AS Id;
+			 
+		SELECT @Id = SCOPE_IDENTITY();
 		
 		COMMIT TRANSACTION
 	END TRY
@@ -29,7 +30,8 @@ BEGIN
 		
 		ROLLBACK TRANSACTION
 		
-		EXEC [dbo].[spi_DBLogs_Insert] @BusinessId,'Agencies','spi_Agencies_Insert',ERROR_MESSAGE;
+		DECLARE @Error NVARCHAR(256) = ERROR_MESSAGE();
+		EXEC [dbo].[spi_DBLogs_Insert] @BusinessId,@CreateBy,'Agencies','spi_Agencies_Insert',@Error;
 
 	END CATCH 
 END

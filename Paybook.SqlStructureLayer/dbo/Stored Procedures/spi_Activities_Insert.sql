@@ -1,7 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[spi_Activities_Insert]
+	@Id INT = 0 OUTPUT,
 	@BusinessId int,
-	@CreateBy VARCHAR(50),
-	@UserId int,
+	@CreateBy VARCHAR(256),
 	@Status NVARCHAR(50),
 	@Text TEXT,
 	@TextHtml TEXT
@@ -14,10 +14,10 @@ BEGIN
 	BEGIN TRY		
 		BEGIN TRANSACTION
 
-		INSERT INTO [dbo].[Activities]([BusinessId],[IsActive],[CreateDate],[CreateBy],[UserId],[Status],[Text],[TextHtml])
-			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@UserId,@Status,@Text,@TextHtml)
-
-		SELECT SCOPE_IDENTITY() AS ID;
+		INSERT INTO [dbo].[Activities]([BusinessId],[IsActive],[CreateDate],[CreateBy],[Status],[Text],[TextHtml])
+			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@Status,@Text,@TextHtml)
+			 
+		SELECT @Id = SCOPE_IDENTITY();
 		
 		COMMIT TRANSACTION
 	END TRY
@@ -25,7 +25,8 @@ BEGIN
 		
 		ROLLBACK TRANSACTION
 		
-		EXEC [dbo].[spi_DBLogs_Insert] @BusinessId,'Activities','spi_Activities_Insert',ERROR_MESSAGE;
+		DECLARE @Error NVARCHAR(256) = ERROR_MESSAGE();
+		EXEC [dbo].[spi_DBLogs_Insert] @BusinessId,@CreateBy,'Activities','spi_Activities_Insert',@Error;
 
 	END CATCH 
 END

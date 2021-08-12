@@ -6,8 +6,6 @@ namespace Paybook.ServiceLayer.Models
     public class BusinessModel : BaseResultStatusModel
     {
         public int Id { get; set; }
-        public int BusinessId { get; set; }
-        public virtual BusinessModel Businesses { get; set; }
 
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
@@ -15,6 +13,8 @@ namespace Paybook.ServiceLayer.Models
         public DateTime? ModifyDate { get; set; }
         public string CreateBy { get; set; }
         public string ModifyBy { get; set; }
+
+        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
 
@@ -26,9 +26,12 @@ namespace Paybook.ServiceLayer.Models
 
         [Display(Name = "GST Number")]
         public string GSTNumber { get; set; }
-
+        
+        [Required]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
+        
+        [Required]
         public string Email { get; set; }
 
         [Display(Name = "House No / Building Name")]
@@ -36,6 +39,8 @@ namespace Paybook.ServiceLayer.Models
 
         [Display(Name = "Street Address")]
         public string AddressLine2 { get; set; }
+
+        [Required]
         public string City { get; set; }
 
         [Display(Name = "State")]
@@ -46,9 +51,6 @@ namespace Paybook.ServiceLayer.Models
         public int CountryId { get; set; }
         public virtual CountryMasterModel CountryMaster { get; set; }
         public string Pincode { get; set; }
-
-        [Display(Name = "Complete Address")]
-        public string AddressComplete => $"{AddressLine1}, {AddressLine2}, {City}, ({StateMaster.Name}, {CountryMaster.Name}) - {Pincode}, ";
     }
 }
 

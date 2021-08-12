@@ -183,12 +183,12 @@ namespace Paybook.BusinessLayer.Report
                     if (customers != null)
                     {
                         dt_CompanyProfile.Rows[0]["CustomerName"] = customers.Name + "( " + customers.PhoneNumber1 + ")";
-                        dt_CompanyProfile.Rows[0]["CustomerAddress"] = customers.AddressComplete;
+                        dt_CompanyProfile.Rows[0]["CustomerAddress"] = customers.AddressLine1;
                     }
 
 
                     // Create Invoice/Payment Receipt Report
-                    string sbFileWrite = InvoiceHtmlReportGenerate(dt_InvoicePayment, dt_PaymentTotal, dTotalPayment, dt_CompanyProfile, business.AddressComplete);
+                    string sbFileWrite = InvoiceHtmlReportGenerate(dt_InvoicePayment, dt_PaymentTotal, dTotalPayment, dt_CompanyProfile, business.AddressLine1);
                     string sPath = "";
                     if (SelectedFileName == "")
                     {
@@ -223,7 +223,7 @@ namespace Paybook.BusinessLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 ReportModel oDataRows = new ReportModel();
                 oDataRows.ERROR = ex.Message;
@@ -393,7 +393,7 @@ namespace Paybook.BusinessLayer.Report
                         }
                         else if (strLine == "#ADDRESS#")
                         {
-                            sbFileWrite.Append(strLine.Replace("#ADDRESS#", business.AddressComplete));
+                            sbFileWrite.Append(strLine.Replace("#ADDRESS#", business.AddressLine1));
                         }
                         else if (strLine == "#EMAIL#")
                         {
@@ -542,7 +542,7 @@ namespace Paybook.BusinessLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -555,7 +555,7 @@ namespace Paybook.BusinessLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -568,7 +568,7 @@ namespace Paybook.BusinessLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -581,7 +581,7 @@ namespace Paybook.BusinessLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -598,7 +598,7 @@ namespace Paybook.BusinessLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -611,7 +611,7 @@ namespace Paybook.BusinessLayer.Report
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }

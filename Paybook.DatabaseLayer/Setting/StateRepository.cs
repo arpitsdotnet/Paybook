@@ -42,7 +42,7 @@ namespace Paybook.DatabaseLayer.Setting
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -52,13 +52,13 @@ namespace Paybook.DatabaseLayer.Setting
             {
                 var p = new { Id = id };
 
-                var result = _dbContext.LoadData<StateMasterModel, dynamic>("sps_CountryMaster_GetById", p);
+                var result = _dbContext.LoadData<StateMasterModel, dynamic>("sps_StateMaster_GetById", p);
 
                 return result.FirstOrDefault();
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -66,15 +66,14 @@ namespace Paybook.DatabaseLayer.Setting
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_CountryMaster_Insert", model, out int categoryId, DbType.Int32, null, "Id");
-                //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
+                var result = _dbContext.SaveDataOutParam("spi_StateMaster_Insert", model, out int stateId, DbType.Int32, null, "Id");
 
-                model.Id = categoryId;
+                model.Id = stateId;
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
 
@@ -83,14 +82,13 @@ namespace Paybook.DatabaseLayer.Setting
         {
             try
             {
-                var result = _dbContext.SaveData("spu_CountryMaster_Update", model);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+                var result = _dbContext.SaveData("spu_StateMaster_Update", model);
 
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -100,14 +98,13 @@ namespace Paybook.DatabaseLayer.Setting
             {
                 var p = new { Id = id, IsActive = active };
 
-                var result = _dbContext.SaveData("spu_CountryMaster_Activate", p);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+                var result = _dbContext.SaveData("spu_StateMaster_Activate", p);
 
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -117,14 +114,13 @@ namespace Paybook.DatabaseLayer.Setting
             {
                 var p = new { Id = id };
 
-                var result = _dbContext.SaveData("spd_CountryMaster_Delete", p);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+                var result = _dbContext.SaveData("spd_StateMaster_Delete", p);
 
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }

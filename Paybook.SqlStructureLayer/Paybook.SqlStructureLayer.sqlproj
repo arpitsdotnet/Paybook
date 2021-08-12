@@ -88,8 +88,8 @@
     <Build Include="dbo\Stored Procedures\spi_Identity_Initialize.sql" />
     <Build Include="dbo\Tables\CountryMaster.sql" />
     <Build Include="dbo\Tables\StateMaster.sql" />
-    <Build Include="dbo\Stored Procedures\sps_IdentityUser_IsValid.sql" />
-    <Build Include="dbo\Stored Procedures\sps_IdentityUser_GetByUsername.sql" />
+    <Build Include="dbo\Stored Procedures\sps_IdentityUsers_IsValid.sql" />
+    <Build Include="dbo\Stored Procedures\sps_IdentityUsers_GetByUsername.sql" />
     <Build Include="dbo\Stored Procedures\sps_Businesses_GetAllByUserId.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetInvoiceCountAndAmountByDays.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetPaymentCountAndAmountByDays.sql" />
@@ -107,6 +107,16 @@
     <Build Include="dbo\Stored Procedures\sps_Businesses_GetAllByUsername.sql" />
     <Build Include="dbo\Stored Procedures\sps_CountryMaster_GetAllByPage.sql" />
     <Build Include="dbo\Stored Procedures\sps_StateMaster_GetAllByPage.sql" />
+    <Build Include="dbo\Stored Procedures\spu_Businesses_UpdateSelected.sql" />
+    <Build Include="dbo\Stored Procedures\spi_Businesses_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Businesses_IsExist.sql" />
+    <Build Include="dbo\Stored Procedures\sps_CountryMaster_GetById.sql" />
+    <Build Include="dbo\Stored Procedures\sps_StateMaster_GetById.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Businesses_GetById.sql" />
+    <Build Include="dbo\Stored Procedures\spu_Businesses_Activate.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Clients_IsExist.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Clients_GetById.sql" />
+    <Build Include="dbo\Stored Procedures\spu_Clients_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Paybook.SqlStructureLayer.refactorlog" />

@@ -1,9 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Paybook.ServiceLayer.Constants;
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Paybook || A Simple Customer and Invoice Management System</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
@@ -33,49 +35,49 @@
             {
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="@Url.Action("Dashboard","Business",new { area = "Chief" })"><i class="fa fa-dashboard"></i>&nbsp; Dashboard</a></li>
+                        <li><a href="@Url.Action("Dashboard","Business",new { area = "Chief" })"><i class="glyphicon glyphicon-dashboard"></i>&nbsp; Dashboard</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                <i class="fa fa-user-circle"></i>&nbsp; Clients <span class="caret"></span>
+                                <i class="glyphicon glyphicon-user"></i>&nbsp; Clients <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
                                 @*<li><a href="/agencies">Agency List</a></li>
-                                    <li><a onclick="return OpenPartialPagePopup('agency/create','CREATE AGENCY');" href="#">Create a Agency</a></li>
+                                    <li><a onclick="return OpenPartialPagePopup('agency/create','CREATE AGENCY');" href="#">Create Agency</a></li>
                                     <li class="divider"></li>*@
-                                <li><a href="@Url.Action("Index","Client",new { area = "Chief" })">Client List</a></li>
-                                <li><a href="@Url.Action("Create","Client",new { area = "Chief" })">Create a Client</a></li>
+                                <li><a href="@Url.Action("Index","Client",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Client List</a></li>
+                                <li><a href="@Url.Action("Create","Client",new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Client</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                <i class="fa fa-credit-card"></i>&nbsp; Sales <span class="caret"></span>
+                                <i class="glyphicon glyphicon-credit-card"></i>&nbsp; Sales <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="@Url.Action("Index","Invoice",new { area = "Chief" })">Invoice List</a></li>
-                                <li><a href="@Url.Action("Create","Invoice",new { area = "Chief" })">Create a Invoice</a></li>
+                                <li><a href="@Url.Action("Index","Invoice",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Invoice List</a></li>
+                                <li><a href="@Url.Action("Create","Invoice",new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Invoice</a></li>
                                 <li class="divider"></li>
-                                <li><a href="@Url.Action("Index","Payment",new { area = "Chief" })">Payment List</a></li>
-                                <li><a href="@Url.Action("Create","Payment",new { area = "Chief" })">Create a Payment</a></li>
+                                <li><a href="@Url.Action("Index","Payment",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Payment List</a></li>
+                                <li><a href="@Url.Action("Create","Payment",new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Payment</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                <i class="fa fa-sticky-note-o"></i>&nbsp; Notes <span class="caret"></span>
+                                <i class="glyphicon glyphicon-edit"></i>&nbsp; Notes <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="@Url.Action("Index","Note",new { area = "Chief" })">Note List</a></li>
-                                <li><a href="@Url.Action("Create","Note",new { area = "Chief" })">Create a Note</a></li>
+                                <li><a href="@Url.Action("Index","Note",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Note List</a></li>
+                                <li><a href="@Url.Action("Create","Note",new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Note</a></li>
                                 <li class="divider"></li>
                             </ul>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                <i class="fa fa-gears"></i>&nbsp; Settings <span class="caret"></span>
+                                <i class="glyphicon glyphicon-cog"></i>&nbsp; Settings <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="@Url.Action("Index","Business",new { area = "Chief" })">Businesses</a></li>
-                                <li><a href="@Url.Action("Index","CategoryType",new { area = "Chief" })">Category Type List</a></li>
-                                <li><a href="@Url.Action("Index","Category",new { area = "Chief" })">Category List</a></li>
+                                <li><a href="@Url.Action("Index","Business",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Business List</a></li>
+                                <li><a href="@Url.Action("Index","CategoryType",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Category Type List</a></li>
+                                <li><a href="@Url.Action("Index","Category",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Category List</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -95,9 +97,12 @@
                         <li class="dropdown" style="height: 50px!important">
                             <div class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <div class="chip unselect">
-                                    <asp:Image ID="hlLoggedInControlsProfile" runat="server"
-                                               AlternateText="Person" ClientIDMode="Static" CssClass="pointer" Style="position: relative;" />
-                                    <asp:Label ID="lblUsername" runat="server" Text="Guest User" ClientIDMode="Static"> </asp:Label>
+                                    @if (TempData.Peek(TempdataNames.LoginUserFullname) != null)
+                                    {
+                                        <asp:Image ID="hlLoggedInControlsProfile" runat="server"
+                                                   AlternateText="Person" ClientIDMode="Static" CssClass="pointer" Style="position: relative;" />
+                                        <span>@TempData.Peek(TempdataNames.LoginUserFullname)</span>
+                                    }
                                 </div>
                             </div>
                             <ul class="dropdown-menu" role="menu">
@@ -133,6 +138,7 @@
     </footer>
 
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
     <script type="text/javascript" src="~/Scripts/Site.js"></script>

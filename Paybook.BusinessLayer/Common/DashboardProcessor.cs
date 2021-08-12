@@ -15,10 +15,10 @@ namespace Paybook.BusinessLayer.Common
     public interface IDashboardProcessor
     {
         DashboardCountersModel GetAllCounters(int businessId);
-        List<DashboardChartModel> GetClientCountByDays(int businessId, int days = 7);
-        ChartModel[] GetInvoiceAmountsAndPaymentsByDays(int businessId, int days = 7);
-        ChartModel[] GetCountOfInvoicesAndPaymentsByLastWeek(int businessId);
-        ChartModel[] GetPaymentsLast10(int businessId);
+        List<DashboardCustomerChartModel> GetClientCountByDays(int businessId, int days = 7);
+        List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(int businessId, int days = 7);
+        List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(int businessId);
+        List<DashboardInvoiceChartModel> GetPaymentsLast10(int businessId);
         DataTable GetPaymentsByLastWeek();
         DataTable GetInvoiceCountByLastWeek();
     }
@@ -42,25 +42,25 @@ namespace Paybook.BusinessLayer.Common
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
         }
 
-        public List<DashboardChartModel> GetClientCountByDays(int businessId, int days = 7)
+        public List<DashboardCustomerChartModel> GetClientCountByDays(int businessId, int days = 7)
         {
             try
             {
-                List<DashboardChartModel> clients = _dashboardRepo.GetClientCountByDays(businessId, days);
+                List<DashboardCustomerChartModel> clients = _dashboardRepo.GetClientCountByDays(businessId, days);
 
-                List<DashboardChartModel> charts = new List<DashboardChartModel>();
+                List<DashboardCustomerChartModel> charts = new List<DashboardCustomerChartModel>();
 
                 DateTime dTodayDate = Convert.ToDateTime(System.DateTime.Today.ToShortDateString());
                 int i = 0, iTotalDays = 7;
                 for (i = iTotalDays; i > 0; i--)
                 {
-                    var datetimeModel = new DashboardChartModel();
+                    var datetimeModel = new DashboardCustomerChartModel();
 
                     DateTime sDate = dTodayDate.AddDays(-i);
                     string sDay = sDate.ToShortDateString();
@@ -91,17 +91,17 @@ namespace Paybook.BusinessLayer.Common
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
-        public ChartModel[] GetInvoiceAmountsAndPaymentsByDays(int businessId, int days = 7)
+        public List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(int businessId, int days = 7)
         {
-            List<ChartModel> oChart = new List<ChartModel>();
+            List<DashboardInvoiceChartModel> charts = new List<DashboardInvoiceChartModel>();
             try
             {
-                List<DashboardChartModel> invoices = _dashboardRepo.GetInvoiceCountAndAmountByDays(businessId, days);
-                List<DashboardChartModel> payments = _dashboardRepo.GetPaymentCountAndAmountByDays(businessId, days);
+                List<DashboardCustomerChartModel> invoices = _dashboardRepo.GetInvoiceCountAndAmountByDays(businessId, days);
+                List<DashboardCustomerChartModel> payments = _dashboardRepo.GetPaymentCountAndAmountByDays(businessId, days);
 
                 int iTotalDays = 6;
                 DataTable dt = new DataTable();
@@ -161,63 +161,63 @@ namespace Paybook.BusinessLayer.Common
                 {
                     foreach (DataRow dr in dt.Rows)
                     {
-                        ChartModel oDataRows = new ChartModel
+                        DashboardInvoiceChartModel oDataRows = new DashboardInvoiceChartModel
                         {
                             Date = Convert.ToDateTime(dr["Date"]).ToString("dd/MM/yyyy"),
                             InvoiceAmount = dr["InvoiceAmount"].ToString(),
                             PaymentAmount = dr["PaymentAmount"].ToString()
                         };
-                        oChart.Add(oDataRows);
+                        charts.Add(oDataRows);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
-            return oChart.ToArray();
+            return charts;
         }
-        public ChartModel[] GetCountOfInvoicesAndPaymentsByLastWeek(int businessId)
+        public List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(int businessId)
         {
             try
             {
-                List<ChartModel> charts = new List<ChartModel>();
+                List<DashboardInvoiceChartModel> charts = new List<DashboardInvoiceChartModel>();
 
-                var chart = new ChartModel
+                var chart = new DashboardInvoiceChartModel
                 {
                     Entity = "Invoices",
-                    Count = Invoices_SelectCount().ToString()
+                    Count = "1"//Invoices_SelectCount().ToString()
                 };
                 charts.Add(chart);
-                chart = new ChartModel
+                chart = new DashboardInvoiceChartModel
                 {
                     Entity = "Payments",
-                    Count = Payments_SelectCount().ToString()
+                    Count = "2"// Payments_SelectCount().ToString()
                 };
                 charts.Add(chart);
 
-                return charts.ToArray();
+                return charts;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
         }
-        public ChartModel[] GetPaymentsLast10(int businessId)
+        public List<DashboardInvoiceChartModel> GetPaymentsLast10(int businessId)
         {
-            List<ChartModel> charts = new List<ChartModel>();
+            List<DashboardInvoiceChartModel> charts = new List<DashboardInvoiceChartModel>();
             try
             {
-                List<DashboardChartModel> payments = _dashboardRepo.GetPaymentAmountByLast10(businessId);
+                List<DashboardCustomerChartModel> payments = _dashboardRepo.GetPaymentAmountByLast10(businessId);
 
                 if (payments != null && payments.Count > 0)
                 {
                     foreach (var pay in payments)
                     {
-                        ChartModel chart = new ChartModel
+                        DashboardInvoiceChartModel chart = new DashboardInvoiceChartModel
                         {
                             Date = pay.Date.Value.ToString("dd/MM/yyyy"),
                             PaymentAmount = pay.Amount.ToString()
@@ -228,11 +228,11 @@ namespace Paybook.BusinessLayer.Common
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
-            return charts.ToArray();
+            return charts;
 
         }
         public DataTable GetPaymentsByLastWeek()
@@ -243,7 +243,7 @@ namespace Paybook.BusinessLayer.Common
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -269,7 +269,7 @@ namespace Paybook.BusinessLayer.Common
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -287,7 +287,7 @@ namespace Paybook.BusinessLayer.Common
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -304,7 +304,7 @@ namespace Paybook.BusinessLayer.Common
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }

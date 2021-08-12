@@ -59,7 +59,7 @@ namespace Paybook.DatabaseLayer
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -86,7 +86,7 @@ namespace Paybook.DatabaseLayer
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -108,7 +108,11 @@ namespace Paybook.DatabaseLayer
             {
                 var dynamicp = new Dapper.DynamicParameters();
                 dynamicp.AddDynamicParams(parameters);
-                dynamicp.Add(outputVarName, null, dbType: outputDbType, direction: ParameterDirection.Output, size);
+
+                if (size == null)
+                    dynamicp.Add(outputVarName, null, dbType: outputDbType, direction: ParameterDirection.Output);
+                else
+                    dynamicp.Add(outputVarName, null, dbType: outputDbType, direction: ParameterDirection.Output, size);
 
                 using (SqlConnection con = new SqlConnection(sConnectionString))
                 {
@@ -121,7 +125,7 @@ namespace Paybook.DatabaseLayer
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -153,7 +157,7 @@ namespace Paybook.DatabaseLayer
             catch (Exception ex)
             {
                 transaction.Rollback();
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }

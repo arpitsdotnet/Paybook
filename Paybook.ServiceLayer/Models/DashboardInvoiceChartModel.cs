@@ -1,6 +1,6 @@
 ﻿namespace Paybook.ServiceLayer.Models
 {
-    public class ChartModel
+    public class DashboardInvoiceChartModel
     {
         public string Date { get; set; }
         public string InvoiceCount { get; set; }

@@ -4,8 +4,8 @@ namespace Paybook.ServiceLayer.Logger
 {
     public interface ILogger
     {
-        string MethodName { get; }
-        void LogError(string methodName, Exception ex);
-        void LogInformation(string message);
+        string GetMethodName();
+        void Error(string methodName, Exception ex);
+        void Info(string message);
     }
 }

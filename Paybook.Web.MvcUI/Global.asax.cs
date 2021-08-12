@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Paybook.ServiceLayer.Logger;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,10 +14,18 @@ namespace Paybook.Web.MvcUI
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters); 
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             UnityConfig.RegisterComponents();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+        }
+
+        protected void Application_Error()
+        {
+            //var ex = Server.GetLastError();
+            ////log the error!
+            //ILogger logger = LoggerFactory.Instance;
+            //logger.Error(ex.Source, ex);
         }
     }
 }

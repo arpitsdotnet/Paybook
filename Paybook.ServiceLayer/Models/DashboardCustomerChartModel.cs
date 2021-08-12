@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Paybook.ServiceLayer.Models
 {
-    public class DashboardChartModel
+    public class DashboardCustomerChartModel
     {
         public DateTime? Date { get; set; }
         public int Count { get; set; }

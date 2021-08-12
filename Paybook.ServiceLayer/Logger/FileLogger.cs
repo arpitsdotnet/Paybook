@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,16 +19,16 @@ namespace Paybook.ServiceLayer.Logger
 
         private InputModel _inputModel;
 
-        public string MethodName
+        public string GetMethodName()
         {
-            get
-            {
-                MethodBase m = MethodBase.GetCurrentMethod();
-                return string.Format("{0}.{1}", m.ReflectedType.Name, m.Name);
-            }
+            StackFrame stackFrame = new StackFrame();
+            MethodBase methodBase = stackFrame.GetMethod();
+            
+            //MethodBase m = MethodBase.GetCurrentMethod();
+            return string.Format("{0}.{1}", methodBase.ReflectedType.Name, methodBase.Name);
         }
 
-        public void LogInformation(string message)
+        public void Info(string message)
         {
             try
             {
@@ -41,7 +42,7 @@ namespace Paybook.ServiceLayer.Logger
             }
         }
 
-        public void LogError(string methodName, Exception ex)
+        public void Error(string methodName, Exception ex)
         {
             _inputModel = new InputModel()
             {
@@ -56,7 +57,7 @@ namespace Paybook.ServiceLayer.Logger
                 ExceptionType = LoggerExceptionType.Error.ToString(),
 
                 Message = ex.Message.ToString(),
-                //StackTrace = ex.StackTrace.ToString(),
+                StackTrace = ex.StackTrace.ToString(),
             };
 
 

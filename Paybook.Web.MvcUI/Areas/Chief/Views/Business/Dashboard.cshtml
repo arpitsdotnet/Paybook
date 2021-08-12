@@ -1,4 +1,5 @@
 ﻿@model Paybook.Web.MvcUI.Models.ViewModels.DashboardViewModel
+@using Paybook.ServiceLayer.Constants;
 
 @{
     ViewBag.Title = "Dashboard";
@@ -14,7 +15,7 @@
 <div class="row">
     <div class="col-lg-9 col-md-12">
         <div class="container-fluid">
-            <div class="row pt-5" style="color: #1b76be">
+            <div class="row mt-5" style="color: #1b76be">
                 @Html.Partial("_DashboardCounterWidgetPartial", Model.CounterInvoicesOpen)
                 @Html.Partial("_DashboardCounterWidgetPartial", Model.CounterInvoicesOpenLastWeek)
                 @Html.Partial("_DashboardCounterWidgetPartial", Model.CounterInvoicesOverdue)
@@ -40,38 +41,171 @@
         <div class="row">
             <div class="col-lg-12 col-md-12 pt-5">
                 <div class="fwt-container-small bg-secondary fwt-round">
-                    <h4 class="fwt-bold fwt-text-deep-orange">Payments of last 20</h4>
-                    <div id="idPaymentsLast20_Chart"></div>
+                    <h4 class="fwt-bold fwt-text-deep-orange">Last 10 Payments of all times</h4>
+                    <div id="idPaymentsLast10_Chart"></div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-md-12">
-        <div class="container-fluid pt-5">
+        <div class="container-fluid mt-5">
             <div id="idLatestCustomer" class="Dashboard_CustomerCount">
                 <div>
-                    <div class="fwt-col l6 m6 s6">
-                        <div>Customer<span class="fwt-tiny"> (Last 7 days)</span></div>
-                        <div class="fwt-tiny">
-                            <asp:Label ID="lblCustomerCount" runat="server"></asp:Label>
+                    <div class="col-sm-6">
+                        <div>Customer<span class="tiny"> (Last 7 days)</span></div>
+                        <div class="tiny">
+                            <asp:Label ID="lblCustomerCount" runat="server">0</asp:Label>
                         </div>
                     </div>
-                    <div class="fwt-col l6 m6 s6">
+                    <div class="col-sm-6">
                         <div id="idCustomer_Chart"></div>
                     </div>
-                    <div class="fwt-clear"></div>
+                    <div class="clearfix"></div>
                 </div>
-                <div class="fwt-right-align">
-                    Total Payment: <i class="fa fa-inr"></i>
+                <div class="text-right">
+                    Total Payment: <i class="fa fa-rupee"></i>₹
                     <asp:Label ID="lblTotalMonthSaleValue" runat="server" CssClass="fwt-bold"></asp:Label>
                 </div>
             </div>
-            <div style="background: #0b1115; height: 5px;"></div>
-            <div class="fwt-light-grey fwt-border fwt-border-khaki">
-                <h3 class="fwt-center">Need Attention</h3>
+            <div class="fwt-light-grey">
+                <h3 class="text-center text-success pt-2">Need Attention</h3>
                 <div id="idActivitiesList" runat="server" class="activity-timeline">
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        $(document).ready(function () {
+            var jsonVar = "?businessId=" + @TempData.Peek(TempdataNames.SelectedBusinessId);
+
+            CallAjaxMethod("Business/GetCountOfInvoicesAndPaymentsByLastWeek", jsonVar, function (data) {
+                try {
+                    var $Data = data.data;
+                    console.log($Data);
+                    if ($Data.length > 0) {
+                        if ($Data[0].ERROR != null && $Data[0].ERROR != "") {
+                            alert($Data[0].ERROR);
+                        }
+                        else {
+                            console.log("Google chart started");
+                            google.charts.load("current", { packages: ["corechart"] });
+                            google.charts.setOnLoadCallback(drawChart);
+                            console.log("Google chart ended");
+
+                            function drawChart() {
+                                var sData = new Array($Data.length + 1);
+                                sData[0] = ["Entity", "Count"];
+                                for (var i = 0; i < $Data.length; i++) {
+                                    sData[i + 1] = [$Data[i].Entity, parseInt($Data[i].Count)];
+                                }
+                                console.log(sData);
+                                var chartdata = new google.visualization.arrayToDataTable(sData);
+                                var options = {
+                                    backgroundColor: 'fwt-grey',
+                                    title: '',
+                                    pieHole: 0.4,
+                                    height: 300,
+                                };
+                                var chart = new google.visualization.PieChart(document.getElementById('idInvoicePaymentCount_Chart'));
+                                chart.draw(chartdata, options);
+                            }
+                        }
+                    }
+                }
+                catch (err) {
+                    alert("Error occured: " + err);
+                }
+            });
+
+            CallAjaxMethod("Business/GetInvoiceAmountsAndPaymentsByLastWeek", jsonVar, function (data) {
+                try {
+
+                    var $Data = data.data;
+                    console.log($Data);
+                    if ($Data.length > 0) {
+                        if ($Data[0].ERROR != null && $Data[0].ERROR != "") {
+                            alert("Error occured: " + $Data[0].ERROR);
+                        }
+                        else {
+                            console.log("Dashboard_GetInvoiceAmountsAndPaymentsByLastWeek_Callback >> " + $Data);
+                            google.charts.load('current', { 'packages': ['corechart'] });
+                            google.charts.setOnLoadCallback(drawChart);
+                            function drawChart() {
+                                var sData = new Array($Data.length + 1);
+
+                                sData[0] = ["Date", "InvoiceAmount", "PaymentAmount"];
+                                for (var i = 0; i < $Data.length; i++) {
+                                    var sDate = new Date($Data[i].Date);
+                                    sData[i + 1] = [$Data[i].Date, parseInt($Data[i].InvoiceAmount), parseInt($Data[i].PaymentAmount)];
+                                }
+                                console.log(">>>" + sData);
+                                var chartdata = new google.visualization.arrayToDataTable(sData);
+                                var options = {
+                                    backgroundColor: 'fwt-grey',
+                                    title: '',
+                                    vAxis: { format: '₹#,###.##', title: 'Amount' },
+                                    height: 300,
+                                    colors: ['#1b9e77', '#7570b3'],
+                                    legend: { position: 'top' },
+                                };
+                                var chart = new google.visualization.LineChart(document.getElementById('idIPaymentAgainstInvoice_Chart'));
+                                chart.draw(chartdata, options);
+                            }
+                        }
+                    }
+                }
+                catch (err) {
+                    alert("Error occured: " + err);
+                }
+            });
+
+            CallAjaxMethod("Business/GetPaymentsLast10", jsonVar, function (data) {
+                try {
+
+                    var $Data = data.data;
+                    console.log($Data);
+                    if ($Data.length > 0) {
+                        if ($Data[0].ERROR != null && $Data[0].ERROR != "") {
+                            alert("Error occured: " + $Data[0].ERROR);
+                        }
+                        else {
+                            console.log("Dashboard_GetPaymentsLast20_Callback >> " + $Data);
+                            google.charts.load('current', { 'packages': ['corechart'] });
+                            google.charts.setOnLoadCallback(drawChart);
+                            function drawChart() {
+                                var sData = new Array($Data.length + 1);
+
+                                sData[0] = ["Date", "PaymentAmount"];
+                                for (var i = 0; i < $Data.length; i++) {
+                                    //$Data[i].InvoiceAmount == "" ? 0 : $Data[i].InvoiceAmount;
+                                    //$Data[i].PaymentAmount == "" ? 0 : $Data[i].PaymentAmount;
+                                    sData[i + 1] = [$Data[i].Date, parseInt($Data[i].PaymentAmount)];
+                                }
+                                console.log(">>>" + sData);
+                                var chartdata = new google.visualization.arrayToDataTable(sData);
+                                var options = {
+                                    backgroundColor: 'fwt-grey',
+                                    title: '',
+                                    vAxis: { format: '₹#,###.##', title: 'Payments' },
+                                    height: 300,
+                                    colors: ['#7570b3'],
+                                    legend: { position: 'top' },
+                                };
+                                var chart = new google.visualization.ColumnChart(document.getElementById('idPaymentsLast10_Chart'));
+                                chart.draw(chartdata, options);
+                            }
+                        }
+                    }
+                }
+                catch (err) {
+                    alert("Error occured: " + err);
+                }
+            });
+        });
+    </script>
+}

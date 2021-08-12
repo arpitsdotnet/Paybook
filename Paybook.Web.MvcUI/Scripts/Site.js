@@ -39,3 +39,40 @@
 
     var t = setTimeout(function () { startTime() }, 1000);
 }
+
+
+var sSiteUrlMain = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + "/";
+var siteUrl = (sSiteUrlMain.indexOf("localhost") >= 0) ? sSiteUrlMain + "" : sSiteUrlMain;
+function CallAjaxMethod(ajaxMethod, jsonVar, callback) {
+    try {
+        var sUrl = siteUrl + "" + ajaxMethod + jsonVar;
+        //        alert(sUrl);
+        //        alert(sJsonVar);
+        $.ajax({
+            type: "GET",
+            url: sUrl,
+            //data: JSON.stringify(sJsonVar),
+            //contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("There is an issue processing your request in function " + ajaxMethod + ". Details: Request Status:" + XMLHttpRequest.status + "," + "Status: " + textStatus + "Error: " + errorThrown);
+                //window[sMethodToExecute]("");
+            },
+            success: function (data) {
+                try {
+                    //window[callback](data);
+                    callback(data);
+                }
+                catch (err) {
+                    alert("There is an issue executing the function " + ajaxMethod + ", Reason: " + err);
+                    //window[sMethodToExecute]("");
+                }
+            }
+        });
+
+    }
+    catch (err) {
+        alert("There is an issue calling the function " + ajaxMethod + ", Reason: " + err);
+        //window[sMethodToExecute]("");
+    }
+}

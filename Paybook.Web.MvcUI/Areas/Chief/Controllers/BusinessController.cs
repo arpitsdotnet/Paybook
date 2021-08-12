@@ -2,6 +2,7 @@
 using Paybook.BusinessLayer.Common;
 using Paybook.BusinessLayer.Identity;
 using Paybook.BusinessLayer.Setting;
+using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 using Paybook.Web.MvcUI.Models;
@@ -16,19 +17,17 @@ using System.Web.Security;
 namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 {
     [RouteArea("Chief")]
-    //[Authorize]    
+    [Authorize]
     public class BusinessController : Controller
     {
-        private readonly ILogger _logger;
         private readonly IDashboardProcessor _dashboard;
         private readonly IBusinessProcessor _business;
         private readonly IUserProcessor _user;
         private readonly ICountryProcessor _country;
         private readonly IStateProcessor _state;
 
-        public BusinessController(ILogger logger, IDashboardProcessor dashboard, IBusinessProcessor business, IUserProcessor user, ICountryProcessor country, IStateProcessor state)
+        public BusinessController(IDashboardProcessor dashboard, IBusinessProcessor business, IUserProcessor user, ICountryProcessor country, IStateProcessor state)
         {
-            _logger = logger;
             _dashboard = dashboard;
             _business = business;
             _user = user;
@@ -36,23 +35,210 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             _state = state;
         }
 
+        [HttpGet]
+        public ActionResult Dashboard()
+        {
+            int? businessId = GetSelectedBusinessId();
+            if (businessId == null)            
+                return RedirectToAction(nameof(Create));
+            
+            DashboardCountersModel model = _dashboard.GetAllCounters(businessId.Value);
+
+            DashboardViewModel dashboardVM = new DashboardViewModel
+            {
+                CounterInvoicesOpen = new DashboardCounterWidgetModel
+                {
+                    BgColorClass = "fwt-blue-grey",
+                    BgColorHoverClass = "fwt-hover-grey",
+                    RsSymbolColor = "color: #4d5f68;",
+                    CountText = "Open Invoices",
+                    Count = model.CountTotalOpenInvoice,
+                    Total = model.SumofTotalOpenInvoice
+                },
+                CounterInvoicesOpenLastWeek = new DashboardCounterWidgetModel
+                {
+                    BgColorClass = "fwt-deep-purple",
+                    BgColorHoverClass = "fwt-hover-grey",
+                    RsSymbolColor = "color: #562f9A;",
+                    CountText = "Open Invoices (Week)",
+                    Count = model.CountLastWeekOpenInvoice,
+                    Total = model.SumLastWeekOpenInvoice
+                },
+                CounterInvoicesOverdue = new DashboardCounterWidgetModel
+                {
+                    BgColorClass = "fwt-red",
+                    BgColorHoverClass = "fwt-hover-grey",
+                    RsSymbolColor = "color: #bd4339;",
+                    CountText = "Overdues",
+                    Count = model.CountOfOverdue,
+                    Total = model.SumOfOverdue
+                },
+                CounterPaymentPaidPartial = new DashboardCounterWidgetModel
+                {
+                    BgColorClass = "fwt-teal",
+                    BgColorHoverClass = "fwt-hover-grey",
+                    RsSymbolColor = "color: #007469;",
+                    CountText = "Payments (Month)",
+                    Count = model.CountOfPaidPartial,
+                    Total = model.SumOfPaidPartialAmount
+                },
+                CounterPaymentPaidLastMonth = new DashboardCounterWidgetModel
+                {
+                    BgColorClass = "fwt-blue",
+                    BgColorHoverClass = "fwt-hover-grey",
+                    RsSymbolColor = "color: #1b76be;",
+                    CountText = "Paid Invoice (Month)",
+                    Count = model.CountOfPaidAmount,
+                    Total = model.SumOfPaidAmount
+                },
+                CounterPaymentTotal = new DashboardCounterWidgetModel
+                {
+                    BgColorClass = "fwt-green",
+                    BgColorHoverClass = "fwt-hover-grey",
+                    RsSymbolColor = "color: #2d8630;",
+                    CountText = "Total Revenue",
+                    Count = model.CountOfPaymentTotal,
+                    Total = model.SumOfPaymentTotal
+                },
+            };
+
+            return View(dashboardVM);
+        }
+
+        [HttpGet]
         public ActionResult Index()
         {
             List<BusinessModel> businesses = _business.GetAllByUsername(User.Identity.Name);
+            foreach (var business in businesses)
+            {
+                business.CountryMaster = _country.GetById(business.CountryId);
+                business.StateMaster = _state.GetById(business.StateId);
+            }
+
             return View(businesses);
         }
 
+        [HttpGet]
         public ActionResult Create()
         {
-            var modelVM = new BusinessViewModel
+            var countries = _country.GetAllByPage(0, "", "");
+            int countryId = countries[0].Id;
+            var businessVM = new BusinessViewModel
             {
-                Countries = GetSelectListItemsCountry(_country.GetAllByPage(0, "", "")),
-                States = GetSelectListItemsState(_state.GetAllByPage(1, 0, "", ""))
+                Countries = GetSelectListItemsCountry(countries),
+                States = GetSelectListItemsState(_state.GetAllByPage(countryId, 0, "", ""))
             };
 
-            return View(modelVM);
+            return View(businessVM);
         }
 
+        [HttpPost, ActionName("Create")]
+        public ActionResult CreatePost(BusinessViewModel model)
+        {
+            var countries = _country.GetAllByPage(0, "", "");
+            int countryId = countries[0].Id;
+            var businessVM = new BusinessViewModel
+            {
+                Countries = GetSelectListItemsCountry(countries),
+                States = GetSelectListItemsState(_state.GetAllByPage(countryId, 0, "", ""))
+            };
+
+            if (ModelState.IsValid)
+            {
+                model.Business.CreateBy = User.Identity.Name;
+                BusinessModel output = _business.Create(model.Business);
+                businessVM.Business = output;
+
+                return View(businessVM);
+            }
+
+            businessVM.Business = model.Business;
+
+            return View(model);
+        }
+
+
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            string username = User.Identity.Name;
+            BusinessModel businessData = _business.GetById(id, username);
+
+            var countries = _country.GetAllByPage(0, "", "");
+            int countryId = countries[0].Id;
+            var businessVM = new BusinessViewModel
+            {
+                Business = businessData,
+                Countries = GetSelectListItemsCountry(countries),
+                States = GetSelectListItemsState(_state.GetAllByPage(countryId, 0, "", ""))
+            };
+
+            return View(businessVM);
+        }
+
+        [HttpGet]
+        public ActionResult Delete(int id)
+        {
+            string username = User.Identity.Name;
+            BusinessModel businessData = _business.Activate(id, username, false);
+
+            return RedirectToAction(nameof(Index), businessData);
+        }
+
+        [HttpPost, ActionName("Selected")]
+        public ActionResult SelectedPost(int id)
+        {
+            BusinessModel output = _business.UpdateSelected(id, User.Identity.Name);
+
+            if (output != null && output.IsSucceeded == true)
+                return RedirectToAction(nameof(Index));
+
+            ModelState.AddModelError(string.Empty, output.ReturnMessage);
+            List<BusinessModel> businesses = new List<BusinessModel>
+            {
+                output
+            };
+            return View(nameof(Index), businesses);
+        }
+
+
+        [HttpGet, AllowAnonymous]
+        public ActionResult GetCountOfInvoicesAndPaymentsByLastWeek(int businessId)
+        {
+            IDashboardProcessor dashboard = new DashboardProcessor();
+            List<DashboardInvoiceChartModel> model = dashboard.GetCountOfInvoicesAndPaymentsByLastWeek(businessId);
+            return Json(new { data = model }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet, AllowAnonymous]
+        public ActionResult GetInvoiceAmountsAndPaymentsByLastWeek(int businessId)
+        {
+            IDashboardProcessor dashboard = new DashboardProcessor();
+            List<DashboardInvoiceChartModel> model = dashboard.GetInvoiceAmountsAndPaymentsByDays(businessId, 7);
+            return Json(new { data = model }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet, AllowAnonymous]
+        public ActionResult GetPaymentsLast10(int businessId)
+        {
+            IDashboardProcessor dashboard = new DashboardProcessor();
+            List<DashboardInvoiceChartModel> model = dashboard.GetPaymentsLast10(businessId);
+            return Json(new { data = model }, JsonRequestBehavior.AllowGet);
+        }
+
+        [NonAction]
+        private int? GetSelectedBusinessId()
+        {
+
+            if (TempData.Peek(TempdataNames.SelectedBusinessId) == null)
+            {
+                BusinessModel model = _business.GetSelectedByUsername(User.Identity.Name);
+                TempData.Add(TempdataNames.SelectedBusinessId, model.Id);
+            }
+
+            return (int?)TempData.Peek(TempdataNames.SelectedBusinessId);
+        }
+        [NonAction]
         private IEnumerable<SelectListItem> GetSelectListItemsState(List<StateMasterModel> elements)
         {
             var selectList = new List<SelectListItem>();
@@ -66,6 +252,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             }
             return selectList;
         }
+        [NonAction]
         private IEnumerable<SelectListItem> GetSelectListItemsCountry(List<CountryMasterModel> elements)
         {
             var selectList = new List<SelectListItem>();
@@ -78,108 +265,6 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 });
             }
             return selectList;
-        }
-
-        [HttpPost, ActionName("Create")]
-        public ActionResult CreatePost(BusinessModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                BusinessModel output = _business.Create(model);
-                return View(output);
-            }
-            return View(model);
-        }
-
-        private BusinessModel GetSelectedBusiness()
-        {
-            if (TempData.Peek("SelectedBusiness") == null)
-            {
-                TempData.Add("SelectedBusiness", _business.GetSelectedByUsername(User.Identity.Name));
-            }
-
-            return (BusinessModel)TempData.Peek("SelectedBusiness");
-        }
-
-        public ActionResult Dashboard()
-        {
-            BusinessModel business = GetSelectedBusiness();
-
-            if (business == null)
-            {
-                return RedirectToAction(nameof(Create));
-            }
-
-            DashboardCountersModel model = _dashboard.GetAllCounters(business.Id);
-
-
-            DashboardCounterWidgetModel counterInvoicesOpen = new DashboardCounterWidgetModel
-            {
-                BgColorClass = "fwt-blue-grey",
-                BgColorHoverClass = "fwt-hover-grey",
-                RsSymbolColor = "color: #4d5f68;",
-                CountText = "Open Invoices",
-                Count = model.CountTotalOpenInvoice,
-                Total = model.SumofTotalOpenInvoice
-            };
-            DashboardCounterWidgetModel counterInvoicesOpenLastWeek = new DashboardCounterWidgetModel
-            {
-                BgColorClass = "fwt-deep-purple",
-                BgColorHoverClass = "fwt-hover-grey",
-                RsSymbolColor = "color: #562f9A;",
-                CountText = "Open Invoices (Week)",
-                Count = model.CountLastWeekOpenInvoice,
-                Total = model.SumLastWeekOpenInvoice
-            };
-            DashboardCounterWidgetModel counterInvoicesOverdue = new DashboardCounterWidgetModel
-            {
-                BgColorClass = "fwt-red",
-                BgColorHoverClass = "fwt-hover-grey",
-                RsSymbolColor = "color: #bd4339;",
-                CountText = "Overdues",
-                Count = model.CountOfOverdue,
-                Total = model.SumOfOverdue
-            };
-            DashboardCounterWidgetModel counterPaymentPaidPartial = new DashboardCounterWidgetModel
-            {
-                BgColorClass = "fwt-teal",
-                BgColorHoverClass = "fwt-hover-grey",
-                RsSymbolColor = "color: #007469;",
-                CountText = "Payments (Month)",
-                Count = model.CountOfPaidPartial,
-                Total = model.SumOfPaidPartialAmount
-            };
-            DashboardCounterWidgetModel counterPaymentPaidLastMonth = new DashboardCounterWidgetModel
-            {
-                BgColorClass = "fwt-blue",
-                BgColorHoverClass = "fwt-hover-grey",
-                RsSymbolColor = "color: #1b76be;",
-                CountText = "Paid Invoice (Month)",
-                Count = model.CountOfPaidAmount,
-                Total = model.SumOfPaidAmount
-            };
-            DashboardCounterWidgetModel counterPaymentTotal = new DashboardCounterWidgetModel
-            {
-                BgColorClass = "fwt-green",
-                BgColorHoverClass = "fwt-hover-grey",
-                RsSymbolColor = "color: #2d8630;",
-                CountText = "Total Revenue",
-                Count = model.CountOfPaymentTotal,
-                Total = model.SumOfPaymentTotal
-            };
-
-            //_business.GetByUserId()
-            DashboardViewModel dashboardVM = new DashboardViewModel
-            {
-                CounterInvoicesOpen = counterInvoicesOpen,
-                CounterInvoicesOpenLastWeek = counterInvoicesOpenLastWeek,
-                CounterInvoicesOverdue = counterInvoicesOverdue,
-                CounterPaymentPaidPartial = counterPaymentPaidPartial,
-                CounterPaymentPaidLastMonth = counterPaymentPaidLastMonth,
-                CounterPaymentTotal = counterPaymentTotal,
-            };
-
-            return View();
         }
     }
 }

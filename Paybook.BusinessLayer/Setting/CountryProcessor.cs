@@ -40,7 +40,7 @@ namespace Paybook.BusinessLayer.Setting
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -53,7 +53,7 @@ namespace Paybook.BusinessLayer.Setting
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -74,7 +74,7 @@ namespace Paybook.BusinessLayer.Setting
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -95,7 +95,7 @@ namespace Paybook.BusinessLayer.Setting
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -117,7 +117,7 @@ namespace Paybook.BusinessLayer.Setting
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -139,7 +139,7 @@ namespace Paybook.BusinessLayer.Setting
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }

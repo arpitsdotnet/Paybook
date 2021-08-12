@@ -22,9 +22,9 @@
             if (!string.IsNullOrWhiteSpace(ofAmount))
             {
                 amountHtml = "of <span class='nowrap text-green'><i class='fa fa-inr'></i>" + ofAmount + "</span>";
-                ofAmount = "of " + ofAmount;
+                ofAmount = " of " + ofAmount;
             }
-            this.Body = $"{heading} ({headingId}) to {toName} of {ofAmount} is {status}";
+            this.Body = $"{heading} ({headingId}) to {toName}{ofAmount} is {status}";
             this.BodyHtml += "<div class=\"small\">"
                         + heading + " <span class=\"text-blue\">" + headingId + "</span> to <span class=\"text-blue\">" + toName + amountHtml + "</span> is " + status + "."
                     + "</div>";

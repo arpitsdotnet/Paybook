@@ -11,14 +11,15 @@ namespace Paybook.DatabaseLayer.Business
 {
     public interface IBusinessRepository
     {
-        bool IsExist(int businessId);
+        bool IsExist(string createBy, string businessName);
 
-        List<BusinessModel> GetAllByUsername(string username); 
-        BusinessModel GetSelectedByUsername(string username); 
-         BusinessModel GetById(int id);
+        List<BusinessModel> GetAllByUsername(string username);
+        BusinessModel GetSelectedByUsername(string username);
+        BusinessModel GetById(int id, string username);
         int Create(BusinessModel model);
         int Update(BusinessModel model);
-        int Activate(int id, bool active);
+        int UpdateSelected(int id, string username);
+        int Activate(int id, string username, bool active);
         int Delete(int id);
     }
 
@@ -34,20 +35,20 @@ namespace Paybook.DatabaseLayer.Business
             _logger = LoggerFactory.Instance;
         }
 
-        public bool IsExist(int businessId)
+        public bool IsExist(string createBy, string businessName)
         {
             try
             {
-                var p = new { BusinessId = businessId };
+                var p = new { CreateBy = createBy, Name = businessName };
 
-                var result = _dbContext.SaveDataOutParam<dynamic, bool>("sps_Businesses_IsExist", p, out bool isExist, DbType.Boolean, null, "IsExist");
+                var result = _dbContext.SaveDataOutParam("sps_Businesses_IsExist", p, out dynamic isExist, DbType.Boolean, null, "IsExist");
                 //return _dbContext.LoadDataByProcedure("sps_CompanyProfile_IsExist", null);
 
-                return isExist;
+                return (bool)isExist;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -65,7 +66,7 @@ namespace Paybook.DatabaseLayer.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -82,15 +83,15 @@ namespace Paybook.DatabaseLayer.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
-        public BusinessModel GetById(int id)
+        public BusinessModel GetById(int id, string username)
         {
             try
             {
-                var p = new { Id = id };
+                var p = new { Id = id, Username = username };
 
                 var result = _dbContext.LoadData<BusinessModel, dynamic>("sps_Businesses_GetById", p);
 
@@ -98,23 +99,42 @@ namespace Paybook.DatabaseLayer.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
+
         public int Create(BusinessModel model)
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_Businesses_Insert", model, out int categoryId, DbType.Int32, null, "Id");
+                var p = new
+                {
+                    model.CreateBy,
+                    model.Name,
+                    model.Description,
+                    model.Image,
+                    model.GSTNumber,
+                    model.PhoneNumber,
+                    model.Email,
+                    model.AddressLine1,
+                    model.AddressLine2,
+                    model.City,
+                    model.StateId,
+                    model.CountryId,
+                    model.Pincode
+                };
+
+                var result = _dbContext.SaveDataOutParam("spi_Businesses_Insert", p, out int businessId, DbType.Int32, null, "Id");
                 //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
 
-                model.Id = categoryId;
+                model.Id = businessId;
+
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
 
@@ -130,15 +150,31 @@ namespace Paybook.DatabaseLayer.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
-        public int Activate(int id, bool active)
+        public int UpdateSelected(int id, string username)
         {
             try
             {
-                var p = new { Id = id, IsActive = active };
+                var p = new { Id = id, CreateBy = username };
+
+                var result = _dbContext.SaveData("spu_Businesses_UpdateSelected", p);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
+        public int Activate(int id, string username, bool active)
+        {
+            try
+            {
+                var p = new { Id = id, Username = username, IsActive = active };
 
                 var result = _dbContext.SaveData("spu_Businesses_Activate", p);
                 //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
@@ -147,7 +183,7 @@ namespace Paybook.DatabaseLayer.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -164,7 +200,7 @@ namespace Paybook.DatabaseLayer.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }

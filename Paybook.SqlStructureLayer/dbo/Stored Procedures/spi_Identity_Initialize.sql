@@ -5,13 +5,16 @@ BEGIN
 	BEGIN
 	
 		--DEFAULT ROLE CREATE
-		INSERT INTO IdentityRoles ([Name])
-		VALUES ('Administrator'),('Chief'),('Manager'),('Employee');
+		INSERT INTO IdentityRoles ([IsActive],[CreateDate],[CreateBy],[Name])
+		VALUES (1, GETDATE(), 'admin', 'Administrator'),
+				(1, GETDATE(), 'admin', 'Chief'),
+				(1, GETDATE(), 'admin', 'Manager'),
+				(1, GETDATE(), 'admin', 'Employee');
 		
 		--DEFAULT USER CREATE
 		INSERT INTO IdentityUsers ([IsActive],[CreateDate],[CreateBy],[Username],[PasswordHash],[Email],[IsEmailConfirmed],[FirstName],[LastName])
-		VALUES (1,GETDATE(),'IdentityInitializer','admin','Ad$mi@n0','floydwebtech@gmail.com',1,'Administrator','User'),
-				(1,GETDATE(),'IdentityInitializer','amituser','Am$it@1234','amity435@gmail.com',1,'Amit','Yadav');
+		VALUES (1,GETDATE(),'admin','admin','Ad$mi@n0','floydwebtech@gmail.com',1,'Administrator','User'),
+				(1,GETDATE(),'admin','amituser','Am$it@1234','amity435@gmail.com',1,'Amit','Yadav');
 		
 		DECLARE @RoleId INT, @UserId INT;
 
@@ -29,13 +32,13 @@ BEGIN
 
 		--DEFAULT COUNTRY / STATE CREATE
 		INSERT INTO CountryMaster ([IsActive],[CreateDate],[CreateBy],[Name])
-		VALUES (1,GETDATE(),'IdentityInitializer','India');
+		VALUES (1,GETDATE(),'admin','India');
 		
 		DECLARE @CountryId INT;
 		SELECT @CountryId = Id FROM CountryMaster WHERE [Name] = 'India';
 
 		INSERT INTO StateMaster ([IsActive],[CreateDate],[CreateBy],[CountryId],[Name],[OrderBy])
-		VALUES (1,GETDATE(),'IdentityInitializer',@CountryId,'Madhya Pradesh',1);
+		VALUES (1,GETDATE(),'admin',@CountryId,'Madhya Pradesh',1);
 
 
 	END
