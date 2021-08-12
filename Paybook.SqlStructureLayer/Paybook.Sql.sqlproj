@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>Paybook.SqlStructureLayer</Name>
+    <Name>Paybook.Sql</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{d0771108-2de5-4049-a9ff-fca710539ad9}</ProjectGuid>
@@ -117,6 +117,10 @@
     <Build Include="dbo\Stored Procedures\sps_Clients_IsExist.sql" />
     <Build Include="dbo\Stored Procedures\sps_Clients_GetById.sql" />
     <Build Include="dbo\Stored Procedures\spu_Clients_Update.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Invoices_GetAllByPage.sql" />
+    <Build Include="dbo\Stored Procedures\spi_Invoices_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\spu_Invoices_Update.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Invoices_GetById.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Paybook.SqlStructureLayer.refactorlog" />
