@@ -29,19 +29,21 @@ namespace Paybook.BusinessLayer.Common
         public string GetNewNumber(int businessId, string type)
         {
             string newNumber = "";
-            int currentyear = DateTime.Now.Year;
+            int currentYear = DateTime.Now.Year;
+            int currentMonth = DateTime.Now.Month;
+            var months = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" };
             try
             {
                 var result = _lastSavedNumberRepo.GetByType(businessId, type);
                 if (result != null)
                 {
-                    int lastnumber = Int32.Parse(result.LastNumber);
+                    int lastNumber = Int32.Parse(result.LastNumber);
                     int lastYear = Int32.Parse(result.Year);
 
-                    if (lastYear < currentyear)
+                    if (lastYear < currentYear)
                         newNumber = "1";
-                    else                    
-                        newNumber = (lastnumber + 1).ToString();                    
+                    else
+                        newNumber = (lastNumber + 1).ToString();
                 }
 
                 if (newNumber.Length == 1)
@@ -51,9 +53,9 @@ namespace Paybook.BusinessLayer.Common
                 if (newNumber.Length == 3)
                     newNumber = "0" + newNumber;
 
-                string sCurrentYear = currentyear.ToString();
+                var numberWithMonth = months[currentMonth] + newNumber;
 
-                newNumber = result.Prefix + result.Seperator + sCurrentYear + result.Seperator + newNumber;
+                newNumber = result.Prefix + result.Seperator + currentYear.ToString() + result.Seperator + numberWithMonth;
 
                 return newNumber;
             }
