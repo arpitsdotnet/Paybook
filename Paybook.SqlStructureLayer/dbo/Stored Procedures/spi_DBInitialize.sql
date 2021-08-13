@@ -45,7 +45,7 @@ BEGIN
 
 		--DEFAULT BUSINESS
 		INSERT INTO Businesses ([IsActive],[CreateDate],[CreateBy],[Name],[Description],[IsSelected],[StateId],[CountryId])
-		VALUES(1,GETDATE(),'amituser','Amit Agency','Default Agency for Amit Sir',1,@StateId,@CountryId)
+		VALUES(1,GETDATE(),'admin','Administrator Business','Default Business for Administrator',1,@StateId,@CountryId)
 		
 		DECLARE @BusinessId INT;
 		SET @BusinessId = SCOPE_IDENTITY();
@@ -73,6 +73,15 @@ BEGIN
 		INSERT INTO CategoryMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[CategoryTypeId],[Name],[Core],[Value],[OrderBy])
 		VALUES (@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Disc. Percentage','DiscountPercentage','',1),
 				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Disc. Amount','DiscountAmount','',2);
+				
+		--DEFAULT CATEGORY TYPE AND CATEGORY --> InvoiceMessage
+		INSERT INTO CategoryTypeMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[Core])
+		VALUES (@BusinessId,1,GETDATE(),'admin','Settings','Settings');
+		
+		SELECT @CateogryTypeId = SCOPE_IDENTITY();
+
+		INSERT INTO CategoryMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[CategoryTypeId],[Name],[Core],[Value],[OrderBy])
+		VALUES (@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Invoice Message','InvoiceMessage','Thank you for your business and have a great day!',1)
 
 	END
 END

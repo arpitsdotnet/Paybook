@@ -64,6 +64,7 @@
     <Folder Include="dbo\Functions" />
     <Folder Include="dbo\Functions\Table-valued Functions" />
     <Folder Include="Profile\" />
+    <Folder Include="dbo\Functions\Scalar-valued Functions" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\IdentityUsers.sql" />
@@ -121,7 +122,10 @@
     <Build Include="dbo\Stored Procedures\spi_Invoices_Insert.sql" />
     <Build Include="dbo\Stored Procedures\spu_Invoices_Update.sql" />
     <Build Include="dbo\Stored Procedures\sps_Invoices_GetById.sql" />
-    <Build Include="dbo\Stored Procedures\sps_CategoryMaster_GetByTypeCore.sql" />
+    <Build Include="dbo\Stored Procedures\sps_CategoryMaster_GetAllByTypeCore.sql" />
+    <Build Include="dbo\Stored Procedures\sps_CategoryMaster_GetByCore.sql" />
+    <Build Include="dbo\Stored Procedures\sps_LastSavedNumbers_GetNewNumberByType.sql" />
+    <Build Include="dbo\Functions\Scalar-valued Functions\fns_NewNumberGenerator.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Profile\Paybook.SqlStructureLayer.publish.xml" />
