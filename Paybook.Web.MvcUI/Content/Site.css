@@ -13,11 +13,14 @@ body { padding-top: 50px; padding-bottom: 20px; }
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
-textarea { max-width: 280px; }
+textarea { max-width: 98%; }
 
-.navbar-brand { height: 50px; padding: 0px 15px; }
+textarea { height: 80px!important; }
+
+    .navbar-brand { height: 50px; padding: 0px 15px; }
     .navbar-brand img { height: 50px; text-align: left; }
 
+.control-label { color:#444; }
 .bg-default { background-color: #E0E0E0 !important; color: #005A73 !important; border-bottom: solid 3px #D0D0D0; margin-bottom: 20px; }
 
 
