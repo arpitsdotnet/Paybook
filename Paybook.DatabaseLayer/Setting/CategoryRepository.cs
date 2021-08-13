@@ -14,7 +14,7 @@ namespace Paybook.DatabaseLayer.Setting
     public interface ICategoryRepository : IBaseRepository<CategoryMasterModel>
     {
         CategoryMasterModel GetByCore(int businessId, string core);
-        List<CategoryMasterModel> GetByTypeCore(int businessId, string typeCore);
+        List<CategoryMasterModel> GetAllByTypeCore(int businessId, string typeCore);
     }
 
     public class CategoryRepository : ICategoryRepository
@@ -28,13 +28,13 @@ namespace Paybook.DatabaseLayer.Setting
             _dbContext = DbContextFactory.Instance;
         }
 
-        public List<CategoryMasterModel> GetByTypeCore(int businessId, string typeCore)
+        public List<CategoryMasterModel> GetAllByTypeCore(int businessId, string typeCore)
         {
             try
             {
                 var p = new { BusinessId = businessId, TypeCore = typeCore };
 
-                var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetByTypeCore", p);
+                var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetAllByTypeCore", p);
 
                 return result;
             }

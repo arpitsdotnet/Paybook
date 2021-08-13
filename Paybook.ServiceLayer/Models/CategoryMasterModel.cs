@@ -16,6 +16,7 @@ namespace Paybook.ServiceLayer.Models
         public virtual CategoryTypeMasterModel CategoryTypes { get; set; }
         public string Name { get; set; }
         public string Core { get; set; }
+        public string Value { get; set; }
         public int OrderBy { get; set; }
     }
 }

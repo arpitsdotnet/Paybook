@@ -38,7 +38,7 @@ namespace Paybook.BusinessLayer.Setting
         {
             try
             {
-                return _category.GetByTypeCore(businessId, typeCore);
+                return _category.GetAllByTypeCore(businessId, typeCore);
             }
             catch (Exception ex)
             {
