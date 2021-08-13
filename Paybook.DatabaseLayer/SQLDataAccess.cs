@@ -34,16 +34,6 @@ namespace Paybook.DatabaseLayer
             else
                 return ConfigurationManager.ConnectionStrings["FWT_Paybook_Connection"].ConnectionString;
         }
-
-        /// <summary>
-        ///  Method will select the data from the database based on parameters.
-        ///  It will execute the SELECT query into database.
-        /// </summary>
-        /// <typeparam name="T">Return object of type generics.</typeparam>
-        /// <typeparam name="U">Passing parameters object of type generics.</typeparam>
-        /// <param name="storedProcedure">Pass stored procedure name.</param>
-        /// <param name="parameters">Pass U type of generics object as parameters, type "new { }" for no parameters and U as dynamics.</param>
-        /// <returns>Returns list of T type of generics object</returns>
         public List<T> LoadData<T, U>(string storedProcedure, U parameters)
         {
             string sConnectionString = GetConnectionString();
@@ -64,14 +54,6 @@ namespace Paybook.DatabaseLayer
             }
         }
 
-        /// <summary>
-        /// Method will create, update or delete the data into database based on parameters.
-        /// It will execute INSERT, UPDATE, DELETE query into database.
-        /// </summary>
-        /// <typeparam name="T">Passing parameters object of type generics.</typeparam>
-        /// <param name="storedProcedure">Pass stored procedure name.</param>
-        /// <param name="parameters">Pass T type of generics object as parameters, type "new { }" for no parameters and T as dynamics.</param>
-        /// <returns>Returns an integer about how many rows updated.</returns>
         public int SaveData<T>(string storedProcedure, T parameters)
         {
             string sConnectionString = GetConnectionString();
@@ -91,15 +73,6 @@ namespace Paybook.DatabaseLayer
             }
         }
 
-        /// <summary>
-        /// Method will create, update or delete the data into database based on parameters 
-        /// and out parameter result the recent id or message.
-        /// It will execute INSERT, UPDATE, DELETE query into database.
-        /// </summary>
-        /// <typeparam name="T">Passing parameters object of type generics.</typeparam>
-        /// <param name="storedProcedure">Pass stored procedure name.</param>
-        /// <param name="parameters">Pass T type of generics object as parameters, type "new { }" for no parameters and T as dynamics.</param>
-        /// <returns>Returns an integer about how many rows updated.</returns>
         public int SaveDataOutParam<T, U>(string storedProcedure, T parameters, out U returnVar, DbType outputDbType, int? size, string outputVarName)
         {
             string sConnectionString = GetConnectionString();
@@ -126,6 +99,60 @@ namespace Paybook.DatabaseLayer
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
+
+        public int SaveDataWithSubdata<T, U, V>(string storedProcedureT, string storedProcedureU, T model, List<U> submodel, string modelIdName, out V returnVar, DbType outputDbType, int? size, string outputVarName)
+        {
+            string sConnectionString = GetConnectionString();
+
+            SqlTransaction transaction = null;
+
+            try
+            {
+                var dynamicp = new Dapper.DynamicParameters();
+                dynamicp.AddDynamicParams(model);
+
+                if (size == null)
+                    dynamicp.Add(outputVarName, null, dbType: outputDbType, direction: ParameterDirection.Output);
+                else
+                    dynamicp.Add(outputVarName, null, dbType: outputDbType, direction: ParameterDirection.Output, size);
+
+                using (SqlConnection con = new SqlConnection(sConnectionString))
+                {
+                    con.Open();
+                    transaction = con.BeginTransaction();
+
+                    int i = con.Execute(storedProcedureT, dynamicp, commandType: CommandType.StoredProcedure);
+
+                    returnVar = dynamicp.Get<V>(outputVarName);
+
+                    foreach (var item in submodel)
+                    {
+                        var dynamicpU = new Dapper.DynamicParameters();
+                        dynamicpU.AddDynamicParams(item);
+                        dynamicpU.Add(modelIdName, returnVar);
+
+                        con.Execute(storedProcedureU, dynamicpU, commandType: CommandType.StoredProcedure);
+                    }
+
+                    transaction.Commit();
+                    return i;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                try
+                {
+                    transaction.Rollback();
+                }
+                catch (Exception ex2)
+                {
+                    _logger.Error(_logger.GetMethodName(), ex2);
+                    throw;
+                }
                 throw;
             }
         }
