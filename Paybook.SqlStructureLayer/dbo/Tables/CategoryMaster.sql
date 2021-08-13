@@ -10,6 +10,7 @@
     [CategoryTypeId] INT  NOT NULL, 
     [Name] NVARCHAR(256) NOT NULL, 
     [Core] NVARCHAR(256) NOT NULL, 
+    [Value] NVARCHAR(256) NOT NULL, 
     [OrderBy] INT NULL,
     CONSTRAINT [PK_CategoryMaster] PRIMARY KEY ([Id]), 
     CONSTRAINT [FK_CategoryMaster_ToBusinesses_BusinessId] FOREIGN KEY ([BusinessId]) REFERENCES [Businesses]([Id]), 

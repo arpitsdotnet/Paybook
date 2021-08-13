@@ -13,7 +13,7 @@ namespace Paybook.BusinessLayer.Setting
 {
     public interface ICategoryProcessor
     {
-        List<CategoryMasterModel> GetByTypeCore(int businessId, string typeCore);
+        List<CategoryMasterModel> GetAllByTypeCore(int businessId, string typeCore);
         CategoryMasterModel GetByCore(int businessId, string core);
         List<CategoryMasterModel> GetAllByPage(int businessId, int page, string search, string orderBy);
         CategoryMasterModel GetById(int businessId, int id);
@@ -34,7 +34,7 @@ namespace Paybook.BusinessLayer.Setting
             _category = new CategoryRepository();
         }
 
-        public List<CategoryMasterModel> GetByTypeCore(int businessId, string typeCore)
+        public List<CategoryMasterModel> GetAllByTypeCore(int businessId, string typeCore)
         {
             try
             {
