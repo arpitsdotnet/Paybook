@@ -29,6 +29,9 @@ namespace Paybook.ServiceLayer.Models
         [Required]
         public string Name { get; set; }
 
+        [Display(Name = "Agency Name")]
+        public string AgencyName { get; set; }
+
         [Required]
         [Display(Name = "Phone Number (Primary)")]
         public string PhoneNumber1 { get; set; }

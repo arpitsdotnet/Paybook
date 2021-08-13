@@ -3,6 +3,7 @@
     @BusinessId INT,
     @CreateBy NVARCHAR(256), 
     @Name NVARCHAR(256), 
+    @AgencyName NVARCHAR(256) = '', 
     @PhoneNumber1 NVARCHAR(20), 
     @PhoneNumber2 NVARCHAR(20), 
     @Email NVARCHAR(256), 
@@ -17,8 +18,8 @@ BEGIN
 	BEGIN TRY		
 		BEGIN TRANSACTION
 
-		INSERT INTO [dbo].[Clients]([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[PhoneNumber1],[PhoneNumber2],[Email],[AddressLine1],[AddressLine2],[City],[StateId],[CountryId],[Pincode])
-			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@Name,@PhoneNumber1,@PhoneNumber2,@Email,@AddressLine1,@AddressLine2,@City,@StateId,@CountryId,@Pincode)
+		INSERT INTO [dbo].[Clients]([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[AgencyName],[PhoneNumber1],[PhoneNumber2],[Email],[AddressLine1],[AddressLine2],[City],[StateId],[CountryId],[Pincode])
+			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@Name,@AgencyName,@PhoneNumber1,@PhoneNumber2,@Email,@AddressLine1,@AddressLine2,@City,@StateId,@CountryId,@Pincode)
 			 
 		SET @Id = SCOPE_IDENTITY();
 		
