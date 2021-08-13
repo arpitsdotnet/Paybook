@@ -4,11 +4,22 @@
     ViewBag.Title = "Create a Client";
 }
 
-<h2>CREATE CLIENT</h2>
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+
+
+    <div class="row bg-default container-fluid">
+        <div class="col-lg-3">
+            <h3 class="bold"><i class="glyphicon glyphicon-time"></i>&nbsp; CLIENT CREATE</h3>
+        </div>
+        <div class="col-lg-offset-6 col-lg-3 text-right">
+            <div class="btn-group pt-3">
+                <a href="@Url.Action("Index")" class="btn btn-default btn-lg"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; CANCEL</a>
+                <button type="submit" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp; SAVE</button>
+            </div>
+        </div>
+    </div>
 
     <div class="form-horizontal">
         <hr />
@@ -116,10 +127,10 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-1">
-                <input type="submit" value="Create" class="btn btn-primary form-control" />
+                <input type="submit" value="Save" class="btn btn-primary form-control" />
             </div>
             <div class="col-md-2 pt-3">
-                @Html.ActionLink("Back to Client List", "Index")
+                @Html.ActionLink("Cancel", "Index")
             </div>
         </div>
     </div>
