@@ -46,7 +46,7 @@ namespace Paybook.Web.MvcUI.Controllers
                     IdentityUserModel userData = _user.GetByUsername(model.Username);
                     TempData[TempdataNames.LoginUserFullname] = $"{userData.FirstName} {userData.LastName}";
 
-                    FormsAuthentication.SetAuthCookie(model.Username, true);
+                    FormsAuthentication.SetAuthCookie(model.Username, model.IsPersistent);
 
                     return RedirectToAction("Dashboard", "Business", new { area = "Chief" });
                 }
