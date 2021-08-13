@@ -10,7 +10,7 @@ namespace Paybook.DatabaseLayer.Common
 {
     public interface ILastSavedNumberRepository
     {
-        LastSavedNumberModel GetByType(int businessId, string type);
+        LastSavedNumberModel GetNewNumberByType(int businessId, string type);
         int Update(LastSavedNumberModel model);
     }
 
@@ -25,13 +25,13 @@ namespace Paybook.DatabaseLayer.Common
             _dbContext = DbContextFactory.Instance;
         }
 
-        public LastSavedNumberModel GetByType(int businessId, string type)
+        public LastSavedNumberModel GetNewNumberByType(int businessId, string type)
         {
             try
             {
                 var p = new { BusinessId = businessId, Type = type };
 
-                var result = _dbContext.LoadData<LastSavedNumberModel, dynamic>("sps_LastSavedNumber_GetByType", p);
+                var result = _dbContext.LoadData<LastSavedNumberModel, dynamic>("sps_LastSavedNumbers_GetNewNumberByType", p);
 
                 return result.FirstOrDefault();
             }

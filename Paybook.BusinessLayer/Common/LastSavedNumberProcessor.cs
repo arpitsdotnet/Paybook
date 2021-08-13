@@ -11,8 +11,8 @@ namespace Paybook.BusinessLayer.Common
 {
     public interface ILastSavedNumberProcessor
     {
-        string GetNewNumber(int businessId, string type);
-        void Update(LastSavedNumberModel model);
+        string GetNewNumberByType(int businessId, string type);
+        //void Update(LastSavedNumberModel model);
     }
 
     public class LastSavedNumberProcessor : ILastSavedNumberProcessor
@@ -26,38 +26,42 @@ namespace Paybook.BusinessLayer.Common
             _lastSavedNumberRepo = new LastSavedNumberRepository();
         }
 
-        public string GetNewNumber(int businessId, string type)
+        public string GetNewNumberByType(int businessId, string type)
         {
-            string newNumber = "";
-            int currentYear = DateTime.Now.Year;
-            int currentMonth = DateTime.Now.Month;
-            var months = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" };
+            //string newNumber = "";
+            //int currentYear = DateTime.Now.Year;
+            //int currentMonth = DateTime.Now.Month;
+            //var months = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" };
             try
             {
-                var result = _lastSavedNumberRepo.GetByType(businessId, type);
-                if (result != null)
-                {
-                    int lastNumber = Int32.Parse(result.LastNumber);
-                    int lastYear = Int32.Parse(result.Year);
+                var result = _lastSavedNumberRepo.GetNewNumberByType(businessId, type);
+                return result.NewNumber;
 
-                    if (lastYear < currentYear)
-                        newNumber = "1";
-                    else
-                        newNumber = (lastNumber + 1).ToString();
-                }
+                //if (result != null)
+                //{
+                //    int lastNumber = Int32.Parse(result.LastNumber);
+                //    int lastYear = Int32.Parse(result.Year);
 
-                if (newNumber.Length == 1)
-                    newNumber = "000" + newNumber;
-                if (newNumber.Length == 2)
-                    newNumber = "00" + newNumber;
-                if (newNumber.Length == 3)
-                    newNumber = "0" + newNumber;
+                //    if (lastYear < currentYear)
+                //        newNumber = "1";
+                //    else
+                //        newNumber = (lastNumber + 1).ToString();
+                //}
 
-                var numberWithMonth = months[currentMonth] + newNumber;
+                //if (newNumber.Length == 0)
+                //    newNumber = "0001";
+                //else if (newNumber.Length == 1)
+                //    newNumber = "000" + newNumber;
+                //else if (newNumber.Length == 2)
+                //    newNumber = "00" + newNumber;
+                //else if (newNumber.Length == 3)
+                //    newNumber = "0" + newNumber;
 
-                newNumber = result.Prefix + result.Seperator + currentYear.ToString() + result.Seperator + numberWithMonth;
+                //var numberWithMonth = months[currentMonth] + newNumber;
 
-                return newNumber;
+                //newNumber = result.Prefix + result.Seperator + currentYear.ToString() + result.Seperator + numberWithMonth;
+
+                //return result;
             }
             catch (Exception ex)
             {

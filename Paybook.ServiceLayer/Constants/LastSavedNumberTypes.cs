@@ -1,6 +1,6 @@
 ﻿namespace Paybook.ServiceLayer
 {
-    public class LastIdTypes
+    public class LastSavedNumberTypes
     {
         public const string Customer = "Customer";
         public const string Agent = "Agent";
