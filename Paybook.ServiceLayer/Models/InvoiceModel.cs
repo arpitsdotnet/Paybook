@@ -12,7 +12,7 @@ namespace Paybook.ServiceLayer.Models
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
 
-        
+
         [Display(Name = "Create date")]
         public DateTime? CreateDate { get; set; }
         public string CreateBy { get; set; }
@@ -28,6 +28,7 @@ namespace Paybook.ServiceLayer.Models
 
         [Required]
         [Display(Name = "Invoice date")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? InvoiceDate { get; set; }
 
         [Required]
@@ -44,6 +45,8 @@ namespace Paybook.ServiceLayer.Models
 
         [Required]
         [Display(Name = "Client's email")]
+        [DataType(DataType.EmailAddress)]
+        [RegularExpression(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", ErrorMessage = "Please enter a valid email address.")]
         public string ClientEmail { get; set; }
 
         [Display(Name = "Send email invoice")]
@@ -61,6 +64,7 @@ namespace Paybook.ServiceLayer.Models
 
         [Required]
         [Display(Name = "Due date")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? DueDate { get; set; }
 
         [Display(Name = "Overdue")]
@@ -75,6 +79,8 @@ namespace Paybook.ServiceLayer.Models
         public decimal DiscountTotal { get; set; }
 
         [Required]
+        [DataType(DataType.Currency)]
+        [MinLength(1)]
         public decimal Total { get; set; }
     }
 }
