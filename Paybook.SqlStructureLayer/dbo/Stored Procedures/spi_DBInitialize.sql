@@ -55,7 +55,7 @@ BEGIN
 		INSERT INTO CategoryTypeMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[Core])
 		VALUES (@BusinessId,1,GETDATE(),'admin','Terms','Terms');
 		
-		SELECT @CateogryTypeId = SCOPE_IDENTITY();
+		SET @CateogryTypeId = SCOPE_IDENTITY();
 
 		INSERT INTO CategoryMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[CategoryTypeId],[Name],[Core],[Value],[OrderBy])
 		VALUES (@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Net30','Net30','30',1),
@@ -68,7 +68,7 @@ BEGIN
 		INSERT INTO CategoryTypeMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[Core])
 		VALUES (@BusinessId,1,GETDATE(),'admin','Discount Types','DiscountTypes');
 		
-		SELECT @CateogryTypeId = SCOPE_IDENTITY();
+		SET @CateogryTypeId = SCOPE_IDENTITY();
 
 		INSERT INTO CategoryMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[CategoryTypeId],[Name],[Core],[Value],[OrderBy])
 		VALUES (@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Disc. Percentage','DiscountPercentage','',1),
@@ -78,10 +78,42 @@ BEGIN
 		INSERT INTO CategoryTypeMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[Core])
 		VALUES (@BusinessId,1,GETDATE(),'admin','Settings','Settings');
 		
-		SELECT @CateogryTypeId = SCOPE_IDENTITY();
+		SET @CateogryTypeId = SCOPE_IDENTITY();
 
 		INSERT INTO CategoryMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[CategoryTypeId],[Name],[Core],[Value],[OrderBy])
 		VALUES (@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Invoice Message','InvoiceMessage','Thank you for your business and have a great day!',1)
+				
+		--DEFAULT CATEGORY TYPE AND CATEGORY --> WorkTypes
+		INSERT INTO CategoryTypeMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[Core])
+		VALUES (@BusinessId,1,GETDATE(),'admin','Work Types','WorkTypes');
+		
+		SET @CateogryTypeId = SCOPE_IDENTITY();
+
+		INSERT INTO CategoryMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[CategoryTypeId],[Name],[Core],[Value],[OrderBy])
+		VALUES (@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Cash','Cash','',1),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Fitness','Fitness','',2),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Insurance','Insurance','',3),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Licence','Licence','',4),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'National Insurance','NationalInsurance','',5),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'New Registration','NewRegistration','',6),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Permit','Permit','',7),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Permit Picnic / Marriage','PermitPicnicMarriage','',8),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'PUC','PUC','',9),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Renewal','Renewal','',10),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Tax M.','TaxM','',11),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Tax Q.','TaxQ','',12),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Transfer','Transfer','',13);
+				
+		--DEFAULT CATEGORY TYPE AND CATEGORY --> TaxTypes
+		INSERT INTO CategoryTypeMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[Core])
+		VALUES (@BusinessId,1,GETDATE(),'admin','Tax Types','TaxTypes');
+		
+		SET @CateogryTypeId = SCOPE_IDENTITY();
+
+		INSERT INTO CategoryMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[CategoryTypeId],[Name],[Core],[Value],[OrderBy])
+		VALUES (@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'No Tax','NoTax','',1),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'State Tax','StateTax','18',2),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Center Tax','CenterTax','18',3);
 
 	END
 END
