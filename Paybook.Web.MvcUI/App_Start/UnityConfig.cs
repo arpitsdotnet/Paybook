@@ -6,6 +6,7 @@ using Paybook.BusinessLayer.Identity;
 using Paybook.BusinessLayer.Invoice;
 using Paybook.BusinessLayer.Note;
 using Paybook.BusinessLayer.Payment;
+using Paybook.BusinessLayer.Report;
 using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer.Logger;
 using System.Web.Mvc;
@@ -36,13 +37,14 @@ namespace Paybook.Web.MvcUI
             container.RegisterType<IUserProcessor, UserProcessor>();
             container.RegisterType<ILoginProcessor, LoginProcessor>();
             container.RegisterType<IBusinessProcessor, BusinessProcessor>();
-            container.RegisterType<IAgencyProcessor, AgencyProcessor>();
+            //container.RegisterType<IAgencyProcessor, AgencyProcessor>();
             container.RegisterType<IClientProcessor, ClientProcessor>();
             container.RegisterType<IInvoiceProcessor, InvoiceProcessor>();
             container.RegisterType<IInvoiceServiceProcessor, InvoiceServiceProcessor>();
             //container.RegisterType<IRemarkProcessor, RemarkProcessor>();
             container.RegisterType<IPaymentProcessor, PaymentProcessor>();
             container.RegisterType<INoteProcessor, NoteProcessor>();
+            container.RegisterType<IReportProcessor, ReportProcessor>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }
