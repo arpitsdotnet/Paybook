@@ -14,6 +14,7 @@
     [Qty] INT NOT NULL, 
     [Rate] DECIMAL(18, 2) NOT NULL, 
     [Subtotal] DECIMAL(18, 2) NULL, 
+    [OrderBy] INT NULL, 
     [IsTaxable] BIT NULL, 
     [TaxTypeId] INT NULL, 
     [IGSTPercentage] INT NULL, 
