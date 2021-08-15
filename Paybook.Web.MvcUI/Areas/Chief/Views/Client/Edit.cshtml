@@ -31,7 +31,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.EditorFor(model => model.Client.Name, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Client.Name, "", new { @class = "text-danger" })
         </div>
@@ -39,7 +39,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.AgencyName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.EditorFor(model => model.Client.AgencyName, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Client.AgencyName, "", new { @class = "text-danger" })
         </div>
@@ -47,7 +47,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.PhoneNumber1, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.EditorFor(model => model.Client.PhoneNumber1, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Client.PhoneNumber1, "", new { @class = "text-danger" })
         </div>
@@ -55,7 +55,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.PhoneNumber2, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.EditorFor(model => model.Client.PhoneNumber2, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Client.PhoneNumber2, "", new { @class = "text-danger" })
         </div>
@@ -63,7 +63,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.EditorFor(model => model.Client.Email, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Client.Email, "", new { @class = "text-danger" })
         </div>
@@ -71,7 +71,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.AddressLine1, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.EditorFor(model => model.Client.AddressLine1, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Client.AddressLine1, "", new { @class = "text-danger" })
         </div>
@@ -79,7 +79,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.AddressLine2, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.EditorFor(model => model.Client.AddressLine2, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Client.AddressLine2, "", new { @class = "text-danger" })
         </div>
@@ -87,7 +87,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.City, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.EditorFor(model => model.Client.City, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Client.City, "", new { @class = "text-danger" })
         </div>
@@ -95,7 +95,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.StateId, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.DropDownListFor(model => model.Client.StateId, Model.States, htmlAttributes: new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Client.StateId, "", new { @class = "text-danger" })
         </div>
@@ -103,7 +103,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.CountryId, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.DropDownListFor(model => model.Client.CountryId, Model.Countries, htmlAttributes: new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Client.CountryId, "", new { @class = "text-danger" })
         </div>
@@ -111,7 +111,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Client.Pincode, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-2">
             @Html.EditorFor(model => model.Client.Pincode, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Client.Pincode, "", new { @class = "text-danger" })
         </div>
