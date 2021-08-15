@@ -128,6 +128,7 @@
     <Build Include="dbo\Functions\Scalar-valued Functions\fns_NewNumberGenerator.sql" />
     <Build Include="dbo\Stored Procedures\spi_InvoiceServices_Insert.sql" />
     <Build Include="dbo\Stored Procedures\spu_InvoiceServices_Update.sql" />
+    <Build Include="dbo\Stored Procedures\sps_CategoryMaster_GetById.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Profile\Paybook.SqlStructureLayer.publish.xml" />
