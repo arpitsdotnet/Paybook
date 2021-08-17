@@ -31,6 +31,7 @@ namespace Paybook.Web.MvcUI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Login(IdentityUserViewModel model)
         {
             if (ModelState.IsValid)
@@ -56,6 +57,15 @@ namespace Paybook.Web.MvcUI.Controllers
 
         public ActionResult Logout()
         {
+            //Remove all keys within tempdata
+            foreach (var key in TempData.Keys.ToList())
+            {
+                TempData.Remove(key);
+            }
+            //TempData.Remove(TempdataNames.InvoiceServices);
+            //TempData.Remove(TempdataNames.LoginUserFullname);
+            //TempData.Remove(TempdataNames.SelectedBusinessId);
+
             FormsAuthentication.SignOut();
             return View();
         }
