@@ -122,9 +122,9 @@ namespace Paybook.DatabaseLayer
                 using (SqlConnection con = new SqlConnection(sConnectionString))
                 {
                     con.Open();
-                    transaction = con.BeginTransaction();
+                    transaction = con.BeginTransaction("InvoiceWithServicesTransaction");
 
-                    int i = con.Execute(storedProcedureT, dynamicp, commandType: CommandType.StoredProcedure);
+                    int i = con.Execute(storedProcedureT, dynamicp, transaction, commandType: CommandType.StoredProcedure);
 
                     returnVar = dynamicp.Get<V>(outputVarName);
 
@@ -133,8 +133,9 @@ namespace Paybook.DatabaseLayer
                         var dynamicpU = new Dapper.DynamicParameters();
                         dynamicpU.AddDynamicParams(item);
                         dynamicpU.Add(modelIdName, returnVar);
+                        dynamicpU.Add("Id", null, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                        con.Execute(storedProcedureU, dynamicpU, commandType: CommandType.StoredProcedure);
+                        con.Execute(storedProcedureU, dynamicpU, transaction, commandType: CommandType.StoredProcedure);
                     }
 
                     transaction.Commit();
