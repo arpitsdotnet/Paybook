@@ -3,13 +3,13 @@
 AS
 BEGIN
 	DECLARE @InvoiceOpenId INT;
-	SELECT @InvoiceOpenId = [Id] FROM fns_Category_GetByCore(@BusinessId,'INVOICE_STATUS','IS_OPEN');
+	SELECT @InvoiceOpenId = [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','Open');
 	
 	DECLARE @InvoicePartialPaidId INT;
-	SELECT @InvoicePartialPaidId = [Id] FROM fns_Category_GetByCore(@BusinessId,'INVOICE_STATUS','IS_PAID_PARTIAL');
+	SELECT @InvoicePartialPaidId = [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','PaidPartial');
 
 	DECLARE @InvoicePaidId INT;
-	SELECT @InvoicePaidId = [Id] FROM fns_Category_GetByCore(@BusinessId,'INVOICE_STATUS','IS_PAID');
+	SELECT @InvoicePaidId = [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','Paid');
 
 	SELECT (SELECT COUNT(Id) FROM Invoices 
 				WHERE BusinessId = @BusinessId AND IsActive = 1 AND 
