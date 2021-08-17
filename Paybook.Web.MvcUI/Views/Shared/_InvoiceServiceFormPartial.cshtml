@@ -1,0 +1,230 @@
+﻿@model Paybook.Web.MvcUI.Models.ViewModels.InvoiceServiceViewModel
+
+@{
+    Layout = "";
+}
+
+<div id="divInvoiceServiceForm">
+    @using (Ajax.BeginForm("Create", "InvoiceService", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "divInvoiceServiceForm" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row bg-default">
+            <div class="col-lg-12 text-right">
+                <div class="btn-group p-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp; SAVE</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+
+            @if (Model.Service != null)
+            {
+                if (Model.Service.IsSucceeded == true)
+                {
+                    <div class="alert alert-success">@Model.Service.ReturnMessage</div>
+
+                    <script>
+                        $(document).ready(function () {
+                            $("#myModal").modal('hide');
+                        })
+                    </script>
+                }
+                else if (!string.IsNullOrWhiteSpace(Model.Service.ReturnMessage))
+                {
+                    <div class="alert alert-danger">@Model.Service.ReturnMessage</div>
+                }
+            }
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            @Html.HiddenFor(model => model.Service.InvoiceId)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Service.Name, htmlAttributes: new { @class = "control-label text-left col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.Service.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Service.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Service.WorkTypeId, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.Service.WorkTypeId, Model.WorkTypes, "- Select Work Type -", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Service.WorkTypeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Service.VehicleNumber, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.Service.VehicleNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Service.VehicleNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="container-fluid row pt-3">
+                <div class="col-xs-4">
+                    <div class="form-group text-right">
+                        @Html.LabelFor(model => model.Service.Qty, htmlAttributes: new { @class = "control-label" })
+                        <div class="">
+                            @Html.EditorFor(model => model.Service.Qty, new { htmlAttributes = new { id = "txtServiceQty", @class = "form-control text-right" } })
+                            @Html.ValidationMessageFor(model => model.Service.Qty, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="form-group text-right">
+                        @Html.LabelFor(model => model.Service.Rate, htmlAttributes: new { @class = "control-label" })
+                        <div class="">
+                            @Html.EditorFor(model => model.Service.Rate, new { htmlAttributes = new { id = "txtServiceRate", @class = "form-control text-right" } })
+                            @Html.ValidationMessageFor(model => model.Service.Rate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="form-group text-right">
+                        @Html.LabelFor(model => model.Service.Subtotal, htmlAttributes: new { @class = "control-label" })
+                        <div class="">
+                            @Html.TextBoxFor(model => model.Service.Subtotal, htmlAttributes: new { id = "txtServiceSubtotal", @class = "form-control text-right", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.Service.Subtotal, "", new { @class = "text-danger disabled" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container-fluid pt-3">
+                <div class="form-group">
+                    <div class=" text-right">
+                        @Html.EditorFor(model => model.Service.IsTaxable)&nbsp;@Html.LabelFor(model => model.Service.IsTaxable, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="tax-details hide">
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Service.TaxTypeId, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.Service.TaxTypeId, Model.TaxTypes, "- Select Tax Type -", htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Service.TaxTypeId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="container-fluid row pt-3">
+                    <div class="col-lg-6">
+                        <div class="form-group text-right">
+                            @Html.LabelFor(model => model.Service.IGSTPercentage, htmlAttributes: new { @class = "control-label" })
+                            <div class="">
+                                @Html.EditorFor(model => model.Service.IGSTPercentage, new { htmlAttributes = new { @class = "form-control text-right" } })
+                                @Html.ValidationMessageFor(model => model.Service.IGSTPercentage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group text-right">
+                            @Html.LabelFor(model => model.Service.IGSTAmount, htmlAttributes: new { @class = "control-label" })
+                            <div class="">
+                                @Html.EditorFor(model => model.Service.IGSTAmount, new { htmlAttributes = new { @class = "form-control text-right" } })
+                                @Html.ValidationMessageFor(model => model.Service.IGSTAmount, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid row pt-3">
+                    <div class="col-lg-6">
+                        <div class="form-group text-right">
+                            @Html.LabelFor(model => model.Service.CGSTPercentage, htmlAttributes: new { @class = "control-label" })
+                            <div class="">
+                                @Html.EditorFor(model => model.Service.CGSTPercentage, new { htmlAttributes = new { @class = "form-control text-right" } })
+                                @Html.ValidationMessageFor(model => model.Service.CGSTPercentage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group text-right">
+                            @Html.LabelFor(model => model.Service.CGSTAmount, htmlAttributes: new { @class = "control-label" })
+                            <div class="">
+                                @Html.EditorFor(model => model.Service.CGSTAmount, new { htmlAttributes = new { @class = "form-control text-right" } })
+                                @Html.ValidationMessageFor(model => model.Service.CGSTAmount, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid row pt-3">
+                    <div class="col-lg-6">
+                        <div class="form-group text-right">
+                            @Html.LabelFor(model => model.Service.SGSTPercentage, htmlAttributes: new { @class = "control-label" })
+                            <div class="">
+                                @Html.EditorFor(model => model.Service.SGSTPercentage, new { htmlAttributes = new { @class = "form-control text-right" } })
+                                @Html.ValidationMessageFor(model => model.Service.SGSTPercentage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group text-right">
+                            @Html.LabelFor(model => model.Service.SGSTAmount, htmlAttributes: new { @class = "control-label" })
+                            <div class="">
+                                @Html.EditorFor(model => model.Service.SGSTAmount, new { htmlAttributes = new { @class = "form-control text-right" } })
+                                @Html.ValidationMessageFor(model => model.Service.SGSTAmount, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group text-right">
+                    @Html.LabelFor(model => model.Service.TaxableTotal, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.Service.TaxableTotal, htmlAttributes: new { id = "txtServiceTaxableTotal", @class = "form-control text-right", @readonly = "readonly" })
+                        @Html.ValidationMessageFor(model => model.Service.TaxableTotal, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group text-right">
+                @Html.LabelFor(model => model.Service.Total, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.Service.Total, htmlAttributes: new { id = "txtServiceTotal", @class = "form-control text-right", @readonly = "readonly" })
+                    @Html.ValidationMessageFor(model => model.Service.Total, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var idQty = document.getElementById("txtServiceQty");
+        var idRate = document.getElementById("txtServiceRate");
+        var idSubtotal = document.getElementById("txtServiceSubtotal");
+        var idTotal = document.getElementById("txtServiceTotal");
+
+        //console.log("DONEEEE");
+
+        $(idQty).on('keyup', function () {
+            //console.log("$txtQty change event started");
+            var result = Multiply($(idQty).val(), $(idRate).val());
+            $(idSubtotal).val(result)
+            $(idTotal).val(result);
+            //console.log(result);
+        });
+
+        $(idRate).on('keyup', function () {
+            //console.log("$txtRate change event started");
+            var result = Multiply($(idQty).val(), $(idRate).val());
+            $(idSubtotal).val(result)
+            $(idTotal).val(result);
+            //console.log(result);
+        })
+
+        function Multiply(x, y) {
+            return parseFloat(x) * parseFloat(y);
+        }
+    });
+</script>

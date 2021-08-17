@@ -29,6 +29,7 @@ namespace Paybook.ServiceLayer.Models
         public int InvoiceId { get; set; }
 
         [Required]
+        [Display(Name = "Service")]
         public string Name { get; set; }
 
         [Required]
@@ -45,12 +46,15 @@ namespace Paybook.ServiceLayer.Models
         public decimal Rate { get; set; }
         public decimal Subtotal { get; set; }
 
+        [Display(Name = "Order")]
+        public int OrderBy { get; set; }
+
         [Required]
         [Display(Name = "Taxable")]
         public bool IsTaxable { get; set; }
 
         [Display(Name = "Tax Type")]
-        public int TaxTypeId { get; set; }
+        public int? TaxTypeId { get; set; }
 
         [Display(Name = "IGST Percentage")]
         public int IGSTPercentage { get; set; }
