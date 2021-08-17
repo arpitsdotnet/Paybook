@@ -9,6 +9,9 @@ namespace Paybook.ServiceLayer.Constants
    public class TempdataNames
     {
         public const string LoginUserFullname = "FwtLoginUserFullname";
+
         public const string SelectedBusinessId = "SelectedBusinessId";
+
+        public const string InvoiceServices = "InvoiceServices";
     }
 }
