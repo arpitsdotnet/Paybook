@@ -114,6 +114,20 @@ BEGIN
 		VALUES (@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'No Tax','NoTax','',1),
 				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'State Tax','StateTax','18',2),
 				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Center Tax','CenterTax','18',3);
+				
+		--DEFAULT CATEGORY TYPE AND CATEGORY --> InvoiceStatus
+		INSERT INTO CategoryTypeMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[Core])
+		VALUES (@BusinessId,1,GETDATE(),'admin','Invoice Status','InvoiceStatus');
+		
+		SET @CateogryTypeId = SCOPE_IDENTITY();
+
+		INSERT INTO CategoryMaster([BusinessId],[IsActive],[CreateDate],[CreateBy],[CategoryTypeId],[Name],[Core],[Value],[OrderBy])
+		VALUES (@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Open','Open','You’ve created an invoice and it hasn’t been sent to the customer.',1),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Sent','Sent','Invoice has been sent to the customer',2),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Paid Partial','PaidPartial','Invoice has been partially paid by the customer and amount is still remaining',3),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Paid','Paid','Invoice has been fully paid by the customer',4),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Void','Void','You will void an invoice if it has been raised incorrectly. Customers cannot pay for a voided invoice.',5),
+				(@BusinessId,1,GETDATE(),'admin',@CateogryTypeId,'Write Off','WriteOff','You can Write Off an invoice only you’re sure that the amount the customer owes is uncollectible.',6);
 
 	END
 END
