@@ -141,11 +141,20 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jqueryajax")
     @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
-    <script type="text/javascript" src="~/Scripts/Site.js"></script>
     <script>
         $(document).ready(function () {
-            $("nav li a[href]").each(function () {
+            // BUG: The field date must be a date
+            //jQuery.validator.methods.date = function (value, element) {
+            //    var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+            //    if (isChrome) {
+            //        var d = new Date();
+            //        return this.optional(element) || !/Invalid|NaN/.test(new Date(d.toLocaleDateString(value)));
+            //    } else {
+            //        return this.optional(element) || !/Invalid|NaN/.test(new Date(value));
+            //    }
+            //};
+
+            $("ul.nav li a[href]").each(function () {
                 $(this).parent().removeClass("active");
                 if (this.href == window.location.href) {
                     $(this).parent().parent().parent().addClass("active");
@@ -155,5 +164,6 @@
             startTime();
         });
     </script>
+    @RenderSection("scripts", required: false)
 </body>
 </html>
