@@ -1,4 +1,5 @@
-﻿using Paybook.DatabaseLayer.Common;
+﻿using AutoMapper;
+using Paybook.DatabaseLayer.Common;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Extensions;
 using Paybook.ServiceLayer.Logger;
@@ -17,6 +18,7 @@ namespace Paybook.DatabaseLayer.Invoice
         bool Invoices_Update_OverdueStatus(string sInvoice_ID, string sCategory_Core, string sStatus_Core);
         bool CreateInvoiceActivity(string sCreatedBY, string sStatus_Core);
         DataTable GetByStatusOverdue();
+        int CreateWithServices(InvoiceModel invoice, List<InvoiceServiceModel> services);
     }
 
     public class InvoiceRepository : IInvoiceRepository
@@ -207,6 +209,55 @@ namespace Paybook.DatabaseLayer.Invoice
         {
             return new DataTable();// _dbContext.LoadDataByProcedure("sps_Invoices_SelectOverdue", null);
         }
+        public int CreateWithServices(InvoiceModel invoice, List<InvoiceServiceModel> services)
+        {
+            try
+            {
+                var p = new
+                {
+                    invoice.BusinessId,
+                    invoice.CreateBy,
+                    invoice.InvoiceNumber,
+                    invoice.Description,
+                    invoice.InvoiceDate,
+                    invoice.StatusId,
+                    invoice.ClientId,
+                    invoice.ClientEmail,
+                    invoice.BillingAddress,
+                    invoice.TermsId,
+                    invoice.DueDate,
+                    IsOverdue = 0,
+                    invoice.Message,
+                    invoice.Subtotal,
+                    invoice.TaxableTotal,
+                    invoice.DiscountTypeId,
+                    invoice.DiscountAmount,
+                    invoice.DiscountTotal,
+                    invoice.Total
+                };
+
+                var config = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<InvoiceServiceModel, InvoiceServiceMiniModel>()
+                );
+
+                var mapper = new Mapper(config);
+
+                var mapperContext = mapper.DefaultContext;
+                var submodel = mapperContext.Mapper.Map<List<InvoiceServiceMiniModel>>(services);
+
+                var result = _dbContext.SaveDataWithSubdata("spi_Invoices_Insert", "spi_InvoiceServices_Insert", p, submodel, "InvoiceId", out int invoiceId, DbType.Int32, null, "Id");
+
+                invoice.Id = invoiceId;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
+
 
 
         public List<InvoiceModel> GetAllByPage(int businessId, int page, string search, string orderBy)
@@ -256,7 +307,6 @@ namespace Paybook.DatabaseLayer.Invoice
                 _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
-
         }
         public int Update(InvoiceModel model)
         {

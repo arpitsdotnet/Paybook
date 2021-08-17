@@ -23,6 +23,8 @@ namespace Paybook.BusinessLayer.Invoice
     {
         string Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID);
         string Activity_Insert_Overdue(string sCreatedBY, string sStatus_Core);
+        InvoiceModel CreateWithServices(InvoiceModel invoice, List<InvoiceServiceModel> services);
+
         List<InvoiceModel> GetAllByPage(int businessId, int page, string search, string orderBy);
         InvoiceModel GetById(int businessId, int id);
         InvoiceModel Create(InvoiceModel model);
@@ -39,8 +41,6 @@ namespace Paybook.BusinessLayer.Invoice
         private readonly ILastSavedNumberProcessor _lastSavedNumberProcessor;
         private readonly ICategoryTypeProcessor _categoryTypeProcessor;
         private readonly ICategoryProcessor _categoryProcessor;
-        private readonly IClientProcessor _clientProcessor;
-        private readonly IAgencyProcessor _agencyProcessor;
 
         public InvoiceProcessor()
         {
@@ -50,8 +50,6 @@ namespace Paybook.BusinessLayer.Invoice
             _lastSavedNumberProcessor = new LastSavedNumberProcessor();
             _categoryTypeProcessor = new CategoryTypeProcessor();
             _categoryProcessor = new CategoryProcessor();
-            _clientProcessor = new ClientProcessor();
-            _agencyProcessor = new AgencyProcessor();
         }
 
         public string Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID)
@@ -72,7 +70,6 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-
         public string Activity_Insert_Overdue(string sCreatedBY, string sStatus_Core)
         {
             try
@@ -90,28 +87,28 @@ namespace Paybook.BusinessLayer.Invoice
 
                         string statusClass = "";
 
-                        switch (model.StatusCategoryMaster.Core)
-                        {
-                            case InvoiceStatusConst.Overdue:
-                                statusClass = ActivityStatusCss.DANGER;
-                                break;
-                            case InvoiceStatusConst.Paid:
-                            case InvoiceStatusConst.PaidPartial:
-                                statusClass = ActivityStatusCss.SUCCESS;
-                                break;
-                            case InvoiceStatusConst.Open:
-                                statusClass = ActivityStatusCss.INFO;
-                                break;
-                            case InvoiceStatusConst.Close:
-                                statusClass = ActivityStatusCss.DEFAULT;
-                                break;
-                            default:
-                                statusClass = ActivityStatusCss.DEFAULT;
-                                break;
-                        }
+                        //switch (model.StatusCategoryMaster.Core)
+                        //{
+                        //    case InvoiceStatusConst.Overdue:
+                        //        statusClass = ActivityStatusCss.DANGER;
+                        //        break;
+                        //    case InvoiceStatusConst.Paid:
+                        //    case InvoiceStatusConst.PaidPartial:
+                        //        statusClass = ActivityStatusCss.SUCCESS;
+                        //        break;
+                        //    case InvoiceStatusConst.Open:
+                        //        statusClass = ActivityStatusCss.INFO;
+                        //        break;
+                        //    case InvoiceStatusConst.Close:
+                        //        statusClass = ActivityStatusCss.DEFAULT;
+                        //        break;
+                        //    default:
+                        //        statusClass = ActivityStatusCss.DEFAULT;
+                        //        break;
+                        //}
 
                         ActivityBuilder activity = new ActivityBuilder()
-                            .AddHeader(model.StatusCategoryMaster.Name, model.InvoiceDate.Value.ToShortDateString(), statusClass)
+                            .AddHeader(model.StatusCategoryMaster.Name, model.InvoiceDate.ToShortDateString(), statusClass)
                             .AddBody("Invoice", model.InvoiceNumber, model.Clients.Name, model.StatusCategoryMaster.Name, model.Total.ToString());
 
                         var activityModel = new ActivityModel
@@ -152,6 +149,34 @@ namespace Paybook.BusinessLayer.Invoice
             //    throw;
             //}
         }
+        public InvoiceModel CreateWithServices(InvoiceModel invoice, List<InvoiceServiceModel> services)
+        {
+            try
+            {
+                var output = new InvoiceModel { IsSucceeded = false };
+
+                var status = _categoryProcessor.GetByCore(invoice.BusinessId, InvoiceStatusConst.Open);
+                invoice.StatusId = status.Id;
+
+                int result = _invoiceRepo.CreateWithServices(invoice, services);
+                if (result == 0)
+                {
+                    output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
+                    return output;
+                }
+
+                output.IsSucceeded = true;
+                output.ReturnMessage = "Invoice has been created successfully.";// XmlProcessor.ReadXmlFile("INS302");
+
+                return output;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
+
 
 
         public List<InvoiceModel> GetAllByPage(int businessId, int page, string search, string orderBy)

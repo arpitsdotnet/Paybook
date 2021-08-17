@@ -55,7 +55,7 @@
     <Compile Include="Constants\ActivityStatusCss.cs" />
     <Compile Include="Constants\CategoryTypes.cs" />
     <Compile Include="Constants\InvoiceStatusConst.cs" />
-    <Compile Include="Constants\LastIdTypes.cs" />
+    <Compile Include="Constants\LastSavedNumberTypes.cs" />
     <Compile Include="Constants\LoginResultConst.cs" />
     <Compile Include="Constants\PagerSetting.cs" />
     <Compile Include="Constants\TempdataNames.cs" />
@@ -77,6 +77,7 @@
     <Compile Include="Models\CountryMasterModel.cs" />
     <Compile Include="Models\DashboardCustomerChartModel.cs" />
     <Compile Include="Models\DashboardCountersModel.cs" />
+    <Compile Include="Models\InvoiceServiceMiniModel.cs" />
     <Compile Include="Models\InvoiceTaxModel.cs" />
     <Compile Include="Models\InvoiceModel.cs" />
     <Compile Include="Models\LastSavedNumberModel.cs" />

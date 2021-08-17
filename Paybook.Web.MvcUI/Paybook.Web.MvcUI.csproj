@@ -150,6 +150,7 @@
     <Compile Include="Areas\Chief\Controllers\BusinessController.cs" />
     <Compile Include="Areas\Chief\Controllers\ClientController.cs" />
     <Compile Include="Areas\Chief\Controllers\InvoiceController.cs" />
+    <Compile Include="Areas\Chief\Controllers\InvoiceServiceController.cs" />
     <Compile Include="Controllers\IdentityController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -160,9 +161,12 @@
     <Compile Include="Models\ViewModels\BusinessViewModel.cs" />
     <Compile Include="Models\ViewModels\DashboardViewModel.cs" />
     <Compile Include="Models\ViewModels\IdentityUserViewModel.cs" />
+    <Compile Include="Models\ViewModels\InvoiceServiceViewModel.cs" />
+    <Compile Include="Models\ViewModels\InvoiceViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-datepicker3.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -176,12 +180,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Chief\Views\web.config" />
-    <Content Include="Areas\Chief\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Chief\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Chief\Views\Business\Dashboard.cshtml" />
     <Content Include="Content\fonts\FontAwesome.otf" />
     <Content Include="Content\fonts\fontawesome-webfont.woff" />
@@ -194,12 +197,17 @@
     <Content Include="Areas\Chief\Views\Client\Create.cshtml" />
     <Content Include="Areas\Chief\Views\Client\Edit.cshtml" />
     <Content Include="Areas\Chief\Views\Invoice\Index.cshtml" />
+    <Content Include="Areas\Chief\Views\Invoice\Create.cshtml" />
+    <Content Include="Scripts\jquery.validate.date.js" />
+    <Content Include="Views\Shared\_InvoiceServiceFormPartial.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -221,11 +229,12 @@
     <Content Include="Views\Identity\Logout.cshtml" />
     <Content Include="Views\Shared\_DashboardCounterWidgetPartial.cshtml" />
     <Content Include="Views\Shared\_ListHeaderPagePartial.cshtml" />
+    <Content Include="Views\Shared\_InvoiceServicesTablePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Controllers\" />
-    <Folder Include="Areas\Admin\Views\Shared\" />
+    <Folder Include="Areas\Chief\Views\InvoiceService\" />
     <Folder Include="_Documents\" />
   </ItemGroup>
   <ItemGroup>

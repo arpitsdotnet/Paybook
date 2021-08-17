@@ -129,6 +129,7 @@
     <Build Include="dbo\Stored Procedures\spi_InvoiceServices_Insert.sql" />
     <Build Include="dbo\Stored Procedures\spu_InvoiceServices_Update.sql" />
     <Build Include="dbo\Stored Procedures\sps_CategoryMaster_GetById.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Clients_GetRemainingAmountById.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Profile\Paybook.SqlStructureLayer.publish.xml" />

@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paybook.WebUI", "Paybook.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "epayamit_20210731.1", "epayamit_20210731.1\epayamit_20210731.1.csproj", "{F96CF560-7E8A-4EE2-A399-C0D556EF4FFB}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Paybook.SqlStructureLayer", "Paybook.SqlStructureLayer\Paybook.SqlStructureLayer.sqlproj", "{D0771108-2DE5-4049-A9FF-FCA710539AD9}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Paybook.Sql", "Paybook.SqlStructureLayer\Paybook.Sql.sqlproj", "{D0771108-2DE5-4049-A9FF-FCA710539AD9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataManager", "DataManager", "{E2AD70F5-6DBF-4A14-A582-B4D8AA7B4FDB}"
 EndProject

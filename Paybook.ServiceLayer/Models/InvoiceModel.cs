@@ -19,17 +19,14 @@ namespace Paybook.ServiceLayer.Models
         public DateTime? ModifyDate { get; set; }
         public string ModifyBy { get; set; }
 
-        [Required]
         [Display(Name = "Invoice number")]
         public string InvoiceNumber { get; set; }
 
-        [Required]
         public string Description { get; set; }
 
         [Required]
         [Display(Name = "Invoice date")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
-        public DateTime? InvoiceDate { get; set; }
+        public DateTime InvoiceDate { get; set; }
 
         [Required]
         [Display(Name = "Status")]
@@ -50,8 +47,8 @@ namespace Paybook.ServiceLayer.Models
         public string ClientEmail { get; set; }
 
         [Display(Name = "Send email invoice")]
-        public bool IsEmailSend { get; set; }
-        public bool IsEmailSentSuccess { get; set; }
+        public bool? IsEmailSend { get; set; }
+        public bool? IsEmailSentSuccess { get; set; }
 
         [Required]
         [Display(Name = "Billing address")]
@@ -64,23 +61,34 @@ namespace Paybook.ServiceLayer.Models
 
         [Required]
         [Display(Name = "Due date")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
-        public DateTime? DueDate { get; set; }
+        public DateTime DueDate { get; set; }
 
         [Display(Name = "Overdue")]
-        public bool IsOverdue { get; set; }
-        public int OverdueSteps { get; set; }
+        public bool IsOverdue { get; set; } = false;
+        public int? OverdueSteps { get; set; }
         public string Message { get; set; }
-        public decimal Subtotal { get; set; }
-        public decimal TaxableTotal { get; set; }
-        public int DiscountTypeId { get; set; }
+
+        [DataType(DataType.Currency)]
+        [Range(1, double.MaxValue, ErrorMessage = "The Subtotal field cannot be 0 or negative.")]
+        public decimal Subtotal { get; set; } = 0;
+
+        [DataType(DataType.Currency)]
+        public decimal TaxableTotal { get; set; } = 0;
+
+        public int? DiscountTypeId { get; set; }
         public virtual CategoryMasterModel DiscountTypeCategoryMaster { get; set; }
-        public decimal DiscountAmount { get; set; }
-        public decimal DiscountTotal { get; set; }
+
+        [DataType(DataType.Currency)]
+        public decimal DiscountAmount { get; set; } = 0;
+
+        [DataType(DataType.Currency)]
+        public decimal DiscountTotal { get; set; } = 0;
 
         [Required]
         [DataType(DataType.Currency)]
-        [MinLength(1)]
+        [Range(1, double.MaxValue, ErrorMessage = "The Total field cannot be 0 or negative.")]
         public decimal Total { get; set; }
+
+        public decimal TotalCalculate => Subtotal + TaxableTotal - DiscountTotal;
     }
 }

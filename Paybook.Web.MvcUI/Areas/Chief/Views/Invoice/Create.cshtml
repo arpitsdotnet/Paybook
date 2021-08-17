@@ -1,0 +1,487 @@
+﻿@model Paybook.Web.MvcUI.Models.ViewModels.InvoiceViewModel
+
+@using Paybook.ServiceLayer.Constants;
+
+@{
+    ViewBag.Title = "Create Invoice";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row bg-default container-fluid">
+        <div class="col-lg-3">
+            <h3 class="bold"><i class="glyphicon glyphicon-time"></i>&nbsp; INVOICE CREATE <small>@Model.Invoice.InvoiceNumber</small></h3>
+        </div>
+        <div class="col-lg-offset-6 col-lg-3 text-right">
+            <div class="btn-group pt-3">
+                <a href="@Url.Action("Index")" class="btn btn-default btn-lg"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; CANCEL</a>
+                <button type="submit" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp; SAVE</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-horizontal">
+
+        @if (Model.Invoice != null)
+        {
+            if (Model.Invoice.IsSucceeded == true)
+            {
+                <div class="alert alert-success">@Model.Invoice.ReturnMessage</div>
+            }
+            else if (!string.IsNullOrWhiteSpace(Model.Invoice.ReturnMessage))
+            {
+                <div class="alert alert-danger">@Model.Invoice.ReturnMessage</div>
+            }
+        }
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="container-fluid">
+            <div class="row pt-3">
+                <div class="col-lg-9 col-md-9 col-sm-12">
+                    <div class="row pt-3">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Invoice.ClientId, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.DropDownListFor(model => model.Invoice.ClientId, Model.Clients, "- Select Client -", htmlAttributes: new { id = "ddlClients", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Invoice.ClientId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Invoice.ClientEmail, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.EditorFor(model => model.Invoice.ClientEmail, new { htmlAttributes = new { id = "txtClientEmail", @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Invoice.ClientEmail, "", new { @class = "text-danger" })
+                                </div>
+                                <div>
+                                    <div class="">
+                                        @Html.EditorFor(model => model.Invoice.IsEmailSend)&nbsp;@Html.LabelFor(model => model.Invoice.IsEmailSend, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.Invoice.IsEmailSend, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <blockquote>
+                                <div class="bold">Remaining amount till today:</div>
+                                <p class="text-danger lead">₹ <span id="divRemainingTotal">0.00</span></p>
+                            </blockquote>
+                        </div>
+                    </div>
+
+                    <div class="row pt-3">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Invoice.BillingAddress, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.TextAreaFor(model => model.Invoice.BillingAddress, htmlAttributes: new { id = "txtBillingAddress", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Invoice.BillingAddress, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Invoice.Description, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.TextAreaFor(model => model.Invoice.Description, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Invoice.Description, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Invoice.TermsId, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.DropDownListFor(model => model.Invoice.TermsId, Model.Terms, htmlAttributes: new { id = "ddlTerms", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Invoice.TermsId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Invoice.InvoiceDate, htmlAttributes: new { @class = "control-label" })
+                                &nbsp;<small>( MM-DD-YYYY )</small>
+                                <div>
+                                    <div class="input-group date">
+                                        @Html.EditorFor(model => model.Invoice.InvoiceDate, new { htmlAttributes = new { id = "txtInvoiceDate", @class = "form-control" } })
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Invoice.InvoiceDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Invoice.DueDate, htmlAttributes: new { @class = "control-label" })
+                                &nbsp;<small>( MM-DD-YYYY )</small>
+                                <div>
+                                    @Html.EditorFor(model => model.Invoice.DueDate, new { htmlAttributes = new { id = "txtDueDate", @class = "form-control", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.Invoice.DueDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-12 text-right p-4">
+                    <div style="position: relative;" class="text-primary">
+                        <div style="position: absolute; right: 0; top: -15px;" class="bold">INVOICE BALANCE DUE</div>
+                        <h1 class="pt-5 bold">₹ <span id="divInvoiceTotal">@Model.Invoice.Total.ToString("0.00")</span></h1>
+                    </div>
+                </div>
+            </div>
+
+            <div id="divInvoiceServiceTable">
+                @if (Model.InvoiceServices.Count() > 0)
+                {
+                    Html.RenderPartial("_InvoiceServicesTablePartial", Model.InvoiceServices);
+                }
+            </div>
+
+            <div class="row pt-3">
+                <div class="col-lg-5 col-md-6 col-sm-12">
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Invoice.Message, htmlAttributes: new { @class = "control-label" })
+                        <div class="">
+                            @Html.TextAreaFor(model => model.Invoice.Message, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Invoice.Message, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-offset-2 col-lg-5 col-md-6 col-sm-6">
+
+                    <div class="form-group text-right">
+                        <button type="button" class="btn btn-danger btn-sm anchor-service-removeall"><i class="glyphicon glyphicon-trash"></i>&nbsp; REMOVE ALL SERVICES</button>
+                        <button type="button" class="btn btn-primary btn-sm anchor-service-create" data-toggle="modal" data-id="@Model.Invoice.Id"><i class="glyphicon glyphicon-plus"></i>&nbsp; ADD SERVICE</button>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Invoice.Subtotal, htmlAttributes: new { @class = "control-label col-md-7" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.Invoice.Subtotal, new { htmlAttributes = new { id = "txtSubtotal", @class = "form-control text-right", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.Invoice.Subtotal, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Invoice.TaxableTotal, htmlAttributes: new { @class = "control-label col-md-7" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.Invoice.TaxableTotal, new { htmlAttributes = new { id = "txtTaxableTotal", @class = "form-control text-right", @readonly = "readonly" } })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-4">
+                            @Html.DropDownListFor(model => model.Invoice.DiscountTypeId, Model.DiscountTypes, "- None -", htmlAttributes: new { id = "ddlDiscountType", @class = "form-control" })
+                        </div>
+                        <div class="col-xs-3">
+                            @Html.EditorFor(model => model.Invoice.DiscountAmount, new { htmlAttributes = new { id = "txtDiscountAmount", @class = "form-control text-right" } })
+                            @Html.ValidationMessageFor(model => model.Invoice.DiscountAmount, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-xs-5">
+                            @Html.EditorFor(model => model.Invoice.DiscountTotal, new { htmlAttributes = new { id = "txtDiscountTotal", @class = "form-control text-right", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.Invoice.DiscountTotal, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Invoice.Total, htmlAttributes: new { @class = "control-label col-md-7" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.Invoice.Total, new { htmlAttributes = new { id = "txtTotal", @class = "form-control text-right", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.Invoice.Total, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+<div class="modal fade" id="myModal" tabindex="1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-light">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <center>
+                        <h5 class="modal-title">ADD SERVICE</h5>
+                    </center>
+                </div>
+                <div class="col-xs-1" style="padding-top:2px;">
+                    <button type="button" class="float-right btn btn-outline-dark close" style="" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="glyphicon glyphicon-remove-circle"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body justify-content-center" id="myModalContent">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/Scripts/jquery.validate.date.js"></script>
+    <script>
+
+
+        $(document).ready(function () {
+
+
+            $("#ddlClients").on('change', function () {
+                $ddl = $(this);
+                console.log($ddl.val());
+                GetClientById($ddl.val());
+            });
+
+            $("#txtInvoiceDate, .input-group.date").datepicker({
+                format: "dd/mm/yyyy", startDate: "new Date()", todayBtn: "linked", orientation: "auto bottom", autoclose: true, todayHighlight: true
+            }).datepicker('setDate', 'new Date()');
+
+            CalculateDueDate();
+
+            $("#txtInvoiceDate").change(function () {
+                CalculateDueDate();
+            });
+
+            $("#ddlTerms").on('change', function () {
+                CalculateDueDate();
+            });
+
+            //Date.prototype.toInputFormat = function () {
+            //    var yyyy = this.getFullYear().toString();
+            //    var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
+            //    var dd = this.getDate().toString();
+            //    return ((dd[1] ? dd : "0" + dd[0]) + "/" + mm[1] ? mm : "0" + mm[0]) + "/" + yyyy; // padding
+            //};
+
+            $(".anchor-service-create").click(function () {
+                var $button = $(this);
+                var $id = $button.attr("data-id");
+
+                OpenServiceCreatePageInModal($id);
+            });
+
+            $(".anchor-service-removeall").click(function () {
+                RemoveAllInvoiceServices();
+            });
+
+            // WHEN THE MODAL WILL CLOSE, FETCH THE SERVICE TABLE
+            // AND UPDATE INVOICE TOTAL
+            $('#myModal').on('hidden.bs.modal', function (e) {
+                //console.log('myModal >> closed');
+                // FILL INVOICE SERVICE TABLE
+                LoadInvoiceServiceTable();
+
+                // UPDATE TOTAL INVOICE DUE AMOUNT
+                // UPDATE FIELDS SUBTOTAL, TAXABLETOTAL, TOTAL
+                UpdateInvoiceTotal();
+
+            });
+
+            $("#ddlDiscountType").on('change', function () {
+                CalculateDiscount();
+            });
+            $("#txtDiscountAmount").on('keyup', function () {
+                CalculateDiscount();
+            });
+        });
+
+        function GetClientById(id) {
+            var url = "/Chief/Invoice/GetClientById";
+            $.getJSON(url, { "id": id }, function (data) {
+                console.log("Client Get By Id Started.");
+                //console.log(data);
+
+                //console.log("Email: " + data.Client.Email);
+                //console.log("RemainingAmount: " + data.RemainingAmount.toFixed(2));
+                //console.log("Address: " + data.Client.AddressLine1 + "\r\n" + data.Client.AddressLine2 + "\r\n" + data.Client.City + "\r\n" +
+                //    data.Client.StateMaster.Name + "\r\n" + data.Client.CountryMaster.Name + "\r\n" + data.Client.Pincode);
+
+                $("#txtClientEmail").val(data.Client.Email);
+                $("#divRemainingTotal").html(DBNullCheck(data.RemainingAmount, 0).toFixed(2));
+
+                var addressline1 = DBNullCheck(data.Client.AddressLine1, "");
+                var addressline2 = DBNullCheck(data.Client.AddressLine2, "");
+                var city = DBNullCheck(data.Client.City, "");
+                var state = DBNullCheck(data.Client.StateMaster.Name, "");
+                var country = DBNullCheck(data.Client.CountryMaster.Name, "");
+                var pincode = DBNullCheck(data.Client.Pincode, "");
+
+                $("#txtBillingAddress").val(addressline1 + (addressline2 == "" ? "" : "\r\n" + addressline2)
+                    + (city == "" ? "" : "\r\n" + city) + (state == "" ? "" : "\r\n" + state)
+                    + (country == "" ? "" : "\r\n" + country) + (pincode == "" ? "" : "\r\n" + pincode));
+            });
+        }
+
+        function DBNullCheck(value, returnValue) {
+            if (value == null || (value).length == 0) {
+                return returnValue;
+            }
+            return value;
+        }
+
+        function CalculateDueDate() {
+            $ddl = $("#ddlTerms :selected");
+            //console.log($ddl.val());
+
+            $InvoiceDate = $("#txtInvoiceDate");
+            $DueDate = $("#txtDueDate");
+
+            //DUE DATE = INVOICE DATE + TERMS VALUE
+
+            //console.log($InvoiceDate.val());
+
+            var invDates = $InvoiceDate.val().split('/');
+
+            var invoiceDate = new Date(invDates[2], invDates[1] - 1, invDates[0]),
+                days = parseInt($ddl.val(), 10);
+
+            //console.log(invoiceDate)
+
+            if (!isNaN(invoiceDate.getTime())) {
+                invoiceDate.setDate(invoiceDate.getDate() + days);
+
+                //console.log(invoiceDate)
+
+                $DueDate.val(GetDateLeadingZero(invoiceDate.getDate()) + "/" + GetDateLeadingZero(invoiceDate.getMonth() + 1) + "/" + invoiceDate.getFullYear()); //.toInputFormat());
+            }
+        }
+
+        function GetDateLeadingZero(value) {
+            //console.log(value);
+            if (value.toString().length == 1) {
+                return "0" + value;
+            }
+            return value;
+        }
+
+        function OpenServiceCreatePageInModal(id) {
+
+            $.ajax({
+                type: "GET",
+                url: "/Chief/InvoiceService/Create",
+                //contentType: "application/json; chatset=utf-8",
+                //data: { "invoiceId": id },
+                cache: false,
+                dataType: "html",
+                success: function (data) {
+                    //console.log(data);
+                    $("#myModalContent").html(data);
+                    $('#myModalContent form').data('validator', null);
+                    $.validator.unobtrusive.parse('#myModalContent form');
+
+                    $("#myModal").modal('show');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
+                }
+            });
+        }
+
+        function LoadInvoiceServiceTable() {
+            $.ajax({
+                url: "/Chief/InvoiceService/Index",
+                type: "GET",
+                success: function (result) {
+                    console.log("Invoice Service Table Update Started.");
+                    //console.log(result);
+                    $("#divInvoiceServiceTable").html(result);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
+                }
+            });
+        }
+
+        function UpdateInvoiceTotal() {
+            $.ajax({
+                url: "/Chief/Invoice/Calculate",
+                type: "GET",
+                contentType: "application/json; chatset=utf-8",
+                data: { "discountTotal": $("#txtDiscountTotal").val() },
+                success: function (result) {
+                    console.log("Invoice Calculate Update Started.");
+                    console.log(result);
+
+                    $("#txtSubtotal").val(result.Subtotal.toFixed(2));
+                    $("#txtTaxableTotal").val(result.TaxableTotal.toFixed(2));
+                    $("#txtTotal").val(result.TotalCalculate.toFixed(2));
+
+                    $("#divInvoiceTotal").html(result.TotalCalculate.toFixed(2));
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
+                }
+            });
+        }
+
+        function CalculateDiscount() {
+            $DiscountType = $("#ddlDiscountType :selected");
+            $DiscountAmount = $("#txtDiscountAmount");
+            $DiscountTotal = $("#txtDiscountTotal");
+            $Total = $("#txtTotal");
+
+            //console.log("$DiscountType.val(): " + $DiscountType.val());
+            //console.log("$DiscountType.text(): " + $DiscountType.text());
+            //console.log("$DiscountAmount.val(): " + $DiscountAmount.val());
+            //console.log("1. $DiscountTotal.val(): " + $DiscountTotal.val());
+
+            $Subtotal = $("#txtSubtotal");
+            $TaxableTotal = $("#txtTaxableTotal");
+
+            //console.log("$Subtotal.val(): " + $Subtotal.val());
+            //console.log("$TaxableTotal.val(): " + $TaxableTotal.val());
+
+            if ($DiscountType.val() != "" && parseFloat($DiscountAmount.val()) != 0) {
+                var discountTotal = 0.00;
+
+                //console.log("$DiscountType.text().includes('Percentage'): " + $DiscountType.text().includes("Percentage"))
+
+                if ($DiscountType.text().includes("Percentage")) {
+                    discountTotal = (parseFloat($Subtotal.val()) + parseFloat($TaxableTotal.val())) * parseFloat($DiscountAmount.val()) / 100;
+                }
+                else {
+                    discountTotal = parseFloat($DiscountAmount.val());
+                }
+
+                $DiscountTotal.val(discountTotal.toFixed(2));
+            }
+            else if ($DiscountType.val() == "") {
+                $DiscountAmount.val((0).toFixed(2));
+                $DiscountTotal.val((0).toFixed(2));
+            }
+            //console.log("2. $DiscountTotal.val(): " + $DiscountTotal.val());
+
+            var total = (parseFloat($Subtotal.val()) + parseFloat($TaxableTotal.val()) - parseFloat($DiscountTotal.val())).toFixed(2)
+
+            $Total.val(total);
+            $("#divInvoiceTotal").html(total);
+            //console.log("$Total.val(): " + $Total.val());
+        }
+
+        function RemoveAllInvoiceServices() {
+
+            $.ajax({
+                url: "/Chief/InvoiceService/RemoveAll",
+                type: "GET",
+                success: function (result) {
+                    console.log("Invoice Service Remove All Started.");
+                    //console.log(result);
+                    $("#divInvoiceServiceTable").html("");
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
+                }
+            });
+        }
+    </script>
+
+} 

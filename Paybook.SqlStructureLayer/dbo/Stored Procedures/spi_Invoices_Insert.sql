@@ -2,7 +2,7 @@
 	@Id INT = 0 OUTPUT,
     @BusinessId INT,
     @CreateBy NVARCHAR(256),
-	@InvoiecNumber NVARCHAR(50),
+	@InvoiceNumber NVARCHAR(50),
 	@Description NVARCHAR(1000),
 	@InvoiceDate DATETIME,
 	@StatusId INT,
@@ -26,7 +26,7 @@ BEGIN
 				
 		INSERT INTO [dbo].[Invoices]([BusinessId],[IsActive],[CreateDate],[CreateBy],[InvoiceNumber],[Description],[InvoiceDate],[StatusId],[ClientId],[ClientEmail],[IsEmailSend],
 					[BillingAddress],[TermsId],[DueDate],[IsOverdue],[Message],[Subtotal],[TaxableTotal],[DiscountTypeId],[DiscountAmount],[DiscountTotal],[Total])
-			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@InvoiecNumber,@Description,@InvoiceDate,@StatusId,@ClientId,@ClientEmail,0,@BillingAddress,@TermsId,@DueDate,
+			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@InvoiceNumber,@Description,@InvoiceDate,@StatusId,@ClientId,@ClientEmail,0,@BillingAddress,@TermsId,@DueDate,
 					@IsOverdue,@Message,@Subtotal,@TaxableTotal,@DiscountTypeId,@DiscountAmount,@DiscountTotal,@Total)
 			 
 		SET @Id = SCOPE_IDENTITY();
