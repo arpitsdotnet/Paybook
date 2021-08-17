@@ -18,6 +18,7 @@ namespace Paybook.BusinessLayer.Client
         ClientModel[] GetAllByText(string SearchText);
         ClientModel[] GetAllNamesByAgencyID(string sAgency_ID);
         ClientModel[] Customer_SelectRemainingAmount(string sCustomer_ID);
+        decimal GetRemainingAmountById(int businessId, int id);
 
 
         List<ClientModel> GetAllByPage(int businessId, int page, string search, string orderBy);
@@ -101,6 +102,20 @@ namespace Paybook.BusinessLayer.Client
             try
             {
                 return _clientRepo.GetPaymentByClientID(sCustomer_ID);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+
+                throw;
+            }
+        }
+
+        public decimal GetRemainingAmountById(int businessId, int id)
+        {
+            try
+            {
+                return _clientRepo.GetRemainingAmountById(businessId, id);
             }
             catch (Exception ex)
             {

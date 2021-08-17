@@ -15,6 +15,7 @@ namespace Paybook.DatabaseLayer.Client
     {
         bool IsExist(string createBy, string name);
         int GetCount(int businessId);
+        decimal GetRemainingAmountById(int businessId, int id);
 
         [Obsolete]
         ClientModel[] GetPaymentByClientID(string sCustomer_ID);
@@ -155,6 +156,22 @@ namespace Paybook.DatabaseLayer.Client
                 throw;
             }
 
+        }
+        public decimal GetRemainingAmountById(int businessId, int id)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Id = id };
+
+                var result = _dbContext.LoadData<decimal, dynamic>("sps_Clients_GetRemainingAmountById", p);
+
+                return result.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
         }
 
         public List<ClientModel> GetAllByPage(int businessId, int page, string search, string orderBy)
