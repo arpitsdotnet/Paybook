@@ -9,9 +9,17 @@ namespace Paybook.ServiceLayer.Models
 
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
+
+        [Display(Name = "Create date")]
         public DateTime? CreateDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
+
+        [Display(Name = "Create by")]
         public string CreateBy { get; set; }
+
+        [Display(Name = "Modify date")]
+        public DateTime? ModifyDate { get; set; }
+
+        [Display(Name = "Modify by")]
         public string ModifyBy { get; set; }
 
         [Required]
@@ -24,20 +32,20 @@ namespace Paybook.ServiceLayer.Models
         [Display(Name = "Logo")]
         public string Image { get; set; }
 
-        [Display(Name = "GST Number")]
+        [Display(Name = "GST number")]
         public string GSTNumber { get; set; }
         
         [Required]
-        [Display(Name = "Phone Number")]
+        [Display(Name = "Phone number")]
         public string PhoneNumber { get; set; }
         
         [Required]
         public string Email { get; set; }
 
-        [Display(Name = "House No / Building Name")]
+        [Display(Name = "House no / Building name")]
         public string AddressLine1 { get; set; }
 
-        [Display(Name = "Street Address")]
+        [Display(Name = "Street address")]
         public string AddressLine2 { get; set; }
 
         [Required]

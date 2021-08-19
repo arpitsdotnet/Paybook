@@ -14,39 +14,39 @@ namespace Paybook.ServiceLayer.Models
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
 
-        [Display(Name = "Create Date")]
+        [Display(Name = "Create date")]
         public DateTime? CreateDate { get; set; }
 
-        [Display(Name = "Create By")]
+        [Display(Name = "Create by")]
         public string CreateBy { get; set; }
 
-        [Display(Name = "Modify Date")]
+        [Display(Name = "Modify date")]
         public DateTime? ModifyDate { get; set; }
 
-        [Display(Name = "Modify By")]
+        [Display(Name = "Modify by")]
         public string ModifyBy { get; set; }
 
         [Required]
         public string Name { get; set; }
 
-        [Display(Name = "Agency Name")]
+        [Display(Name = "Agency name")]
         public string AgencyName { get; set; }
 
         [Required]
-        [Display(Name = "Phone Number (Primary)")]
+        [Display(Name = "Phone number (primary)")]
         public string PhoneNumber1 { get; set; }
 
-        [Display(Name = "Phone Number (Other)")]
+        [Display(Name = "Phone number (other)")]
         public string PhoneNumber2 { get; set; }
 
         [Required]
         public string Email { get; set; }
 
 
-        [Display(Name = "House No / Building Name")]
+        [Display(Name = "House no / Building name")]
         public string AddressLine1 { get; set; }
 
-        [Display(Name = "Street Address")]
+        [Display(Name = "Street address")]
         public string AddressLine2 { get; set; }
 
         [Required]

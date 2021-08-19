@@ -14,29 +14,29 @@ namespace Paybook.ServiceLayer.Models
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
 
-        [Display(Name = "Create Date")]
+        [Display(Name = "Create date")]
         public DateTime? CreateDate { get; set; }
 
-        [Display(Name = "Create By")]
+        [Display(Name = "Create by")]
         public string CreateBy { get; set; }
 
-        [Display(Name = "Modify Date")]
+        [Display(Name = "Modify date")]
         public DateTime? ModifyDate { get; set; }
 
-        [Display(Name = "Modify By")]
+        [Display(Name = "Modify by")]
         public string ModifyBy { get; set; }
 
         public int InvoiceId { get; set; }
 
         [Required]
-        [Display(Name = "Service")]
+        [Display(Name = "Product/Service")]
         public string Name { get; set; }
 
         [Required]
-        [Display(Name = "Work Type")]
+        [Display(Name = "Work type")]
         public int WorkTypeId { get; set; }
 
-        [Display(Name = "Vehicle Number")]
+        [Display(Name = "Vehicle number")]
         public string VehicleNumber { get; set; }
 
         [Required]
@@ -53,28 +53,28 @@ namespace Paybook.ServiceLayer.Models
         [Display(Name = "Taxable")]
         public bool IsTaxable { get; set; }
 
-        [Display(Name = "Tax Type")]
+        [Display(Name = "Tax type")]
         public int? TaxTypeId { get; set; }
 
-        [Display(Name = "IGST Percentage")]
+        [Display(Name = "IGST percentage")]
         public int IGSTPercentage { get; set; }
 
-        [Display(Name = "IGST Amount")]
+        [Display(Name = "IGST amount")]
         public decimal IGSTAmount { get; set; }
 
-        [Display(Name = "CGST Percentage")]
+        [Display(Name = "CGST percentage")]
         public int CGSTPercentage { get; set; }
 
-        [Display(Name = "CGST Amount")]
+        [Display(Name = "CGST amount")]
         public decimal CGSTAmount { get; set; }
 
-        [Display(Name = "SGST Percentage")]
+        [Display(Name = "SGST percentage")]
         public int SGSTPercentage { get; set; }
 
-        [Display(Name = "SGST Amount")]
+        [Display(Name = "SGST amount")]
         public decimal SGSTAmount { get; set; }
 
-        [Display(Name = "Taxable Total")]
+        [Display(Name = "Taxable total")]
         public decimal TaxableTotal { get; set; }
 
         [Required]
