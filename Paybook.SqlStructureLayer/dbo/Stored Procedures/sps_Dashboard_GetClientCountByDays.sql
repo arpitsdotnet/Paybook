@@ -3,7 +3,7 @@
 	@Days INT = 7
 AS
 BEGIN 
-	SELECT COUNT(ID) as Count,CONVERT(DATE, CreateDate) as CreateDate 
+	SELECT COUNT(ID) as Count,CONVERT(DATE, CreateDate) as [Date]
 	FROM Clients
 	WHERE BusinessId = @BusinessId AND IsActive = 1 AND
 	 (CreateDate BETWEEN  DATEADD(DAY, -(@Days), GETDATE()) AND GETDATE())
