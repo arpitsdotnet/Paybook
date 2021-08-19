@@ -11,10 +11,10 @@ namespace Paybook.DatabaseLayer.Common
     public interface IDashboardRepository
     {
         DashboardCountersModel GetAllCounters(int businessId);
-        List<DashboardCustomerChartModel> GetClientCountByDays(int businessId, int days = 7);
-        List<DashboardCustomerChartModel> GetInvoiceCountAndAmountByDays(int businessId, int days = 7);
-        List<DashboardCustomerChartModel> GetPaymentCountAndAmountByDays(int businessId, int days = 7);
-        List<DashboardCustomerChartModel> GetPaymentAmountByLast10(int businessId);
+        List<DashboardChartModel> GetClientCountByDays(int businessId, int days = 7);
+        List<DashboardChartModel> GetInvoiceCountAndAmountByDays(int businessId, int days = 7);
+        List<DashboardChartModel> GetPaymentCountAndAmountByDays(int businessId, int days = 7);
+        List<DashboardChartModel> GetPaymentAmountByLast10(int businessId);
 
         [Obsolete]
         DataTable Invoices_SelectCount();
@@ -50,13 +50,13 @@ namespace Paybook.DatabaseLayer.Common
                 throw;
             }
         }
-        public List<DashboardCustomerChartModel> GetClientCountByDays(int businessId, int days = 7)
+        public List<DashboardChartModel> GetClientCountByDays(int businessId, int days = 7)
         {
             try
             {
                 var p = new { BusinessId = businessId, Days = days };
 
-                var result = _dbContext.LoadData<DashboardCustomerChartModel, dynamic>("sps_Dashboard_GetClientCountByDays", p);
+                var result = _dbContext.LoadData<DashboardChartModel, dynamic>("sps_Dashboard_GetClientCountByDays", p);
                 //return _dbContext.LoadDataByProcedure("sps_CustomerChart", null);
 
                 return result;
@@ -67,13 +67,13 @@ namespace Paybook.DatabaseLayer.Common
                 throw;
             }
         }
-        public List<DashboardCustomerChartModel> GetInvoiceCountAndAmountByDays(int businessId, int days = 7)
+        public List<DashboardChartModel> GetInvoiceCountAndAmountByDays(int businessId, int days = 7)
         {
             try
             {
                 var p = new { BusinessId = businessId, Days = days };
 
-                var result = _dbContext.LoadData<DashboardCustomerChartModel, dynamic>("sps_Dashboard_GetInvoiceCountAndAmountByDays", p);
+                var result = _dbContext.LoadData<DashboardChartModel, dynamic>("sps_Dashboard_GetInvoiceCountAndAmountByDays", p);
                 //return _dbContext.LoadDataByProcedure("sps_Dashboard_GetInvoiceCountByLastWeek", null);
 
                 return result;
@@ -84,13 +84,13 @@ namespace Paybook.DatabaseLayer.Common
                 throw;
             }
         }
-        public List<DashboardCustomerChartModel> GetPaymentCountAndAmountByDays(int businessId, int days = 7)
+        public List<DashboardChartModel> GetPaymentCountAndAmountByDays(int businessId, int days = 7)
         {
             try
             {
                 var p = new { BusinessId = businessId, Days = days };
 
-                var result = _dbContext.LoadData<DashboardCustomerChartModel, dynamic>("sps_Dashboard_GetPaymentCountAndAmountByDays", p);
+                var result = _dbContext.LoadData<DashboardChartModel, dynamic>("sps_Dashboard_GetPaymentCountAndAmountByDays", p);
                 //return _dbContext.LoadDataByProcedure("sps_Dashboard_GetInvoiceAmountsByLastWeek", null);
 
                 return result;
@@ -101,13 +101,13 @@ namespace Paybook.DatabaseLayer.Common
                 throw;
             }
         }
-        public List<DashboardCustomerChartModel> GetPaymentAmountByLast10(int businessId)
+        public List<DashboardChartModel> GetPaymentAmountByLast10(int businessId)
         {
             try
             {
                 var p = new { BusinessId = businessId };
 
-                var result = _dbContext.LoadData<DashboardCustomerChartModel, dynamic>("sps_Dashboard_GetPaymentsLast10", p);
+                var result = _dbContext.LoadData<DashboardChartModel, dynamic>("sps_Dashboard_GetPaymentsLast10", p);
                 //return _dbContext.LoadDataByProcedure("sps_Dashboard_GetPaymentsLast20", null);
 
                 return result;
