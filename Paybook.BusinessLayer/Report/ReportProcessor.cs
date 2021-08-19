@@ -19,8 +19,8 @@ namespace Paybook.BusinessLayer.Report
 {
     public interface IReportProcessor
     {
-        ReportModel[] GenrateReport(int businessId, int clientId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount);
-        ReportModel[] GenrateReportForAgency(int businessId, int agencyId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount);
+        ReportModel[] GenrateReport(string username, int clientId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount);
+        ReportModel[] GenrateReportForAgency(string username, int agencyId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount);
         DataTable InvoicePayment_AgencyReport_Select(string sPaymentDateTo, string sPaymentDateFrom, string sAgencyID);
         DataTable InvoicePayment_CustomerReport_Select(string sPaymentDateTo, string sPaymentDateFrom, string sCustomer_ID);
         DataTable RemainingAmount_BeforeFromDate_Select(string sPaymentDateFrom, string sCustomer_ID, string sAgency_ID);
@@ -47,7 +47,7 @@ namespace Paybook.BusinessLayer.Report
             _agencyProcessor = new AgencyProcessor();
         }
 
-        public ReportModel[] GenrateReport(int businessId, int clientId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount)
+        public ReportModel[] GenrateReport(string username, int clientId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount)
         {
             List<ReportModel> oReport = new List<ReportModel>();
             try
@@ -179,7 +179,7 @@ namespace Paybook.BusinessLayer.Report
                     dt_CompanyProfile.Columns.Add("CustomerName");
                     dt_CompanyProfile.Columns.Add("CustomerAddress");
 
-                    ClientModel customers = _clientProcessor.GetById(businessId, clientId);
+                    ClientModel customers = _clientProcessor.GetById(username, clientId);
                     if (customers != null)
                     {
                         dt_CompanyProfile.Rows[0]["CustomerName"] = customers.Name + "( " + customers.PhoneNumber1 + ")";
@@ -232,7 +232,7 @@ namespace Paybook.BusinessLayer.Report
             return oReport.ToArray();
         }
 
-        public ReportModel[] GenrateReportForAgency(int businessId, int agencyId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount)
+        public ReportModel[] GenrateReportForAgency(string username, int agencyId, string sPaymentDateTo, string sPaymentDateFrom, string sRemainingAmount)
         {
 
             List<ReportModel> reports = new List<ReportModel>();
@@ -363,7 +363,7 @@ namespace Paybook.BusinessLayer.Report
                     agenctTable.Columns.Add("AgencyName");
                     agenctTable.Columns.Add("AgencyAddress");
 
-                    AgencyModel dtAgency = _agencyProcessor.GetById(businessId, agencyId);
+                    AgencyModel dtAgency = null;// _agencyProcessor.GetById(username, agencyId);
                     agenctTable.Rows[0]["AgencyName"] = "";
                     agenctTable.Rows[0]["AgencyAddress"] = "";
                     if (dtAgency != null)
@@ -373,7 +373,7 @@ namespace Paybook.BusinessLayer.Report
                     }
 
                     // Create Invoice/Payment Receipt
-                    string sOriginalFilePath = Path.Combine(HttpRuntime.AppDomainAppPath, _FolderPath.DOC_DocumentsHTMLPath + "report_agency.html");
+                    string sOriginalFilePath = Path.Combine(HttpRuntime.AppDomainAppPath, _FolderPath.DOC_DocumentsPathHtml + "report_agency.html");
                     StreamReader srFileRead = new StreamReader(sOriginalFilePath);
 
                     StringBuilder sbFileWrite = new StringBuilder();
@@ -388,7 +388,7 @@ namespace Paybook.BusinessLayer.Report
                         else if (strLine == "#COMPANY_LOGO#")
                         {
 
-                            string sCompanyLogo_Path = "../" + _FolderPath.CompanyLogo_Path + business.Image;
+                            string sCompanyLogo_Path = "../" + _FolderPath.CompanyLogo + business.Image;
                             sbFileWrite.Append(strLine.Replace("#COMPANY_LOGO#", "<img src=\"" + sCompanyLogo_Path + "\" alt=\"Company Logo\"class=\"CompanyLogo\">"));
                         }
                         else if (strLine == "#ADDRESS#")
@@ -618,7 +618,7 @@ namespace Paybook.BusinessLayer.Report
 
         private static string InvoiceHtmlReportGenerate(DataTable dt_InvoicePayment, DataTable dt_PaymentTotal, double dTotalPayment, DataTable dt_CompanyProfile, string sAddress)
         {
-            string sOriginalFilePath = Path.Combine(HttpRuntime.AppDomainAppPath, _FolderPath.DOC_DocumentsHTMLPath + "report.html");
+            string sOriginalFilePath = Path.Combine(HttpRuntime.AppDomainAppPath, _FolderPath.DOC_DocumentsPathHtml + "report.html");
             StreamReader srFileRead = new StreamReader(sOriginalFilePath);
             StringBuilder sbFileWrite = new StringBuilder();
 
@@ -633,7 +633,7 @@ namespace Paybook.BusinessLayer.Report
                 else if (strLine == "#COMPANY_LOGO#")
                 {
 
-                    string sCompanyLogo_Path = "../" + _FolderPath.CompanyLogo_Path + dt_CompanyProfile.Rows[0]["ImageFileName"].ToString();
+                    string sCompanyLogo_Path = "../" + _FolderPath.CompanyLogo + dt_CompanyProfile.Rows[0]["ImageFileName"].ToString();
                     sbFileWrite.Append(strLine.Replace("#COMPANY_LOGO#", "<img src=\"" + sCompanyLogo_Path + "\" alt=\"Company Logo\"class=\"CompanyLogo\">"));
                 }
                 else if (strLine == "#ADDRESS#")

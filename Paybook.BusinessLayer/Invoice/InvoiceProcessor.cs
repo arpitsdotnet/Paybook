@@ -1,4 +1,5 @@
 ﻿using Paybook.BusinessLayer.Agency;
+using Paybook.BusinessLayer.Business;
 using Paybook.BusinessLayer.Client;
 using Paybook.BusinessLayer.Common;
 using Paybook.BusinessLayer.Setting;
@@ -25,12 +26,12 @@ namespace Paybook.BusinessLayer.Invoice
         string Activity_Insert_Overdue(string sCreatedBY, string sStatus_Core);
         InvoiceModel CreateWithServices(InvoiceModel invoice, List<InvoiceServiceModel> services);
 
-        List<InvoiceModel> GetAllByPage(int businessId, int page, string search, string orderBy);
-        InvoiceModel GetById(int businessId, int id);
+        List<InvoiceModel> GetAllByPage(string username, int page, string search, string orderBy);
+        InvoiceModel GetById(string username, int id);
         InvoiceModel Create(InvoiceModel model);
         InvoiceModel Update(InvoiceModel model);
-        InvoiceModel Activate(int businessId, int id, bool active);
-        InvoiceModel Delete(int businessId, int id);
+        InvoiceModel Activate(string username, int id, bool active);
+        InvoiceModel Delete(string username, int id);
     }
 
     public partial class InvoiceProcessor : IInvoiceProcessor
@@ -38,18 +39,20 @@ namespace Paybook.BusinessLayer.Invoice
         private readonly ILogger _logger;
         private readonly IInvoiceRepository _invoiceRepo;
         private readonly IInvoiceServiceRepository _serviceRepo;
-        private readonly ILastSavedNumberProcessor _lastSavedNumberProcessor;
-        private readonly ICategoryTypeProcessor _categoryTypeProcessor;
-        private readonly ICategoryProcessor _categoryProcessor;
+        private readonly IBusinessProcessor _business;
+        private readonly ILastSavedNumberProcessor _lastSavedNumber;
+        private readonly ICategoryTypeProcessor _categoryType;
+        private readonly ICategoryProcessor _category;
 
         public InvoiceProcessor()
         {
             _logger = LoggerFactory.Instance;
             _invoiceRepo = new InvoiceRepository();
             _serviceRepo = new InvoiceServiceRepository();
-            _lastSavedNumberProcessor = new LastSavedNumberProcessor();
-            _categoryTypeProcessor = new CategoryTypeProcessor();
-            _categoryProcessor = new CategoryProcessor();
+            _business = new BusinessProcessor();
+            _lastSavedNumber = new LastSavedNumberProcessor();
+            _categoryType = new CategoryTypeProcessor();
+            _category = new CategoryProcessor();
         }
 
         public string Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID)
@@ -155,8 +158,17 @@ namespace Paybook.BusinessLayer.Invoice
             {
                 var output = new InvoiceModel { IsSucceeded = false };
 
-                var status = _categoryProcessor.GetByCore(invoice.BusinessId, InvoiceStatusConst.Open);
+                var business = _business.GetSelectedByUsername(invoice.CreateBy);
+
+                var status = _category.GetByCore(invoice.CreateBy, InvoiceStatusConst.Open);
+
+                invoice.BusinessId = business.Id;
                 invoice.StatusId = status.Id;
+
+                foreach(var item in services)
+                {
+                    item.BusinessId = business.Id;
+                }
 
                 int result = _invoiceRepo.CreateWithServices(invoice, services);
                 if (result == 0)
@@ -179,11 +191,13 @@ namespace Paybook.BusinessLayer.Invoice
 
 
 
-        public List<InvoiceModel> GetAllByPage(int businessId, int page, string search, string orderBy)
+        public List<InvoiceModel> GetAllByPage(string username, int page, string search, string orderBy)
         {
             try
             {
-                return _invoiceRepo.GetAllByPage(businessId, page, search, orderBy);
+                var business = _business.GetSelectedByUsername(username);
+
+                return _invoiceRepo.GetAllByPage(business.Id, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -192,11 +206,13 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-        public InvoiceModel GetById(int businessId, int id)
+        public InvoiceModel GetById(string username, int id)
         {
             try
             {
-                return _invoiceRepo.GetById(businessId, id);
+                var business = _business.GetSelectedByUsername(username);
+
+                return _invoiceRepo.GetById(business.Id, id);
             }
             catch (Exception ex)
             {
@@ -209,6 +225,11 @@ namespace Paybook.BusinessLayer.Invoice
             try
             {
                 var output = new InvoiceModel { IsSucceeded = false };
+
+                var business = _business.GetSelectedByUsername(model.CreateBy);
+
+                model.BusinessId = business.Id;
+
                 int result = _invoiceRepo.Create(model);
                 if (result == 0)
                 {
@@ -250,12 +271,15 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-        public InvoiceModel Activate(int businessId, int id, bool active)
+        public InvoiceModel Activate(string username, int id, bool active)
         {
             try
             {
                 var output = new InvoiceModel { IsSucceeded = false };
-                int result = _invoiceRepo.Activate(businessId, id, active);
+
+                var business = _business.GetSelectedByUsername(username);
+
+                int result = _invoiceRepo.Activate(business.Id, id, active);
                 if (result == 0)
                 {
                     output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
@@ -273,12 +297,15 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-        public InvoiceModel Delete(int businessId, int id)
+        public InvoiceModel Delete(string username, int id)
         {
             try
             {
                 var output = new InvoiceModel { IsSucceeded = false };
-                int result = _invoiceRepo.Delete(businessId, id);
+
+                var business = _business.GetSelectedByUsername(username);
+
+                int result = _invoiceRepo.Delete(business.Id, id);
                 if (result == 0)
                 {
                     output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");

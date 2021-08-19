@@ -1,4 +1,5 @@
-﻿using Paybook.DatabaseLayer;
+﻿using Paybook.BusinessLayer.Business;
+using Paybook.DatabaseLayer;
 using Paybook.DatabaseLayer.Setting;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
@@ -13,32 +14,37 @@ namespace Paybook.BusinessLayer.Setting
 {
     public interface ICategoryProcessor
     {
-        List<CategoryMasterModel> GetAllByTypeCore(int businessId, string typeCore);
-        CategoryMasterModel GetByCore(int businessId, string core);
-        List<CategoryMasterModel> GetAllByPage(int businessId, int page, string search, string orderBy);
-        CategoryMasterModel GetById(int businessId, int id);
+        List<CategoryMasterModel> GetAllByTypeCore(string username, string typeCore);
+        CategoryMasterModel GetByCore(string username, string core);
+        List<CategoryMasterModel> GetAllByPage(string username, int page, string search, string orderBy);
+        CategoryMasterModel GetById(string username, int id);
         string Create(CategoryMasterModel model);
         string Update(CategoryMasterModel model);
-        string Activate(int businessId, int id, bool active);
-        string Delete(int businessId, int id);
+        string Activate(string username, int id, bool active);
+        string Delete(string username, int id);
     }
 
     public class CategoryProcessor : ICategoryProcessor
     {
         private readonly ILogger _logger;
         private readonly ICategoryRepository _category;
+        private readonly IBusinessProcessor _business;
 
         public CategoryProcessor()
         {
             _logger = LoggerFactory.Instance;
             _category = new CategoryRepository();
+            _business = new BusinessProcessor();
         }
 
-        public List<CategoryMasterModel> GetAllByTypeCore(int businessId, string typeCore)
+        public List<CategoryMasterModel> GetAllByTypeCore(string username, string typeCore)
         {
             try
             {
-                return _category.GetAllByTypeCore(businessId, typeCore);
+
+                var business = _business.GetSelectedByUsername(username);
+
+                return _category.GetAllByTypeCore(business.Id, typeCore);
             }
             catch (Exception ex)
             {
@@ -46,11 +52,14 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public CategoryMasterModel GetByCore(int businessId, string core)
+        public CategoryMasterModel GetByCore(string username, string core)
         {
             try
             {
-                return _category.GetByCore(businessId, core);
+
+                var business = _business.GetSelectedByUsername(username);
+
+                return _category.GetByCore(business.Id, core);
             }
             catch (Exception ex)
             {
@@ -60,11 +69,14 @@ namespace Paybook.BusinessLayer.Setting
         }
 
 
-        public List<CategoryMasterModel> GetAllByPage(int businessId, int page, string search, string orderBy)
+        public List<CategoryMasterModel> GetAllByPage(string username, int page, string search, string orderBy)
         {
             try
             {
-                return _category.GetAllByPage(businessId, page, search, orderBy);
+
+                var business = _business.GetSelectedByUsername(username);
+
+                return _category.GetAllByPage(business.Id, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -72,11 +84,14 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public CategoryMasterModel GetById(int businessId, int id)
+        public CategoryMasterModel GetById(string username, int id)
         {
             try
             {
-                return _category.GetById(businessId, id);
+
+                var business = _business.GetSelectedByUsername(username);
+
+                return _category.GetById(business.Id, id);
             }
             catch (Exception ex)
             {
@@ -88,6 +103,11 @@ namespace Paybook.BusinessLayer.Setting
         {
             try
             {
+
+                var business = _business.GetSelectedByUsername(model.CreateBy);
+
+                model.BusinessId = business.Id;
+
                 int result = _category.Create(model);
                 if (result > 0)
                     return XmlProcessor.ReadXmlFile("BSS003");
@@ -116,11 +136,14 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public string Activate(int businessId, int id, bool active)
+        public string Activate(string username, int id, bool active)
         {
             try
             {
-                int result = _category.Activate(businessId, id, active);
+
+                var business = _business.GetSelectedByUsername(username);
+
+                int result = _category.Activate(business.Id, id, active);
                 if (result > 0)
                     return XmlProcessor.ReadXmlFile("BSS004");
 
@@ -132,11 +155,13 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public string Delete(int businessId, int id)
+        public string Delete(string username, int id)
         {
             try
             {
-                int result = _category.Delete(businessId, id);
+                var business = _business.GetSelectedByUsername(username);
+
+                int result = _category.Delete(business.Id, id);
                 if (result > 0)
                     return XmlProcessor.ReadXmlFile("BSS004");
 

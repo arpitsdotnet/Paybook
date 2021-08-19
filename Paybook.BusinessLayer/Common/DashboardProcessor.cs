@@ -1,4 +1,5 @@
-﻿using Paybook.BusinessLayer.Invoice;
+﻿using Paybook.BusinessLayer.Business;
+using Paybook.BusinessLayer.Invoice;
 using Paybook.BusinessLayer.Payment;
 using Paybook.DatabaseLayer.Common;
 using Paybook.DatabaseLayer.Invoice;
@@ -14,11 +15,11 @@ namespace Paybook.BusinessLayer.Common
 {
     public interface IDashboardProcessor
     {
-        DashboardCountersModel GetAllCounters(int businessId);
-        List<DashboardCustomerChartModel> GetClientCountByDays(int businessId, int days = 7);
-        List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(int businessId, int days = 7);
-        List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(int businessId);
-        List<DashboardInvoiceChartModel> GetPaymentsLast10(int businessId);
+        DashboardCountersModel GetAllCounters(string username);
+        List<DashboardClientChartModel> GetClientCountByDays(string username, int days = 7);
+        List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(string username, int days = 7);
+        List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(string username);
+        List<DashboardInvoiceChartModel> GetPaymentsLast10(string username);
         DataTable GetPaymentsByLastWeek();
         DataTable GetInvoiceCountByLastWeek();
     }
@@ -27,18 +28,24 @@ namespace Paybook.BusinessLayer.Common
     {
         private readonly ILogger _logger;
         private readonly IDashboardRepository _dashboardRepo;
+        private readonly IBusinessProcessor _business;
+        private readonly IInvoiceProcessor _invoice;
 
         public DashboardProcessor()
         {
             _logger = LoggerFactory.Instance;
             _dashboardRepo = new DashboardRepository();
+            _business = new BusinessProcessor();
+            _invoice = new InvoiceProcessor();
         }
 
-        public DashboardCountersModel GetAllCounters(int businessId)
+        public DashboardCountersModel GetAllCounters(string username)
         {
             try
             {
-                return _dashboardRepo.GetAllCounters(businessId);
+                var business = _business.GetSelectedByUsername(username);
+
+                return _dashboardRepo.GetAllCounters(business.Id);
             }
             catch (Exception ex)
             {
@@ -48,41 +55,43 @@ namespace Paybook.BusinessLayer.Common
             }
         }
 
-        public List<DashboardCustomerChartModel> GetClientCountByDays(int businessId, int days = 7)
+        public List<DashboardClientChartModel> GetClientCountByDays(string username, int days = 7)
         {
             try
             {
-                List<DashboardCustomerChartModel> clients = _dashboardRepo.GetClientCountByDays(businessId, days);
+                var business = _business.GetSelectedByUsername(username);
 
-                List<DashboardCustomerChartModel> charts = new List<DashboardCustomerChartModel>();
+                var clients = _dashboardRepo.GetClientCountByDays(business.Id, days);
+
+                var charts = new List<DashboardClientChartModel>();
 
                 DateTime dTodayDate = Convert.ToDateTime(System.DateTime.Today.ToShortDateString());
-                int i = 0, iTotalDays = 7;
-                for (i = iTotalDays; i > 0; i--)
+                int i = 0, iTotalDays = 6;
+                for (i = iTotalDays; i >= 0; i--)
                 {
-                    var datetimeModel = new DashboardCustomerChartModel();
+                    var datetimeModel = new DashboardClientChartModel();
 
                     DateTime sDate = dTodayDate.AddDays(-i);
                     string sDay = sDate.ToShortDateString();
 
-                    datetimeModel.Date = Convert.ToDateTime(sDay);
+                    datetimeModel.Date = sDay;
 
                     if (clients != null && clients.Count > 0)
                     {
                         foreach (var client in clients)
                         {
-                            if (client.Date == datetimeModel.Date)
+                            if (client.Date == Convert.ToDateTime(datetimeModel.Date))
                             {
-                                datetimeModel.Count = client.Count;
+                                datetimeModel.Count = client.Count.ToString();
                                 break;
                             }
                             else
-                                datetimeModel.Count = 0;
+                                datetimeModel.Count = "0";
                         }
                     }
                     else
                     {
-                        datetimeModel.Count = 0;
+                        datetimeModel.Count = "0";
                     }
                     charts.Add(datetimeModel);
                 }
@@ -95,22 +104,23 @@ namespace Paybook.BusinessLayer.Common
                 throw;
             }
         }
-        public List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(int businessId, int days = 7)
+        public List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(string username, int days = 7)
         {
             List<DashboardInvoiceChartModel> charts = new List<DashboardInvoiceChartModel>();
             try
             {
-                List<DashboardCustomerChartModel> invoices = _dashboardRepo.GetInvoiceCountAndAmountByDays(businessId, days);
-                List<DashboardCustomerChartModel> payments = _dashboardRepo.GetPaymentCountAndAmountByDays(businessId, days);
+                var business = _business.GetSelectedByUsername(username);
 
-                int iTotalDays = 6;
+                List<DashboardChartModel> invoices = _dashboardRepo.GetInvoiceCountAndAmountByDays(business.Id, days);
+                List<DashboardChartModel> payments = _dashboardRepo.GetPaymentCountAndAmountByDays(business.Id, days);
+
                 DataTable dt = new DataTable();
                 dt.Columns.Add("Date");
                 dt.Columns.Add("InvoiceAmount");
                 dt.Columns.Add("PaymentAmount");
                 // dt.Columns.Add("Count");
                 DateTime dTodayDate = Convert.ToDateTime(DateTime.Today.ToShortDateString());
-                int i = 0;
+                int i = 0 , iTotalDays = 6;
                 for (i = iTotalDays; i >= 0; i--)
                 {
                     DataRow dr = dt.NewRow();
@@ -178,22 +188,26 @@ namespace Paybook.BusinessLayer.Common
             }
             return charts;
         }
-        public List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(int businessId)
+        public List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(string username)
         {
             try
             {
                 List<DashboardInvoiceChartModel> charts = new List<DashboardInvoiceChartModel>();
 
+                //var business = _business.GetSelectedByUsername(username);
+                var invoiceCount = 0;// _invoice.GetCount(business.Id);
+                var paymentCount = 0;// _payment.GetCount(business.Id);
+
                 var chart = new DashboardInvoiceChartModel
                 {
                     Entity = "Invoices",
-                    Count = "1"//Invoices_SelectCount().ToString()
+                    Count = invoiceCount.ToString() //Invoices_SelectCount().ToString()
                 };
                 charts.Add(chart);
                 chart = new DashboardInvoiceChartModel
                 {
                     Entity = "Payments",
-                    Count = "2"// Payments_SelectCount().ToString()
+                    Count = paymentCount.ToString()// Payments_SelectCount().ToString()
                 };
                 charts.Add(chart);
 
@@ -206,12 +220,14 @@ namespace Paybook.BusinessLayer.Common
                 throw;
             }
         }
-        public List<DashboardInvoiceChartModel> GetPaymentsLast10(int businessId)
+        public List<DashboardInvoiceChartModel> GetPaymentsLast10(string username)
         {
             List<DashboardInvoiceChartModel> charts = new List<DashboardInvoiceChartModel>();
             try
             {
-                List<DashboardCustomerChartModel> payments = _dashboardRepo.GetPaymentAmountByLast10(businessId);
+                var business = _business.GetSelectedByUsername(username);
+
+                List<DashboardChartModel> payments = _dashboardRepo.GetPaymentAmountByLast10(business.Id);
 
                 if (payments != null && payments.Count > 0)
                 {

@@ -1,4 +1,5 @@
 ﻿using Paybook.DatabaseLayer;
+using Paybook.DatabaseLayer.Business;
 using Paybook.DatabaseLayer.Client;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
@@ -14,30 +15,32 @@ namespace Paybook.BusinessLayer.Client
     public interface IClientProcessor
     {
         string IsExist(string createBy, string clientName);
-        int GetCount(int businessId);
+        int GetCount(string username);
         ClientModel[] GetAllByText(string SearchText);
         ClientModel[] GetAllNamesByAgencyID(string sAgency_ID);
         ClientModel[] Customer_SelectRemainingAmount(string sCustomer_ID);
-        decimal GetRemainingAmountById(int businessId, int id);
+        decimal GetRemainingAmountById(string username, int id);
 
 
-        List<ClientModel> GetAllByPage(int businessId, int page, string search, string orderBy);
-        ClientModel GetById(int businessId, int id);
+        List<ClientModel> GetAllByPage(string username, int page, string search, string orderBy);
+        ClientModel GetById(string username, int id);
         ClientModel Create(ClientModel customerModel);
         ClientModel Update(ClientModel customerModel);
-        ClientModel Activate(int businessId, int id, bool active);
-        ClientModel Delete(int businessId, int id);
+        ClientModel Activate(string username, int id, bool active);
+        ClientModel Delete(string username, int id);
     }
 
     public class ClientProcessor : IClientProcessor
     {
         private readonly ILogger _logger;
         private readonly IClientRepository _clientRepo;
+        private readonly IBusinessRepository _businessRepo;
 
         public ClientProcessor()
         {
             _logger = LoggerFactory.Instance;
             _clientRepo = new ClientRepository();
+            _businessRepo = new BusinessRepository();
         }
 
         public string IsExist(string createBy, string clientName)
@@ -58,11 +61,13 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-        public int GetCount(int businessId)
+        public int GetCount(string username)
         {
             try
             {
-                return _clientRepo.GetCount(businessId);
+                var business = _businessRepo.GetSelectedByUsername(username);
+
+                return _clientRepo.GetCount(business.Id);
             }
             catch (Exception ex)
             {
@@ -111,11 +116,13 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public decimal GetRemainingAmountById(int businessId, int id)
+        public decimal GetRemainingAmountById(string username, int id)
         {
             try
             {
-                return _clientRepo.GetRemainingAmountById(businessId, id);
+                var business = _businessRepo.GetSelectedByUsername(username);
+
+                return _clientRepo.GetRemainingAmountById(business.Id, id);
             }
             catch (Exception ex)
             {
@@ -125,11 +132,13 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public List<ClientModel> GetAllByPage(int businessId, int page, string search, string orderBy)
+        public List<ClientModel> GetAllByPage(string username, int page, string search, string orderBy)
         {
             try
             {
-                return _clientRepo.GetAllByPage(businessId, page, search, orderBy);
+                var business = _businessRepo.GetSelectedByUsername(username);
+
+                return _clientRepo.GetAllByPage(business.Id, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -138,11 +147,13 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-        public ClientModel GetById(int businessId, int id)
+        public ClientModel GetById(string username, int id)
         {
             try
             {
-                return _clientRepo.GetById(businessId, id);
+                var business = _businessRepo.GetSelectedByUsername(username);
+
+                return _clientRepo.GetById(business.Id, id);
             }
             catch (Exception ex)
             {
@@ -163,6 +174,10 @@ namespace Paybook.BusinessLayer.Client
                     output.ReturnMessage = "Client name already exist, please enter a new name";
                     return output;
                 }
+                var business = _businessRepo.GetSelectedByUsername(model.CreateBy);
+
+                model.BusinessId = business.Id;
+
                 int result = _clientRepo.Create(model);
                 if (result == 0)
                 {
@@ -185,6 +200,11 @@ namespace Paybook.BusinessLayer.Client
             try
             {
                 var output = new ClientModel { IsSucceeded = false };
+
+                var business = _businessRepo.GetSelectedByUsername(model.ModifyBy);
+
+                model.BusinessId = business.Id;
+
                 int result = _clientRepo.Update(model);
                 if (result == 0)
                 {
@@ -203,12 +223,15 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-        public ClientModel Activate(int businessId, int id, bool active)
+        public ClientModel Activate(string username, int id, bool active)
         {
             try
             {
                 var output = new ClientModel { IsSucceeded = false };
-                int result = _clientRepo.Activate(businessId, id, active);
+
+                var business = _businessRepo.GetSelectedByUsername(username);
+
+                int result = _clientRepo.Activate(business.Id, id, active);
                 if (result > 0)
                 {
                     output.ReturnMessage = "Current request failed due to technical issue, please try again later.";
@@ -226,12 +249,15 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-        public ClientModel Delete(int businessId, int id)
+        public ClientModel Delete(string username, int id)
         {
             try
             {
                 var output = new ClientModel { IsSucceeded = false };
-                int result = _clientRepo.Delete(businessId, id);
+
+                var business = _businessRepo.GetSelectedByUsername(username);
+
+                int result = _clientRepo.Delete(business.Id, id);
                 if (result > 0)
                 {
                     output.ReturnMessage = "Current request failed due to technical issue, please try again later.";

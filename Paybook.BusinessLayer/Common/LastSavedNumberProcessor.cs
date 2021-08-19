@@ -1,4 +1,5 @@
-﻿using Paybook.DatabaseLayer.Common;
+﻿using Paybook.BusinessLayer.Business;
+using Paybook.DatabaseLayer.Common;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 using System;
@@ -11,7 +12,7 @@ namespace Paybook.BusinessLayer.Common
 {
     public interface ILastSavedNumberProcessor
     {
-        string GetNewNumberByType(int businessId, string type);
+        string GetNewNumberByType(string username, string type);
         //void Update(LastSavedNumberModel model);
     }
 
@@ -19,14 +20,16 @@ namespace Paybook.BusinessLayer.Common
     {
         private readonly ILogger _logger;
         private readonly ILastSavedNumberRepository _lastSavedNumberRepo;
+        private readonly IBusinessProcessor _business;
 
         public LastSavedNumberProcessor()
         {
             _logger = LoggerFactory.Instance;
             _lastSavedNumberRepo = new LastSavedNumberRepository();
+            _business = new BusinessProcessor();
         }
 
-        public string GetNewNumberByType(int businessId, string type)
+        public string GetNewNumberByType(string username, string type)
         {
             //string newNumber = "";
             //int currentYear = DateTime.Now.Year;
@@ -34,7 +37,9 @@ namespace Paybook.BusinessLayer.Common
             //var months = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" };
             try
             {
-                var result = _lastSavedNumberRepo.GetNewNumberByType(businessId, type);
+                var business = _business.GetSelectedByUsername(username);
+
+                var result = _lastSavedNumberRepo.GetNewNumberByType(business.Id, type);
                 return result.NewNumber;
 
                 //if (result != null)
