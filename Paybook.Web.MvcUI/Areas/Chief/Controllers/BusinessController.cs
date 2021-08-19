@@ -38,11 +38,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Dashboard()
         {
-            int? businessId = GetSelectedBusinessId();
-            if (businessId == null)            
-                return RedirectToAction(nameof(Create));
-            
-            DashboardCountersModel model = _dashboard.GetAllCounters(businessId.Value);
+            DashboardCountersModel model = _dashboard.GetAllCounters(User.Identity.Name);
 
             DashboardViewModel dashboardVM = new DashboardViewModel
             {
@@ -100,6 +96,12 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                     Count = model.CountOfPaymentTotal,
                     Total = model.SumOfPaymentTotal
                 },
+
+                ClientCounter = new DashboardCounterWidgetModel
+                {
+                    Count = model.CountofCustomers,
+                    Total = model.SumOfPaymentTotal
+                }
             };
 
             return View(dashboardVM);
@@ -133,6 +135,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         }
 
         [HttpPost, ActionName("Create")]
+        [ValidateAntiForgeryToken]
         public ActionResult CreatePost(BusinessViewModel model)
         {
             var countries = _country.GetAllByPage(0, "", "");
@@ -147,6 +150,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             {
                 model.Business.CreateBy = User.Identity.Name;
                 BusinessModel output = _business.Create(model.Business);
+
                 businessVM.Business = output;
 
                 return View(businessVM);
@@ -154,7 +158,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 
             businessVM.Business = model.Business;
 
-            return View(model);
+            return View(businessVM);
         }
 
 
@@ -186,6 +190,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         }
 
         [HttpPost, ActionName("Selected")]
+        [ValidateAntiForgeryToken]
         public ActionResult SelectedPost(int id)
         {
             BusinessModel output = _business.UpdateSelected(id, User.Identity.Name);
@@ -203,41 +208,38 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 
 
         [HttpGet, AllowAnonymous]
-        public ActionResult GetCountOfInvoicesAndPaymentsByLastWeek(int businessId)
+        public ActionResult GetCountOfInvoicesAndPaymentsByLastWeek(string username)
         {
             IDashboardProcessor dashboard = new DashboardProcessor();
-            List<DashboardInvoiceChartModel> model = dashboard.GetCountOfInvoicesAndPaymentsByLastWeek(businessId);
+            List<DashboardInvoiceChartModel> model = dashboard.GetCountOfInvoicesAndPaymentsByLastWeek(username);
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet, AllowAnonymous]
-        public ActionResult GetInvoiceAmountsAndPaymentsByLastWeek(int businessId)
+        public ActionResult GetInvoiceAmountsAndPaymentsByLastWeek(string username)
         {
             IDashboardProcessor dashboard = new DashboardProcessor();
-            List<DashboardInvoiceChartModel> model = dashboard.GetInvoiceAmountsAndPaymentsByDays(businessId, 7);
+            List<DashboardInvoiceChartModel> model = dashboard.GetInvoiceAmountsAndPaymentsByDays(username, 7);
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet, AllowAnonymous]
-        public ActionResult GetPaymentsLast10(int businessId)
+        public ActionResult GetPaymentsLast10(string username)
         {
             IDashboardProcessor dashboard = new DashboardProcessor();
-            List<DashboardInvoiceChartModel> model = dashboard.GetPaymentsLast10(businessId);
+            List<DashboardInvoiceChartModel> model = dashboard.GetPaymentsLast10(username);
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
-        [NonAction]
-        private int? GetSelectedBusinessId()
+        [HttpGet,AllowAnonymous]
+        public ActionResult GetClientCountByLastWeek(string username)
         {
-
-            if (TempData.Peek(TempdataNames.SelectedBusinessId) == null)
-            {
-                BusinessModel model = _business.GetSelectedByUsername(User.Identity.Name);
-                TempData.Add(TempdataNames.SelectedBusinessId, model.Id);
-            }
-
-            return (int?)TempData.Peek(TempdataNames.SelectedBusinessId);
+            IDashboardProcessor dashboard = new DashboardProcessor();
+            List<DashboardClientChartModel> model = dashboard.GetClientCountByDays(username);
+            return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
+
+
         [NonAction]
         private IEnumerable<SelectListItem> GetSelectListItemsState(List<StateMasterModel> elements)
         {

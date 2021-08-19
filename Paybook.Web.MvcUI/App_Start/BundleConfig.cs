@@ -12,7 +12,8 @@ namespace Paybook.Web.MvcUI
                         "~/Scripts/jquery-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.validate*"));
+                        "~/Scripts/jquery.validate*"));//, 
+                        //"~/Scripts/jquery.validation.date.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryajax").Include(
                         "~/Scripts/jquery.unobtrusive-ajax*"));

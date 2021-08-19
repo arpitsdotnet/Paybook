@@ -5,7 +5,11 @@
     ViewBag.Title = "Dashboard";
 }
 
-<h2>Dashboard</h2>
+<div class="row bg-default container-fluid">
+    <div class="col-lg-3">
+        <h3 class="bold"><i class="glyphicon glyphicon-dashboard"></i>&nbsp; DASHBOARD</h3>
+    </div>
+</div>
 
 
 <div class="form-horizontal">
@@ -52,19 +56,15 @@
             <div id="idLatestCustomer" class="Dashboard_CustomerCount">
                 <div>
                     <div class="col-sm-6">
-                        <div>Customer<span class="tiny"> (Last 7 days)</span></div>
-                        <div class="tiny">
-                            <asp:Label ID="lblCustomerCount" runat="server">0</asp:Label>
+                        <div>Clients&nbsp;<span class="tiny">(Last 7 days)</span></div>
+                        <div class="text-left h4">
+                            @Model.ClientCounter.Count
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div id="idCustomer_Chart"></div>
                     </div>
                     <div class="clearfix"></div>
-                </div>
-                <div class="text-right">
-                    Total Payment: <i class="fa fa-rupee"></i>₹
-                    <asp:Label ID="lblTotalMonthSaleValue" runat="server" CssClass="fwt-bold"></asp:Label>
                 </div>
             </div>
             <div class="fwt-light-grey">
@@ -81,7 +81,7 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
         $(document).ready(function () {
-            var jsonVar = "?businessId=" + @TempData.Peek(TempdataNames.SelectedBusinessId);
+            var jsonVar = "?username=@User.Identity.Name";
 
             CallAjaxMethod("Business/GetCountOfInvoicesAndPaymentsByLastWeek", jsonVar, function (data) {
                 try {
@@ -148,7 +148,7 @@
                                 var options = {
                                     backgroundColor: 'fwt-grey',
                                     title: '',
-                                    vAxis: { format: '₹#,###.##', title: 'Amount' },
+                                    vAxis: { format: '₹##,##,###.##', title: 'Amount' },
                                     height: 300,
                                     colors: ['#1b9e77', '#7570b3'],
                                     legend: { position: 'top' },
@@ -191,12 +191,60 @@
                                 var options = {
                                     backgroundColor: 'fwt-grey',
                                     title: '',
-                                    vAxis: { format: '₹#,###.##', title: 'Payments' },
+                                    vAxis: { format: '₹##,##,###.##', title: 'Payments' },
                                     height: 300,
                                     colors: ['#7570b3'],
                                     legend: { position: 'top' },
                                 };
                                 var chart = new google.visualization.ColumnChart(document.getElementById('idPaymentsLast10_Chart'));
+                                chart.draw(chartdata, options);
+                            }
+                        }
+                    }
+                }
+                catch (err) {
+                    alert("Error occured: " + err);
+                }
+            });
+
+            CallAjaxMethod("Business/GetClientCountByLastWeek", jsonVar, function (data) {
+                try {
+
+                    var $Data = data.data;
+                    console.log($Data);
+                    if ($Data.length > 0) {
+                        if ($Data[0].ERROR != null && $Data[0].ERROR != "") {
+                            alert("Error occured: " + $Data[0].ERROR);
+                        }
+                        else {
+                            console.log("Dashboard_GetClientCountByLastWeek_Callback >> " + $Data);
+                            google.charts.load('current', { 'packages': ['corechart', 'bar'] });
+                            google.charts.setOnLoadCallback(drawChart);
+                            function drawChart() {
+                                var sData = new Array($Data.length + 1);
+                                sData[0] = ["Last 7 Days", "Count"];
+                                for (var i = 0; i < $Data.length; i++) {
+                                    $Data[i].Date == "" ? 0 : $Data[i].Date;
+                                    $Data[i].Count == "" ? 0 : $Data[i].Count;
+                                    sData[i + 1] = [$Data[i].Date, parseInt($Data[i].Count)];
+                                }
+                                console.log(">>>" + sData);
+                                var chartdata = new google.visualization.arrayToDataTable(sData);
+                                var options = {
+                                    // vAxis: { format: 'long', title: 'Number Of Payments / Invoices' },
+                                    height: 35,
+                                    colors: ['#fff'],
+                                    legend: { position: 'none' },
+                                    bar: { groupWidth: "25%" },
+                                    backgroundColor: 'transparent',
+                                    vAxis: {
+                                        gridlines: {
+                                            color: 'transparent'
+                                        }
+                                    },
+                                };
+
+                                var chart = new google.visualization.ColumnChart(document.getElementById('idCustomer_Chart'));
                                 chart.draw(chartdata, options);
                             }
                         }

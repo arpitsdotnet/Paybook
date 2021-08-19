@@ -11,10 +11,10 @@
     @Html.AntiForgeryToken()
 
     <div class="row bg-default container-fluid">
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <h3 class="bold"><i class="glyphicon glyphicon-time"></i>&nbsp; INVOICE CREATE <small>@Model.Invoice.InvoiceNumber</small></h3>
         </div>
-        <div class="col-lg-offset-6 col-lg-3 text-right">
+        <div class="col-lg-offset-5 col-lg-3 text-right">
             <div class="btn-group pt-3">
                 <a href="@Url.Action("Index")" class="btn btn-default btn-lg"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; CANCEL</a>
                 <button type="submit" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp; SAVE</button>
@@ -105,7 +105,7 @@
                         <div class="col-lg-2 col-md-2 col-sm-12">
                             <div class="form-group">
                                 @Html.LabelFor(model => model.Invoice.InvoiceDate, htmlAttributes: new { @class = "control-label" })
-                                &nbsp;<small>( MM-DD-YYYY )</small>
+                                &nbsp;<small>(mm/dd/yyyy)</small>
                                 <div>
                                     <div class="input-group date">
                                         @Html.EditorFor(model => model.Invoice.InvoiceDate, new { htmlAttributes = new { id = "txtInvoiceDate", @class = "form-control" } })
@@ -116,7 +116,7 @@
                             </div>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.Invoice.DueDate, htmlAttributes: new { @class = "control-label" })
-                                &nbsp;<small>( MM-DD-YYYY )</small>
+                                &nbsp;<small>(mm/dd/yyyy)</small>
                                 <div>
                                     @Html.EditorFor(model => model.Invoice.DueDate, new { htmlAttributes = new { id = "txtDueDate", @class = "form-control", @readonly = "readonly" } })
                                     @Html.ValidationMessageFor(model => model.Invoice.DueDate, "", new { @class = "text-danger" })
@@ -136,7 +136,7 @@
             </div>
 
             <div id="divInvoiceServiceTable">
-                @if (Model.InvoiceServices.Count() > 0)
+                @if (Model.InvoiceServices != null && Model.InvoiceServices.Count() > 0)
                 {
                     Html.RenderPartial("_InvoiceServicesTablePartial", Model.InvoiceServices);
                 }
@@ -227,7 +227,6 @@
 
 
 @section Scripts{
-    <script src="~/Scripts/jquery.validate.date.js"></script>
     <script>
 
 
@@ -241,7 +240,7 @@
             });
 
             $("#txtInvoiceDate, .input-group.date").datepicker({
-                format: "dd/mm/yyyy", startDate: "new Date()", todayBtn: "linked", orientation: "auto bottom", autoclose: true, todayHighlight: true
+                format: "mm/dd/yyyy", startDate: "new Date()", todayBtn: "linked", orientation: "auto bottom", autoclose: true, todayHighlight: true
             }).datepicker('setDate', 'new Date()');
 
             CalculateDueDate();
@@ -340,7 +339,8 @@
 
             var invDates = $InvoiceDate.val().split('/');
 
-            var invoiceDate = new Date(invDates[2], invDates[1] - 1, invDates[0]),
+            var invoiceDate = new Date(invDates[2], invDates[0] - 1, invDates[1]),
+            //var invoiceDate = new Date(invDates[2], invDates[1], invDates[0]),
                 days = parseInt($ddl.val(), 10);
 
             //console.log(invoiceDate)
@@ -350,7 +350,7 @@
 
                 //console.log(invoiceDate)
 
-                $DueDate.val(GetDateLeadingZero(invoiceDate.getDate()) + "/" + GetDateLeadingZero(invoiceDate.getMonth() + 1) + "/" + invoiceDate.getFullYear()); //.toInputFormat());
+                $DueDate.val(GetDateLeadingZero(invoiceDate.getMonth() + 1) + "/" + GetDateLeadingZero(invoiceDate.getDate()) + "/" + invoiceDate.getFullYear()); //.toInputFormat());
             }
         }
 
@@ -484,4 +484,4 @@
         }
     </script>
 
-} 
+}

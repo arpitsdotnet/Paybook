@@ -41,7 +41,7 @@ namespace Paybook.WebUI.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + ex.Message + "');});", true);
             }
 
@@ -90,7 +90,7 @@ namespace Paybook.WebUI.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }
@@ -162,7 +162,7 @@ namespace Paybook.WebUI.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }

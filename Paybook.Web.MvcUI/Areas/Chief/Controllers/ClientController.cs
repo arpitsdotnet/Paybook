@@ -31,13 +31,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            int? businessId = GetSelectedBusinessId();
-
-            if (businessId == null)
-                return RedirectToAction("Create", "Business");
-
-            List<ClientModel> model = _client.GetAllByPage(businessId.Value, 0, "", "");
-
+            List<ClientModel> model = _client.GetAllByPage(User.Identity.Name, 0, "", "");
 
             return View(model);
         }
@@ -45,11 +39,6 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            int? businessId = GetSelectedBusinessId();
-
-            if (businessId == null)
-                return RedirectToAction("Create", "Business");
-
             var countries = _country.GetAllByPage(0, "", "");
             int countryId = countries[0].Id;
             var clientVM = new ClientViewModel
@@ -62,31 +51,29 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         }
 
         [HttpPost, ActionName("Create")]
-        public ActionResult CreatePost(ClientViewModel model)
+        [ValidateAntiForgeryToken]
+        public ActionResult CreatePost(ClientViewModel modelVM)
         {
-            int? businessId = GetSelectedBusinessId();
-            if (businessId == null)
-                return RedirectToAction("Create", "Business");
-
             var countries = _country.GetAllByPage(0, "", "");
             int countryId = countries[0].Id;
             var clientVM = new ClientViewModel
             {
+                Client = modelVM.Client,
                 Countries = GetSelectListItemsCountry(countries),
                 States = GetSelectListItemsState(_state.GetAllByPage(countryId, 0, "", ""))
             };
 
             if (ModelState.IsValid)
             {
-                model.Client.BusinessId = businessId.Value;
-                model.Client.CreateBy = User.Identity.Name;
-                ClientModel output = _client.Create(model.Client);
+                clientVM.Client.CreateBy = User.Identity.Name;
+
+                ClientModel output = new ClientModel();
+                output = _client.Create(modelVM.Client);
+
                 clientVM.Client = output;
 
                 return View(clientVM);
             }
-
-            clientVM.Client = model.Client;
 
             return View(clientVM);
         }
@@ -94,11 +81,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Edit(int id)
         {
-            int? businessId = GetSelectedBusinessId();
-            if (businessId == null)
-                return RedirectToAction("Create", "Business");
-
-            var clientData = _client.GetById(businessId.Value, id);
+            var clientData = _client.GetById(User.Identity.Name, id);
 
             var countries = _country.GetAllByPage(0, "", "");
             int countryId = countries[0].Id;
@@ -113,12 +96,9 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         }
 
         [HttpPost, ActionName("Edit")]
+        [ValidateAntiForgeryToken]
         public ActionResult EditPost(ClientViewModel model)
         {
-            int? businessId = GetSelectedBusinessId();
-            if (businessId == null)
-                return RedirectToAction("Create", "Business");
-
             var countries = _country.GetAllByPage(0, "", "");
             int countryId = countries[0].Id;
             var clientVM = new ClientViewModel
@@ -129,9 +109,8 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 
             if (ModelState.IsValid)
             {
-                model.Client.BusinessId = businessId.Value;
                 model.Client.ModifyBy = User.Identity.Name;
-                
+
                 ClientModel output = _client.Update(model.Client);
                 output.Name = model.Client.Name;
                 clientVM.Client = output;
@@ -144,11 +123,6 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             return View(clientVM);
         }
 
-        [NonAction]
-        private int? GetSelectedBusinessId()
-        {
-            return (int?)TempData.Peek(TempdataNames.SelectedBusinessId);
-        }
         [NonAction]
         private IEnumerable<SelectListItem> GetSelectListItemsState(List<StateMasterModel> elements)
         {

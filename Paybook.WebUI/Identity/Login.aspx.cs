@@ -40,7 +40,7 @@ namespace Paybook.WebUI.Identity
 
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 ExceptionMessage(ExceptionType.ERROR, XmlProcessor.ReadXmlFile("OTW901"));
             }
@@ -83,7 +83,7 @@ namespace Paybook.WebUI.Identity
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
                 ExceptionMessage(ExceptionType.ERROR, XmlProcessor.ReadXmlFile("OTW901"));
             }
         }
@@ -120,7 +120,7 @@ namespace Paybook.WebUI.Identity
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }

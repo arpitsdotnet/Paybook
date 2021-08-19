@@ -47,7 +47,7 @@ namespace Paybook.WebUI.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("") + "');});", true);
             }
@@ -69,7 +69,7 @@ namespace Paybook.WebUI.Business
                 || extension == _FileExtension.png.ToString() || extension == _FileExtension.bmp.ToString() || extension == _FileExtension.gif.ToString())
             {
 
-                string imagePath = HttpContext.Current.Server.MapPath("~/" + _FolderPath.CompanyLogo_Path) + Path.GetFileName(fuImageUpload.PostedFile.FileName);
+                string imagePath = HttpContext.Current.Server.MapPath("~/" + _FolderPath.CompanyLogo) + Path.GetFileName(fuImageUpload.PostedFile.FileName);
                 fuImageUpload.SaveAs(imagePath);
                 // hfCompanyLogo_Image.Value = fuImageUpload.PostedFile.FileName;
                 //imgCompanyLogo.ImageUrl = _FolderPath.CompanyLogo_Path + sFileName;
@@ -134,12 +134,12 @@ namespace Paybook.WebUI.Business
                             txtCompanyEmail.Text = dtCompanyProfile.Rows[0]["EMail"].ToString();
                             txtGSTIN.Text = dtCompanyProfile.Rows[0]["GSTIN"].ToString();
                             txtImageUrl.Text = dtCompanyProfile.Rows[0]["ImageFileName"].ToString();
-                            imgCompanyLogo.ImageUrl = Application["Path"] + _FolderPath.CompanyLogo_Path + dtCompanyProfile.Rows[0]["ImageFileName"].ToString();
+                            imgCompanyLogo.ImageUrl = Application["Path"] + _FolderPath.CompanyLogo + dtCompanyProfile.Rows[0]["ImageFileName"].ToString();
                             Image imgLogo = new Image();
                             imgLogo = (Image)(Page.Master.FindControl("hlLoggedInControlsProfile"));
                             if (imgLogo != null)
                             {
-                                imgLogo.ImageUrl = Application["Path"] + _FolderPath.CompanyLogo_Path + dtCompanyProfile.Rows[0]["ImageFileName"].ToString();
+                                imgLogo.ImageUrl = Application["Path"] + _FolderPath.CompanyLogo + dtCompanyProfile.Rows[0]["ImageFileName"].ToString();
                             }
                         }
                     }
@@ -175,7 +175,7 @@ namespace Paybook.WebUI.Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }

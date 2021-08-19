@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Messages>
+ 
+  <Message type="ClientSubmit">
+    <MsgText id="CU101">"Please enter customer name"</MsgText>
+  </Message>
+  <Message type="Client">
+    <MsgText id="CUW102">Given customer not available</MsgText>
+  </Message>
+  <Message type="Client">
+    <MsgText id="CUW105">Please select atleast one customer</MsgText>
+  </Message>
+  <Message type="Client">
+    <MsgText id="CUS107">Please select customer name</MsgText>
+  </Message>
+  
+  <Message type="ClientWarning">
+    <MsgText id="CUW108">Please select sepecific customer for create invoice</MsgText>
+  </Message>
+  <Message type="Client">
+    <MsgText id="CUW109">Please select sepecific customer for payment </MsgText>
+  </Message>  
+  <Message type="Client">
+    <MsgText id="CUW110">Customer already exist</MsgText>
+  </Message>
+
+  <Message>
+    <MsgText id="InsertFailure">Client has not been created due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdatedFailure">Client has not been updated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateFailure">Client has not been activated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateFailure">Client has not been deactivated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteFailure">Client has not been deleted due to following error.</MsgText>
+  </Message>
+  
+  
+  <Message>
+    <MsgText id="InsertSuccess">Client has been successfully created.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateSuccess">Client has been successfully updated.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateSuccess">Client has been activated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateSuccess">Client has been deactivated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteSuccess">Client has been successfully deleted.</MsgText>
+  </Message>
+</Messages>

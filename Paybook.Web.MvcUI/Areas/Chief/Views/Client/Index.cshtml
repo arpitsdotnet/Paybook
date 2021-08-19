@@ -6,7 +6,7 @@
 
 @Html.Partial("_ListHeaderPagePartial", "CLIENT LIST")
 
-@if (Model != null)
+@if (Model != null && Model.Count() > 0)
 {
     if (Model.First().IsSucceeded == true)
     {

@@ -45,7 +45,7 @@ namespace Paybook.WebUI
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
             }
         }
     }

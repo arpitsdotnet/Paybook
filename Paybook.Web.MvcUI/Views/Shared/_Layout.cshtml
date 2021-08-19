@@ -1,11 +1,12 @@
-﻿@using Paybook.ServiceLayer.Constants;
+﻿@using Paybook.ServiceLayer.Constants
 
 <!DOCTYPE html>
 <html>
 <head>
+    <title>@ViewBag.Title - Paybook || A Simple Customer and Invoice Management System</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Paybook || A Simple Customer and Invoice Management System</title>
+    <link rel="ICON" href="/_Documents/Logo/CompanyIco.png" type="image/ico" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
@@ -20,14 +21,14 @@
                     <span class="icon-bar"></span>
                 </button>
                 <div class="navbar-brand">
-                    <img src="~/Content/IMG/PaybookLogo.png" alt="Paybook Logo" class="" />
+                    <img src="~/_Documents/Logo/PaybookLogo.png" alt="Paybook Logo" class="" />
                 </div>
             </div>
             @if (!User.Identity.IsAuthenticated)
             {
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="@Url.Action("Login","Identity",new { area = "" })"><i class="fa fa-dashboard"></i>&nbsp; Login</a></li>
+                        <li><a href="@Url.Action("Login", "Identity", new { area = "" })"><i class="fa fa-dashboard"></i>&nbsp; Login</a></li>
                     </ul>
                 </div>
             }
@@ -35,7 +36,7 @@
             {
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="@Url.Action("Dashboard","Business",new { area = "Chief" })"><i class="glyphicon glyphicon-dashboard"></i>&nbsp; Dashboard</a></li>
+                        <li><a href="@Url.Action("Dashboard", "Business", new { area = "Chief" })"><i class="glyphicon glyphicon-dashboard"></i>&nbsp; Dashboard</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <i class="glyphicon glyphicon-user"></i>&nbsp; Clients <span class="caret"></span>
@@ -44,8 +45,8 @@
                                 @*<li><a href="/agencies">Agency List</a></li>
                                     <li><a onclick="return OpenPartialPagePopup('agency/create','CREATE AGENCY');" href="#">Create Agency</a></li>
                                     <li class="divider"></li>*@
-                                <li><a href="@Url.Action("Index","Client",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Client List</a></li>
-                                <li><a href="@Url.Action("Create","Client",new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Client</a></li>
+                                <li><a href="@Url.Action("Index", "Client", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Client List</a></li>
+                                <li><a href="@Url.Action("Create", "Client", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Client</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -53,11 +54,11 @@
                                 <i class="glyphicon glyphicon-credit-card"></i>&nbsp; Sales <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="@Url.Action("Index","Invoice",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Invoice List</a></li>
-                                <li><a href="@Url.Action("Create","Invoice",new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Invoice</a></li>
+                                <li><a href="@Url.Action("Index", "Invoice", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Invoice List</a></li>
+                                <li><a href="@Url.Action("Create", "Invoice", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Invoice</a></li>
                                 <li class="divider"></li>
-                                <li><a href="@Url.Action("Index","Payment",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Payment List</a></li>
-                                <li><a href="@Url.Action("Create","Payment",new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Payment</a></li>
+                                <li><a href="@Url.Action("Index", "Payment", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Payment List</a></li>
+                                <li><a href="@Url.Action("Create", "Payment", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Payment</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -65,8 +66,8 @@
                                 <i class="glyphicon glyphicon-edit"></i>&nbsp; Notes <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="@Url.Action("Index","Note",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Note List</a></li>
-                                <li><a href="@Url.Action("Create","Note",new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Note</a></li>
+                                <li><a href="@Url.Action("Index", "Note", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Note List</a></li>
+                                <li><a href="@Url.Action("Create", "Note", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Note</a></li>
                                 <li class="divider"></li>
                             </ul>
                         </li>
@@ -75,9 +76,11 @@
                                 <i class="glyphicon glyphicon-cog"></i>&nbsp; Settings <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="@Url.Action("Index","Business",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Business List</a></li>
-                                <li><a href="@Url.Action("Index","CategoryType",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Category Type List</a></li>
-                                <li><a href="@Url.Action("Index","Category",new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Category List</a></li>
+                                <li><a href="@Url.Action("Index", "Business", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Business List</a></li>
+                                <li><a href="@Url.Action("Create", "Business", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Business</a></li>
+                                <li class="divider"></li>
+                                <li><a href="@Url.Action("Index", "CategoryType", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Category Type List</a></li>
+                                <li><a href="@Url.Action("Index", "Category", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Category List</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -97,16 +100,12 @@
                         <li class="dropdown" style="height: 50px!important">
                             <div class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <div class="chip unselect">
-                                    @if (TempData.Peek(TempdataNames.LoginUserFullname) != null)
-                                    {
-                                        <asp:Image ID="hlLoggedInControlsProfile" runat="server"
-                                                   AlternateText="Person" ClientIDMode="Static" CssClass="pointer" Style="position: relative;" />
-                                        <span>@TempData.Peek(TempdataNames.LoginUserFullname)</span>
-                                    }
+                                    <div id="divUserChip"></div>
                                 </div>
                             </div>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="@Url.Action("Index","Business",new { area = "Chief" })">Businesses</a></li>
+                                <li id="divSelectedBusinessLink"></li>
                                 <li class="divider"></li>
                                 <li><a href="@Url.Action("Logout","Identity",new { area = "" })">Logout</a></li>
                             </ul>
@@ -123,13 +122,13 @@
     <footer class="container-fluid">
         <div class="row">
             <div class="col-sm-10 col-xs-12 text-left">
-                <p class="h4 text-info">&copy; 2017 : @DateTime.Now.Year - Paybook<br /><small>A client and invoice management system.</small></p>
+                <p class="h4 text-info">&copy; 2017 : @DateTime.Now.Year - Paybook<br /><small>A simple client and invoice management system.</small></p>
             </div>
             <div class="col-sm-2 col-xs-12 text-right">
                 <div class="text-info small">Powered By:</div>
                 <div class=" text-right">
                     <a target="_blank" href="http://www.floydwebtech.com/">
-                        <img src="/Content/IMG/FwtLogo.png" height="35" alt="Floyd Web Techsoft Logo" />
+                        <img src="/_Documents/Logo/FwtLogo.png" height="35" alt="Floyd Web Techsoft Logo" />
                     </a>
                 </div>
             </div>
@@ -162,7 +161,18 @@
                 }
             });
             startTime();
+            GenerateUserChip();
+            GenerateSelectedBusinessLink();
         });
+
+        function GenerateUserChip() {
+            $("#divUserChip").html("<img src=\"" + readCookie('@CookieNames.LoginUserImage') + "\" alt=\"\" style=\"position: relative\" /><span>" + readCookie('@CookieNames.LoginUserFullname') + "</span>");
+            //console.log($("#divUserChip").html())
+        }
+        function GenerateSelectedBusinessLink() {
+            $("#divSelectedBusinessLink").html("<a href=\"@Url.Action("Edit","Business",new { area = "Chief" })/" + readCookie('@CookieNames.SelectedBusinessId') + "\">" + readCookie('@CookieNames.SelectedBusinessName') + "</a></li>");
+            //console.log($("#divSelectedBusinessLink").html())
+        }
     </script>
     @RenderSection("scripts", required: false)
 </body>

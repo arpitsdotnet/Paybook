@@ -13,5 +13,7 @@ namespace Paybook.Web.MvcUI.Models.ViewModels
         public DashboardCounterWidgetModel CounterPaymentPaidPartial { get; set; }
         public DashboardCounterWidgetModel CounterPaymentPaidLastMonth { get; set; }
         public DashboardCounterWidgetModel CounterPaymentTotal { get; set; }
+
+        public DashboardCounterWidgetModel ClientCounter { get; set; }
     }
 }

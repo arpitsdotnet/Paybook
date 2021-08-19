@@ -59,7 +59,7 @@ namespace Paybook.WebUI.Client
                     }
                     else
                     {
-                        lblCustomer_ID.Text = _lastSavedId.GetLastSavedID(LastIdTypes.Customer); ;
+                        lblCustomer_ID.Text = _lastSavedId.GetLastSavedID(LastSavedNumberTypes.Customer); ;
                         lblPageHeading.Text = "Add New Customer";
                         hfCustomer_ID.Value = "";
                     }
@@ -67,7 +67,7 @@ namespace Paybook.WebUI.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("OTW901") + "');});", true);
             }
@@ -115,11 +115,11 @@ namespace Paybook.WebUI.Client
                     message = _client.Create(customerModel);
 
                     //update LastSavedId                
-                    _lastSavedId.LastSavedID_Update(customerModel.Customer_ID, LastIdTypes.Customer);
+                    _lastSavedId.LastSavedID_Update(customerModel.Customer_ID, LastSavedNumberTypes.Customer);
                     SetDefault();
 
                     //show new customer id
-                    lblCustomer_ID.Text = _lastSavedId.GetLastSavedID(LastIdTypes.Customer); ;
+                    lblCustomer_ID.Text = _lastSavedId.GetLastSavedID(LastSavedNumberTypes.Customer); ;
 
                     ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + message + "');});", true);
 
@@ -189,7 +189,7 @@ namespace Paybook.WebUI.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -216,7 +216,7 @@ namespace Paybook.WebUI.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -244,7 +244,7 @@ namespace Paybook.WebUI.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -272,7 +272,7 @@ namespace Paybook.WebUI.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }
@@ -330,7 +330,7 @@ namespace Paybook.WebUI.Client
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 throw;
             }

@@ -244,28 +244,28 @@ namespace Paybook.WebUI._Layouts
 
         //Chart
         [WebMethod]
-        public static ChartModel[] Dashboard_GetClientCounters()
+        public static DashboardInvoiceChartModel[] Dashboard_GetClientCounters()
         {
             IDashboardProcessor _processor = new DashboardProcessor();
 
             return _processor.Dashboard_GetClientCounters();
         }
         [WebMethod]
-        public static ChartModel[] Dashboard_GetCountOfInvoicesAndPaymentsByLastWeek()
+        public static DashboardInvoiceChartModel[] Dashboard_GetCountOfInvoicesAndPaymentsByLastWeek()
         {
             IDashboardProcessor _processor = new DashboardProcessor();
 
             return _processor.Dashboard_GetCountOfInvoicesAndPaymentsByLastWeek();
         }
         [WebMethod]
-        public static ChartModel[] Dashboard_GetInvoiceAmountsAndPaymentsByLastWeek()
+        public static DashboardInvoiceChartModel[] Dashboard_GetInvoiceAmountsAndPaymentsByLastWeek()
         {
             IDashboardProcessor _processor = new DashboardProcessor();
 
             return _processor.Dashboard_GetInvoiceAmountsAndPaymentsByLastWeek();
         }
         [WebMethod]
-        public static ChartModel[] Dashboard_GetPaymentsLast20()
+        public static DashboardInvoiceChartModel[] Dashboard_GetPaymentsLast20()
         {
             IDashboardProcessor _processor = new DashboardProcessor();
 

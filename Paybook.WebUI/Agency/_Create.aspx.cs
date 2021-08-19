@@ -52,7 +52,7 @@ namespace Paybook.WebUI.Agency
                     }
                     else
                     {
-                        string sAgency_ID = _lastSavedId.GetLastSavedID(LastIdTypes.Agency);
+                        string sAgency_ID = _lastSavedId.GetLastSavedID(LastSavedNumberTypes.Agency);
                         lblAgency_ID.Text = sAgency_ID;
                         lblPageHeading.Text = "Add New Agency";
                         hfAgency_ID.Value = "";
@@ -62,7 +62,7 @@ namespace Paybook.WebUI.Agency
             }
             catch (Exception ex)
             {
-                _logger.LogError(_logger.MethodName, ex);
+                _logger.Error(_logger.GetMethodName(), ex);
 
                 ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("OTW901") + "');});", true);
 
@@ -194,7 +194,7 @@ namespace Paybook.WebUI.Agency
                         _lastSavedId.LastSavedID_Update(oAgency.AgencyNumber, "Agency");
                         SetDefault();
                         //show new Agency id
-                        string sAgency_ID = _lastSavedId.GetLastSavedID(LastIdTypes.Agency);
+                        string sAgency_ID = _lastSavedId.GetLastSavedID(LastSavedNumberTypes.Agency);
                         lblAgency_ID.Text = sAgency_ID;
                         ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + sMessage + "');});", true);
 

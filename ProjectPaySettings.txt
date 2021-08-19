@@ -1,0 +1,10 @@
+Microsoft.CodeDom.Providers.DotNetCompilerPlatform 
+
+ftp: paybook / Pay@book$123
+
+db: floydinf_paybookuser / Pay@book$123
+
+
+Selected BusinessId need to fetch into Processores based on User.Identity.Name
+
+so that we do not need to store the BusinessId Session.

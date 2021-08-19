@@ -6,13 +6,16 @@
 
 @Html.Partial("_ListHeaderPagePartial", "BUSINESS LIST")
 
-@if (Model != null && Model.First().IsSucceeded == true)
+@if (Model != null && Model.Count() > 0)
 {
-    <div class="alert alert-success">@Model.First().ReturnMessage</div>
-}
-else if (Model != null && !string.IsNullOrEmpty(Model.First().ReturnMessage))
-{
-    <div class="alert alert-danger">@Model.First().ReturnMessage</div>
+    if (Model.First().IsSucceeded == true)
+    {
+        <div class="alert alert-success">@Model.First().ReturnMessage</div>
+    }
+    else if (!string.IsNullOrEmpty(Model.First().ReturnMessage))
+    {
+        <div class="alert alert-danger">@Model.First().ReturnMessage</div>
+    }
 }
 
 @if (Model == null || Model.Count() == 0)
