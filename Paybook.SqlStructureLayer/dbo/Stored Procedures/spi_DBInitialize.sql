@@ -16,19 +16,19 @@ BEGIN
 		VALUES (1,GETDATE(),'admin','admin','Ad$mi@n0','floydwebtech@gmail.com',1,'Administrator','User'),
 				(1,GETDATE(),'admin','amituser','Am$it@1234','amity435@gmail.com',1,'Amit','Yadav');
 		
-		DECLARE @RoleId INT, @UserId INT;
+		DECLARE @RoleId INT, @UserAdminId INT, @UserAmitId INT;
 
 		SELECT @RoleId = Id FROM IdentityRoles WHERE [Name] = 'Administrator';
-		SELECT @UserId = Id FROM IdentityUsers WHERE [Username] = 'admin';
+		SELECT @UserAdminId = Id FROM IdentityUsers WHERE [Username] = 'admin';
 
 		INSERT INTO IdentityUserRoles ([UserId],[RoleId])
-		VALUES (@UserId, @RoleId);
+		VALUES (@UserAdminId, @RoleId);
 		
 		SELECT @RoleId = Id FROM IdentityRoles WHERE [Name] = 'Chief';
-		SELECT @UserId = Id FROM IdentityUsers WHERE [Username] = 'amituser';
+		SELECT @UserAmitId = Id FROM IdentityUsers WHERE [Username] = 'amituser';
 
 		INSERT INTO IdentityUserRoles ([UserId],[RoleId])
-		VALUES (@UserId, @RoleId);
+		VALUES (@UserAmitId, @RoleId);
 
 		--DEFAULT COUNTRY / STATE CREATE
 		INSERT INTO CountryMaster ([IsActive],[CreateDate],[CreateBy],[Name])
@@ -43,12 +43,24 @@ BEGIN
 		DECLARE @StateId INT;
 		SET @StateId = SCOPE_IDENTITY();
 
-		--DEFAULT BUSINESS
+		--DEFAULT BUSINESS FOR ADMIN
+		DECLARE @BusinessId INT;
 		INSERT INTO Businesses ([IsActive],[CreateDate],[CreateBy],[Name],[Description],[IsSelected],[StateId],[CountryId])
 		VALUES(1,GETDATE(),'admin','Administrator Business','Default Business for Administrator',1,@StateId,@CountryId)
-		
-		DECLARE @BusinessId INT;
+				
 		SET @BusinessId = SCOPE_IDENTITY();
+
+		INSERT INTO UserBusinesses (UserId, BusinessId)
+		VALUES(@UserAdminId, @BusinessId)
+				
+		--DEFAULT BUSINESS FOR AMIT
+		INSERT INTO Businesses ([IsActive],[CreateDate],[CreateBy],[Name],[Description],[IsSelected],[StateId],[CountryId])
+		VALUES(1,GETDATE(),'amituser','Amit Insurance Business','Default Business for Amit user',1,@StateId,@CountryId)
+				
+		SET @BusinessId = SCOPE_IDENTITY();
+
+		INSERT INTO UserBusinesses (UserId, BusinessId)
+		VALUES(@UserAmitId, @BusinessId)
 
 		--DEFAULT CATEGORY TYPE AND CATEGORY --> Terms
 		DECLARE @CateogryTypeId INT;
