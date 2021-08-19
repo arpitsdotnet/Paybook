@@ -14,7 +14,7 @@ namespace Paybook.ServiceLayer.Xml
         public static string ReadXmlFile(string MsgID, string path = null)
         {
             string sMsgText = "";
-            string sOriginalFilePath = Path.Combine(HttpRuntime.AppDomainAppPath, _FolderPath.DOC_XmlFilePath + "messages.xml");
+            string sOriginalFilePath = Path.Combine(HttpRuntime.AppDomainAppPath, _FolderPath.Messages + "messages.xml");
             XElement xelement = XElement.Load(sOriginalFilePath);
             var MsgText = from s in xelement.Elements("Message")
                           where (string)s.Element("MsgText").Attribute("id") == MsgID
