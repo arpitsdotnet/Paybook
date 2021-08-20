@@ -130,6 +130,8 @@
     <Build Include="dbo\Stored Procedures\spu_InvoiceServices_Update.sql" />
     <Build Include="dbo\Stored Procedures\sps_CategoryMaster_GetById.sql" />
     <Build Include="dbo\Stored Procedures\sps_Clients_GetRemainingAmountById.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetInvoiceCountByDays.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetPaymentCountByDays.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Profile\Paybook.SqlStructureLayer.publish.xml" />
