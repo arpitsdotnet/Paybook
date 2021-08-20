@@ -18,6 +18,9 @@ namespace Paybook.ServiceLayer.Models
         [Display(Name = "Create by")]
         public string CreateBy { get; set; }
 
+        public int InvoiceId { get; set; }
+        public virtual InvoiceModel Invoice { get; set; }
+
 
         [Display(Name = "Payment date")]
         public DateTime? PaymentDate { get; set; }
