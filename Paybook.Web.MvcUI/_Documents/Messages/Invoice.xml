@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Messages> 
+  <Message>
+    <MsgText id="IsExists">Invoice is already exists, please enter a different name.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="NotFound">We did not found the invoice you are looking. Please try again.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="NoRowFound">We did not find any invoice, please add an invoice.</MsgText>
+  </Message>
+
+  <Message>
+    <MsgText id="InsertFailure">Invoice has not been created due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdatedFailure">Invoice has not been updated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateFailure">Invoice has not been activated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateFailure">Invoice has not been deactivated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteFailure">Invoice has not been deleted due to following error.</MsgText>
+  </Message>
+  
+  
+  <Message>
+    <MsgText id="InsertSuccess">Invoice has been successfully created.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateSuccess">Invoice has been successfully updated.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateSuccess">Invoice has been activated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateSuccess">Invoice has been deactivated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteSuccess">Invoice has been successfully deleted.</MsgText>
+  </Message>
+</Messages>

@@ -1,27 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Messages>
- 
-  <Message type="ClientSubmit">
-    <MsgText id="CU101">"Please enter customer name"</MsgText>
+<Messages> 
+  <Message>
+    <MsgText id="IsExists">Client is already exists, please enter a different name.</MsgText>
   </Message>
-  <Message type="Client">
-    <MsgText id="CUW102">Given customer not available</MsgText>
+  <Message>
+    <MsgText id="NotFound">We did not found the client you are looking. Please try again.</MsgText>
   </Message>
-  <Message type="Client">
-    <MsgText id="CUW105">Please select atleast one customer</MsgText>
-  </Message>
-  <Message type="Client">
-    <MsgText id="CUS107">Please select customer name</MsgText>
-  </Message>
-  
-  <Message type="ClientWarning">
-    <MsgText id="CUW108">Please select sepecific customer for create invoice</MsgText>
-  </Message>
-  <Message type="Client">
-    <MsgText id="CUW109">Please select sepecific customer for payment </MsgText>
-  </Message>  
-  <Message type="Client">
-    <MsgText id="CUW110">Customer already exist</MsgText>
+  <Message>
+    <MsgText id="NoRowFound">We did not find any client, please add a client.</MsgText>
   </Message>
 
   <Message>
