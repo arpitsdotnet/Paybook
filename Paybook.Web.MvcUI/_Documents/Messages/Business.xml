@@ -42,4 +42,11 @@
   <Message>
     <MsgText id="DeleteSuccess">Business has been successfully deleted.</MsgText>
   </Message>
+
+  <Message>
+    <MsgText id="SelectedUpdateSuccess">New business has been selected.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="SelectedUpdateFailure">Business has not been selected due to following error.</MsgText>
+  </Message>
 </Messages>

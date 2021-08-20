@@ -3,6 +3,7 @@
     public class MTypes
     {
         public const string Business = "Business";
+        public const string Activity = "Activity";
         public const string Client = "Client";
         public const string Invoice = "Invoice";
         public const string InvoiceService = "InvoiceService";
