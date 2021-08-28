@@ -51,19 +51,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Agency\AgencyProcessor.cs" />
     <Compile Include="Business\BusinessProcessor.cs" />
     <Compile Include="Client\ClientProcessor.cs" />
     <Compile Include="Common\ActivityProcessor.cs" />
     <Compile Include="Common\DashboardProcessor.cs" />
     <Compile Include="Common\LastSavedNumberProcessor.cs" />
+    <Compile Include="IBaseProcessor.cs" />
     <Compile Include="Identity\LoginProcessor.cs" />
     <Compile Include="Identity\UserProcessor.cs" />
     <Compile Include="Invoice\InvoiceProcessor.cs" />
     <Compile Include="Note\NoteProcessor.cs" />
     <Compile Include="Payment\PaymentProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Report\ReportProcessor.cs" />
     <Compile Include="Setting\StateProcessor.cs" />
     <Compile Include="Setting\CountryProcessor.cs" />
     <Compile Include="Setting\CategoryTypeProcessor.cs" />

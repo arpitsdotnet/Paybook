@@ -65,9 +65,12 @@ namespace Paybook.BusinessLayer.Note
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.Note, MStatus.InsertSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Note, MStatus.InsertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -86,9 +89,12 @@ namespace Paybook.BusinessLayer.Note
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.Note, MStatus.UpdateSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Note, MStatus.UpdateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -107,16 +113,24 @@ namespace Paybook.BusinessLayer.Note
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    if (active)
+                        output.ReturnMessage = Messages.Get(MTypes.Note, MStatus.ActivateSuccess);
+                    else
+                        output.ReturnMessage = Messages.Get(MTypes.Note, MStatus.DeactivateSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteActivateFail");
+
+                output.IsSucceeded = false;
+                if (active)
+                    output.ReturnMessage = Messages.Get(MTypes.Note, MStatus.ActivateFailure);
+                else
+                    output.ReturnMessage = Messages.Get(MTypes.Note, MStatus.DeactivateFailure);
                 return output;
 
             }
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-
                 throw;
             }
         }
@@ -129,16 +143,17 @@ namespace Paybook.BusinessLayer.Note
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.Note, MStatus.DeleteSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteDeleteFail");
-                return output;
 
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Note, MStatus.DeleteFailure);
+                return output;
             }
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-
                 throw;
             }
         }

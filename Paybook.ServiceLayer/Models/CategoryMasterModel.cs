@@ -2,7 +2,7 @@
 
 namespace Paybook.ServiceLayer.Models
 {
-    public class CategoryMasterModel
+    public class CategoryMasterModel : BaseResultStatusModel
     {
         public int Id { get; set; }
         public int BusinessId { get; set; }

@@ -3,14 +3,35 @@
 @using Paybook.ServiceLayer.Constants;
 
 @{
-    ViewBag.Title = "Create Invoice";
+    ViewBag.Title = "Edit Invoice";
 }
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-    @Html.Partial("_PageHeaderCreatePartial", "INVOICE CREATE")
+    <div class="row bg-default container-fluid">
+        <div class="col-lg-4 col-sm-12">
+            <h4 class="bold"><i class="glyphicon glyphicon-time"></i>&nbsp; INVOICE UPDATE <small>@Model.Invoice.InvoiceNumber</small></h4>
+        </div>
+        <div class="col-lg-offset-4 col-lg-4 col-sm-12 text-right">
+            <div class="btn-group pt-3">
+                <a href="@Url.Action("Index")" class="btn btn-default"><i class="glyphicon glyphicon-repeat"></i>&nbsp; BACK</a>
+                @if (Model.Invoice.Total != Model.Invoice.PaidTotal)
+                {
+                    <button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-erase"></i>&nbsp; VOID</button>
+                    if (Model.Invoice.PaidTotal > 0)
+                    {
+                        <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-remove"></i>&nbsp; WRITE OFF</button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok-sign"></i>&nbsp; SAVE</button>
+                    }
+                }
+            </div>
+        </div>
+    </div>
 
     <div class="form-horizontal">
 
@@ -36,8 +57,7 @@
                             <div class="form-group">
                                 @Html.LabelFor(model => model.Invoice.ClientId, htmlAttributes: new { @class = "control-label" })
                                 <div>
-                                    @Html.DropDownListFor(model => model.Invoice.ClientId, Model.Clients, "- Select Client -", htmlAttributes: new { id = "ddlClients", @class = "form-control" })
-                                    @Html.ValidationMessageFor(model => model.Invoice.ClientId, "", new { @class = "text-danger" })
+                                    @Html.DisplayTextFor(model => model.Invoice.Client.Name)
                                 </div>
                             </div>
                         </div>
@@ -45,8 +65,7 @@
                             <div class="form-group">
                                 @Html.LabelFor(model => model.Invoice.ClientEmail, htmlAttributes: new { @class = "control-label" })
                                 <div>
-                                    @Html.EditorFor(model => model.Invoice.ClientEmail, new { htmlAttributes = new { id = "txtClientEmail", @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Invoice.ClientEmail, "", new { @class = "text-danger" })
+                                    @Html.DisplayTextFor(model => model.Invoice.ClientEmail)
                                 </div>
                                 <div>
                                     <div class="">
@@ -125,11 +144,29 @@
                 </div>
             </div>
 
-            <div id="divInvoiceServiceTable">
-                @if (Model.InvoiceServices != null && Model.InvoiceServices.Count() > 0)
-                {
-                    Html.RenderPartial("_InvoiceServicesTablePartial", Model.InvoiceServices);
-                }
+            <div>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#services" aria-controls="services" role="tab" data-toggle="tab">PRODUCTS/SERVICES</a></li>
+                    <li role="presentation" class=""><a href="#payments" aria-controls="payments" role="tab" data-toggle="tab">PAYMENTS</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade in active" id="services">
+                        <div id="divInvoiceServiceTable">
+                            @if (Model.InvoiceServices != null && Model.InvoiceServices.Count() > 0)
+                            {
+                                Html.RenderPartial("_InvoiceServicesTablePartial", Model.InvoiceServices);
+                            }
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="payments">
+                        <div id="divInvoicePaymentsTable">
+                            @if (Model.InvoicePayments != null && Model.InvoicePayments.Count() > 0)
+                            {
+                                Html.RenderPartial("_InvoicePaymentsTablePartial", Model.InvoicePayments);
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row pt-3">
@@ -144,10 +181,12 @@
                     </div>
                 </div>
                 <div class="col-lg-offset-2 col-lg-5 col-md-6 col-sm-6">
-
+                    @{
+                        var ButtonDisabled = (Model.Invoice.PaidTotal > 0) ? "disabled" : "";
+                    }
                     <div class="form-group text-right">
-                        <button type="button" class="btn btn-danger btn-sm anchor-service-removeall"><i class="glyphicon glyphicon-trash"></i>&nbsp; REMOVE ALL SERVICES</button>
-                        <button type="button" class="btn btn-primary btn-sm anchor-service-create" data-toggle="modal" data-id="@Model.Invoice.Id"><i class="glyphicon glyphicon-plus"></i>&nbsp; ADD SERVICE</button>
+                        <button type="button" class="btn btn-danger btn-sm anchor-service-removeall " @ButtonDisabled><i class="glyphicon glyphicon-trash"></i>&nbsp; REMOVE ALL SERVICES</button>
+                        <button type="button" class="btn btn-primary btn-sm anchor-service-create" @ButtonDisabled data-toggle="modal" data-id="@Model.Invoice.Id"><i class="glyphicon glyphicon-plus"></i>&nbsp; ADD SERVICE</button>
                     </div>
 
                     <div class="form-group">
@@ -223,11 +262,8 @@
         $(document).ready(function () {
 
 
-            $("#ddlClients").on('change', function () {
-                $ddl = $(this);
-                console.log($ddl.val());
-                GetClientById($ddl.val());
-            });
+
+            GetClientById('@Model.Invoice.ClientId');
 
             $("#txtInvoiceDate, .input-group.date").datepicker({
                 format: "mm/dd/yyyy", startDate: "new Date()", todayBtn: "linked", orientation: "auto bottom", autoclose: true, todayHighlight: true
@@ -293,19 +329,8 @@
                 //console.log("Address: " + data.Client.AddressLine1 + "\r\n" + data.Client.AddressLine2 + "\r\n" + data.Client.City + "\r\n" +
                 //    data.Client.StateMaster.Name + "\r\n" + data.Client.CountryMaster.Name + "\r\n" + data.Client.Pincode);
 
-                $("#txtClientEmail").val(data.Client.Email);
                 $("#divRemainingTotal").html(DBNullCheck(data.RemainingAmount, 0).toFixed(2));
 
-                var addressline1 = DBNullCheck(data.Client.AddressLine1, "");
-                var addressline2 = DBNullCheck(data.Client.AddressLine2, "");
-                var city = DBNullCheck(data.Client.City, "");
-                var state = DBNullCheck(data.Client.StateMaster.Name, "");
-                var country = DBNullCheck(data.Client.CountryMaster.Name, "");
-                var pincode = DBNullCheck(data.Client.Pincode, "");
-
-                $("#txtBillingAddress").val(addressline1 + (addressline2 == "" ? "" : "\r\n" + addressline2)
-                    + (city == "" ? "" : "\r\n" + city) + (state == "" ? "" : "\r\n" + state)
-                    + (country == "" ? "" : "\r\n" + country) + (pincode == "" ? "" : "\r\n" + pincode));
             });
         }
 

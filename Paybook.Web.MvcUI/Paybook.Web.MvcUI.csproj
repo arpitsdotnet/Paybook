@@ -145,6 +145,7 @@
     <Compile Include="Areas\Chief\Controllers\ClientController.cs" />
     <Compile Include="Areas\Chief\Controllers\InvoiceController.cs" />
     <Compile Include="Areas\Chief\Controllers\InvoiceServiceController.cs" />
+    <Compile Include="Areas\Chief\Controllers\PaymentController.cs" />
     <Compile Include="Controllers\IdentityController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -157,6 +158,7 @@
     <Compile Include="Models\ViewModels\IdentityUserViewModel.cs" />
     <Compile Include="Models\ViewModels\InvoiceServiceViewModel.cs" />
     <Compile Include="Models\ViewModels\InvoiceViewModel.cs" />
+    <Compile Include="Models\ViewModels\PaymentViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -165,13 +167,10 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\fontawesome\font-awesome.css" />
-    <Content Include="Content\fontawesome\font-awesome.min.css" />
-    <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="_Documents\Logo\FwtLogo.png" />
     <Content Include="_Documents\Logo\PaybookLogo.png" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
@@ -180,10 +179,6 @@
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Chief\Views\web.config" />
     <Content Include="Areas\Chief\Views\Business\Dashboard.cshtml" />
-    <Content Include="Content\fonts\FontAwesome.otf" />
-    <Content Include="Content\fonts\fontawesome-webfont.woff" />
-    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
-    <Content Include="Content\fonts\fontawesome-webfont.eot" />
     <Content Include="Areas\Chief\Views\Business\Index.cshtml" />
     <Content Include="Areas\Chief\Views\Business\Create.cshtml" />
     <Content Include="Areas\Chief\Views\Business\Edit.cshtml" />
@@ -195,9 +190,24 @@
     <Content Include="Scripts\jquery.validation.date.js" />
     <Content Include="Views\Shared\_InvoiceServiceFormPartial.cshtml" />
     <Content Include="_Documents\Logo\CompanyIco.png" />
+    <Content Include="_Documents\Messages\Activity.xml" />
+    <Content Include="_Documents\Messages\StateMaster.xml" />
+    <Content Include="_Documents\Messages\CountryMaster.xml" />
+    <Content Include="_Documents\Messages\CategoryTypeMaster.xml" />
+    <Content Include="_Documents\Messages\CategoryMaster.xml" />
+    <Content Include="_Documents\Messages\User.xml" />
+    <Content Include="_Documents\Messages\Note.xml" />
+    <Content Include="_Documents\Messages\InvoiceService.xml" />
+    <Content Include="_Documents\Messages\Invoice.xml" />
     <Content Include="_Documents\Messages\Client.xml" />
+    <Content Include="_Documents\Messages\Business.xml" />
+    <Content Include="_Documents\Messages\Payment.xml" />
     <Content Include="_Documents\Messages\messages.xml" />
     <Content Include="_Documents\User\Default.png" />
+    <Content Include="Areas\Chief\Views\Payment\Index.cshtml" />
+    <Content Include="Areas\Chief\Views\Payment\Create.cshtml" />
+    <Content Include="Areas\Chief\Views\Invoice\Edit.cshtml" />
+    <Content Include="Areas\Chief\Views\Client\Details.cshtml" />
     <None Include="Properties\PublishProfiles\PaybookFtpProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -227,8 +237,15 @@
     <Content Include="Views\Identity\Login.cshtml" />
     <Content Include="Views\Identity\Logout.cshtml" />
     <Content Include="Views\Shared\_DashboardCounterWidgetPartial.cshtml" />
-    <Content Include="Views\Shared\_ListHeaderPagePartial.cshtml" />
+    <Content Include="Views\Shared\_PageHeaderListPartial.cshtml" />
     <Content Include="Views\Shared\_InvoiceServicesTablePartial.cshtml" />
+    <Content Include="Views\Shared\_DashboardInvoiceTablePartial.cshtml" />
+    <Content Include="Views\Shared\_DashboardPaymentTablePartial.cshtml" />
+    <Content Include="Views\Shared\_InvoicePaymentsTablePartial.cshtml" />
+    <Content Include="Views\Shared\_PageHeaderCreatePartial.cshtml" />
+    <Content Include="Views\Shared\_ListDefaultButtonsPartial.cshtml" />
+    <Content Include="Views\Shared\_ClientInvoicesTablePartial.cshtml" />
+    <Content Include="Views\Shared\_ClientPaymentsTablePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -237,10 +254,10 @@
     <Folder Include="Content\IMG\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />

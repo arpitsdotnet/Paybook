@@ -21,15 +21,20 @@ namespace Paybook.ServiceLayer.Models
         public int InvoiceId { get; set; }
         public virtual InvoiceModel Invoice { get; set; }
 
+        [Display(Name = "Transaction Id")]
+        public string TransactionId { get; set; }
 
         [Display(Name = "Payment date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MMM/yyyy}")]
         public DateTime? PaymentDate { get; set; }
 
         [Display(Name = "Success")]
         public bool IsSuccess { get; set; }
 
         public string Method { get; set; }
-        public string Amount { get; set; }
+
+        [Display(Name = "Payment amount")]
+        public decimal Amount { get; set; }
 
         [Display(Name = "Refund")]
         public bool IsRefund { get; set; }

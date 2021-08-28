@@ -1,7 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[spu_Businesses_Activate]
 	@Id INT,
 	@Username NVARCHAR(256),
-	@Active BIT
+	@IsActive BIT
 AS
 BEGIN
 	BEGIN TRY		
@@ -9,9 +9,9 @@ BEGIN
 
 		UPDATE Businesses
 			SET
-				IsActive = @Active,
 				ModifyDate = GETDATE(),
-				ModifyBy = @Username				
+				ModifyBy = @Username,
+				IsActive = @IsActive				
 			WHERE Id = @Id AND CreateBy = @Username;
 
 		COMMIT TRANSACTION

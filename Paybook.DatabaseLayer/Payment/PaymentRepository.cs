@@ -17,6 +17,9 @@ namespace Paybook.DatabaseLayer.Payment
     {
         string Payments_SelectMonthsales();
         List<PaymentModel> GetAllByInvoiceId(int businessId, int invoiceId, int page, string search, string orderBy);
+        List<PaymentModel> GetAllByClientId(int businessId, int clientId);
+        decimal GetPaidAmountByInvoiceId(int businessId, int invoiceId);
+        int Revert(int businessId, int id);
     }
 
     public class PaymentRepository : IPaymentRepository
@@ -95,6 +98,57 @@ namespace Paybook.DatabaseLayer.Payment
                 throw;
             }
         }
+        public List<PaymentModel> GetAllByClientId(int businessId, int clientId)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, ClientId = clientId };
+
+                var result = _dbContext.LoadData<PaymentModel, dynamic>("sps_Payments_GetAllByClientId", p);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
+        public decimal GetPaidAmountByInvoiceId(int businessId, int invoiceId)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, InvoiceId = invoiceId };
+
+                var result = _dbContext.LoadData<decimal?, dynamic>("sps_Payments_GetPaidAmountByInvoiceId", p);
+
+                if (result.FirstOrDefault() != null)
+                    return result.FirstOrDefault().Value;
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
+        public int Revert(int businessId, int id)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Id = id };
+
+                var result = _dbContext.SaveData("sps_Payments_Revert", p);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
 
         public List<PaymentModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
@@ -132,7 +186,8 @@ namespace Paybook.DatabaseLayer.Payment
         {
             try
             {
-                var result = _dbContext.SaveDataOutParam("spi_Payments_Insert", model, out int paymentId, DbType.Int32, null, "Id");
+                var p = new { model.BusinessId, model.CreateBy, model.InvoiceId, model.TransactionId, model.PaymentDate, model.Method, model.Amount };
+                var result = _dbContext.SaveDataOutParam("spi_Payments_Insert", p, out int paymentId, DbType.Int32, null, "Id");
 
                 model.Id = paymentId;
 

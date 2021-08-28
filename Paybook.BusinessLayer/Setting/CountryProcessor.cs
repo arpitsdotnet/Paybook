@@ -62,14 +62,17 @@ namespace Paybook.BusinessLayer.Setting
         {
             try
             {
-                var output = new CountryMasterModel { IsSucceeded = false };
+                var output = new CountryMasterModel();
                 int result = _country.Create(model);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.CountryMaster, MStatus.InsertSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.CountryMaster, MStatus.InsertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -88,9 +91,12 @@ namespace Paybook.BusinessLayer.Setting
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.CountryMaster, MStatus.UpdateSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.CountryMaster, MStatus.UpdateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -109,11 +115,19 @@ namespace Paybook.BusinessLayer.Setting
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    if (active)
+                        output.ReturnMessage = Messages.Get(MTypes.CountryMaster, MStatus.ActivateSuccess);
+                    else
+                        output.ReturnMessage = Messages.Get(MTypes.CountryMaster, MStatus.DeactivateSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteActivateFail");
-                return output;
 
+                output.IsSucceeded = false;
+                if (active)
+                    output.ReturnMessage = Messages.Get(MTypes.CountryMaster, MStatus.ActivateFailure);
+                else
+                    output.ReturnMessage = Messages.Get(MTypes.CountryMaster, MStatus.DeactivateFailure);
+                return output;
             }
             catch (Exception ex)
             {
@@ -131,11 +145,13 @@ namespace Paybook.BusinessLayer.Setting
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.CountryMaster, MStatus.DeleteSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteDeleteFail");
-                return output;
 
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.CountryMaster, MStatus.DeleteFailure);
+                return output;
             }
             catch (Exception ex)
             {

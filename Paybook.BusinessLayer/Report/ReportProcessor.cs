@@ -61,7 +61,7 @@ namespace Paybook.BusinessLayer.Report
                 {
                     oDataRows.FilePath = _FolderPath.DOC_DocumentsPath + SelectedFileName;
                     oDataRows.FileName = SelectedFileName;
-                    oDataRows.Message = XmlProcessor.ReadXmlFile("INW301");
+                    oDataRows.Message = Messages.Get("INW301");
                     oReport.Add(oDataRows);
                 }
 
@@ -247,7 +247,7 @@ namespace Paybook.BusinessLayer.Report
                 {
                     report.FilePath = _FolderPath.DOC_DocumentsPath + SelectedFileName;
                     report.FileName = SelectedFileName;
-                    report.Message = XmlProcessor.ReadXmlFile("INW301");
+                    report.Message = Messages.Get("INW301");
                     reports.Add(report);
                 }
 
@@ -592,7 +592,7 @@ namespace Paybook.BusinessLayer.Report
             {
                 bool result = _reportRepository.ReportVersion_Insert(iVersionNumber, sCustomer_ID, sPaymentDateFrom, sPaymentDateTo, sFilePath);
                 if (result)
-                    return XmlProcessor.ReadXmlFile("");
+                    return Messages.Get("");
 
                 return string.Empty;
             }

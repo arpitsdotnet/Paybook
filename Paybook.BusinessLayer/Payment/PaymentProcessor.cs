@@ -1,41 +1,31 @@
-﻿using Paybook.BusinessLayer.Agency;
+﻿using Paybook.BusinessLayer.Business;
 using Paybook.BusinessLayer.Client;
 using Paybook.BusinessLayer.Common;
 using Paybook.BusinessLayer.Invoice;
-using Paybook.DatabaseLayer;
 using Paybook.DatabaseLayer.Payment;
-using Paybook.ServiceLayer;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
-using Paybook.ServiceLayer.Services;
 using Paybook.ServiceLayer.Xml;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
 
 namespace Paybook.BusinessLayer.Payment
 {
-    public interface IPaymentProcessor
+    public interface IPaymentProcessor : IBaseProcessor<PaymentModel>
     {
         string Payments_SelectMonthsales();
-        List<PaymentModel> GetAllByInvoiceId(int businessId, int invoiceId, int page, string search, string orderBy);
-        List<PaymentModel> GetAllByPage(int businessId, int page, string search, string orderBy);
-        PaymentModel GetById(int businessId, int id);
-        PaymentModel Create(PaymentModel model);
-        PaymentModel Update(PaymentModel model);
-        PaymentModel Activate(int businessId, int id, bool active);
-        PaymentModel Delete(int businessId, int id);
+        List<PaymentModel> GetAllByInvoiceId(string username, int invoiceId, int page, string search, string orderBy);
+        List<PaymentModel> GetAllByClientId(string username, int clientId);
+        decimal GetPaidAmountByInvoiceId(string username, int invoiceId);
+        PaymentModel Revert(string username, int id);
     }
 
     public class PaymentProcessor : IPaymentProcessor
     {
         private readonly ILogger _logger;
         private readonly IPaymentRepository _paymentRepo;
-
+        private readonly IBusinessProcessor _business;
         private readonly ILastSavedNumberProcessor _lastSavedIdProcessor;
-        private readonly IAgencyProcessor _agencyProcessor;
         private readonly IClientProcessor _clientProcessor;
         private readonly IInvoiceProcessor _invoiceProcessor;
 
@@ -44,8 +34,8 @@ namespace Paybook.BusinessLayer.Payment
             _logger = LoggerFactory.Instance;
             _paymentRepo = new PaymentRepository();
 
+            _business = new BusinessProcessor();
             _lastSavedIdProcessor = new LastSavedNumberProcessor();
-            _agencyProcessor = new AgencyProcessor();
             _clientProcessor = new ClientProcessor();
             _invoiceProcessor = new InvoiceProcessor();
         }
@@ -63,12 +53,13 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-
-        public List<PaymentModel> GetAllByInvoiceId(int businessId, int invoiceId, int page, string search, string orderBy)
+        public List<PaymentModel> GetAllByInvoiceId(string username, int invoiceId, int page, string search, string orderBy)
         {
             try
             {
-                return _paymentRepo.GetAllByInvoiceId(businessId, invoiceId, page, search, orderBy);
+                var business = _business.GetSelectedByUsername(username);
+
+                return _paymentRepo.GetAllByInvoiceId(business.Id, invoiceId, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -77,11 +68,13 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public List<PaymentModel> GetAllByPage(int businessId, int page, string search, string orderBy)
+        public List<PaymentModel> GetAllByClientId(string username, int clientId)
         {
             try
             {
-                return _paymentRepo.GetAllByPage(businessId, page, search, orderBy);
+                var business = _business.GetSelectedByUsername(username);
+
+                return _paymentRepo.GetAllByClientId(business.Id, clientId);
             }
             catch (Exception ex)
             {
@@ -90,11 +83,69 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public PaymentModel GetById(int businessId, int id)
+        public decimal GetPaidAmountByInvoiceId(string username, int invoiceId)
         {
             try
             {
-                return _paymentRepo.GetById(businessId, id);
+                var business = _business.GetSelectedByUsername(username);
+
+                return _paymentRepo.GetPaidAmountByInvoiceId(business.Id, invoiceId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+
+                throw;
+            }
+        }
+        public PaymentModel Revert(string username, int id)
+        {
+            try
+            {
+                var business = _business.GetSelectedByUsername(username);
+
+                var output = new PaymentModel();
+                var result = _paymentRepo.Revert(business.Id, id);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatusPayment.RevertSuccess);
+                    return output;
+                }
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Payment, MStatusPayment.RevertFailure);
+                return output;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+
+                throw;
+            }
+        }
+
+        public List<PaymentModel> GetAllByPage(string username, int page, string search, string orderBy)
+        {
+            try
+            {
+                var business = _business.GetSelectedByUsername(username);
+
+                return _paymentRepo.GetAllByPage(business.Id, page, search, orderBy);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+
+                throw;
+            }
+        }
+        public PaymentModel GetById(string username, int id)
+        {
+            try
+            {
+                var business = _business.GetSelectedByUsername(username);
+
+                return _paymentRepo.GetById(business.Id, id);
             }
             catch (Exception ex)
             {
@@ -107,12 +158,14 @@ namespace Paybook.BusinessLayer.Payment
         {
             try
             {
-                PaymentModel output = new PaymentModel { IsSucceeded = false };
+                var business = _business.GetSelectedByUsername(model.CreateBy);
 
+                model.BusinessId = business.Id;
+
+                var output = new PaymentModel();
                 int result = _paymentRepo.Create(model);
                 if (result > 0)
                 {
-
                     //Insert Into Activity Table
                     //ActivityBuilder activityBuilder = new ActivityBuilder();
                     //var activity = activityBuilder
@@ -145,8 +198,12 @@ namespace Paybook.BusinessLayer.Payment
                     //    InvoiceStatus_Core = sPaymentStatus_Core
                     //});
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("PTS501");
+                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.InsertSuccess);
+                    return output;
                 }
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.InsertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -160,14 +217,16 @@ namespace Paybook.BusinessLayer.Payment
         {
             try
             {
-                PaymentModel output = new PaymentModel { IsSucceeded = false };
+                var output = new PaymentModel();
                 int result = _paymentRepo.Update(model);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.UpdateSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.UpdateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -177,40 +236,53 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public PaymentModel Activate(int businessId, int id, bool active)
+        public PaymentModel Activate(string username, int id, bool active)
         {
             try
             {
-                PaymentModel output = new PaymentModel { IsSucceeded = false };
-                int result = _paymentRepo.Activate(businessId, id, active);
+                var business = _business.GetSelectedByUsername(username);
+
+                var output = new PaymentModel();
+                int result = _paymentRepo.Activate(business.Id, id, active);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    if (active == true)
+                        output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.ActivateSuccess);
+                    else
+                        output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.DeactivateSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteActivateFail");
+                output.IsSucceeded = false;
+                if (active == true)
+                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.ActivateFailure);
+                else
+                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.DeactivateFailure);
                 return output;
 
             }
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-
                 throw;
             }
         }
-        public PaymentModel Delete(int businessId, int id)
+        public PaymentModel Delete(string username, int id)
         {
             try
             {
-                PaymentModel output = new PaymentModel { IsSucceeded = false };
-                int result = _paymentRepo.Delete(businessId, id);
+                var business = _business.GetSelectedByUsername(username);
+
+                var output = new PaymentModel();
+                int result = _paymentRepo.Delete(business.Id, id);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.DeleteSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteDeleteFail");
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.DeleteFailure);
                 return output;
 
             }

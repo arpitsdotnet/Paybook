@@ -13,7 +13,7 @@ namespace Paybook.BusinessLayer.Common
 {
     public interface IActivityProcessor
     {
-        string Create(ActivityModel activityModel);
+        ActivityModel Create(ActivityModel activityModel);
         List<ActivityModel> GetAllByPage(int businessId, int page, string search, string orderBy);
     }
 
@@ -27,16 +27,22 @@ namespace Paybook.BusinessLayer.Common
             _logger = LoggerFactory.Instance;
             _activity = new ActivityRepository();
         }
-        public string Create(ActivityModel activityModel)
+        public ActivityModel Create(ActivityModel activityModel)
         {
             try
             {
+                var output = new ActivityModel();
                 int result = _activity.Create(activityModel);
                 if (result > 0)
                 {
-                    return XmlProcessor.ReadXmlFile("AGES104");
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Activity, MStatus.InsertSuccess);
+                    return output;
                 }
-                return string.Empty;
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Activity, MStatus.InsertFailure);
+                return output;
             }
             catch (Exception ex)
             {

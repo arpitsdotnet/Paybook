@@ -18,10 +18,10 @@ namespace Paybook.BusinessLayer.Setting
         CategoryMasterModel GetByCore(string username, string core);
         List<CategoryMasterModel> GetAllByPage(string username, int page, string search, string orderBy);
         CategoryMasterModel GetById(string username, int id);
-        string Create(CategoryMasterModel model);
-        string Update(CategoryMasterModel model);
-        string Activate(string username, int id, bool active);
-        string Delete(string username, int id);
+        CategoryMasterModel Create(CategoryMasterModel model);
+        CategoryMasterModel Update(CategoryMasterModel model);
+        CategoryMasterModel Activate(string username, int id, bool active);
+        CategoryMasterModel Delete(string username, int id);
     }
 
     public class CategoryProcessor : ICategoryProcessor
@@ -99,20 +99,26 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public string Create(CategoryMasterModel model)
+        public CategoryMasterModel Create(CategoryMasterModel model)
         {
             try
             {
-
                 var business = _business.GetSelectedByUsername(model.CreateBy);
 
+                var output = new CategoryMasterModel();
                 model.BusinessId = business.Id;
 
                 int result = _category.Create(model);
                 if (result > 0)
-                    return XmlProcessor.ReadXmlFile("BSS003");
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.CategoryMaster, MStatus.InsertSuccess);
+                    return output;
+                }
 
-                return string.Empty;
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.CategoryMaster, MStatus.InsertFailure);
+                return output;
             }
             catch (Exception ex)
             {
@@ -120,15 +126,22 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public string Update(CategoryMasterModel model)
+        public CategoryMasterModel Update(CategoryMasterModel model)
         {
             try
             {
+                var output = new CategoryMasterModel();
                 int result = _category.Update(model);
                 if (result > 0)
-                    return XmlProcessor.ReadXmlFile("BSS004");
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.CategoryMaster, MStatus.UpdateSuccess);
+                    return output;
+                }
 
-                return string.Empty;
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.CategoryMaster, MStatus.UpdateFailure);
+                return output;
             }
             catch (Exception ex)
             {
@@ -136,18 +149,31 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public string Activate(string username, int id, bool active)
+        public CategoryMasterModel Activate(string username, int id, bool active)
         {
             try
             {
 
                 var business = _business.GetSelectedByUsername(username);
 
+                var output = new CategoryMasterModel();
                 int result = _category.Activate(business.Id, id, active);
                 if (result > 0)
-                    return XmlProcessor.ReadXmlFile("BSS004");
+                {
+                    output.IsSucceeded = true;
+                    if (active)
+                        output.ReturnMessage = Messages.Get(MTypes.CategoryMaster, MStatus.ActivateSuccess);
+                    else
+                        output.ReturnMessage = Messages.Get(MTypes.CategoryMaster, MStatus.DeactivateSuccess);
+                    return output;
+                }
 
-                return string.Empty;
+                output.IsSucceeded = false;
+                if (active)
+                    output.ReturnMessage = Messages.Get(MTypes.CategoryMaster, MStatus.ActivateFailure);
+                else
+                    output.ReturnMessage = Messages.Get(MTypes.CategoryMaster, MStatus.DeactivateFailure);
+                return output;
             }
             catch (Exception ex)
             {
@@ -155,17 +181,24 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public string Delete(string username, int id)
+        public CategoryMasterModel Delete(string username, int id)
         {
             try
             {
                 var business = _business.GetSelectedByUsername(username);
 
+                var output = new CategoryMasterModel();
                 int result = _category.Delete(business.Id, id);
                 if (result > 0)
-                    return XmlProcessor.ReadXmlFile("BSS004");
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.CategoryMaster, MStatus.DeleteSuccess);
+                    return output;
+                }
 
-                return string.Empty;
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.CategoryMaster, MStatus.DeleteFailure);
+                return output;
             }
             catch (Exception ex)
             {

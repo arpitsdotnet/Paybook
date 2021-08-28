@@ -47,7 +47,7 @@ namespace Paybook.ServiceLayer.Models
         [Required]
         [Display(Name = "Client")]
         public int ClientId { get; set; }
-        public virtual ClientModel Clients { get; set; }
+        public virtual ClientModel Client { get; set; }
 
         [Required]
         [Display(Name = "Client's email")]
@@ -106,6 +106,9 @@ namespace Paybook.ServiceLayer.Models
         //[DataType(DataType.Currency,)]
         [Range(1, double.MaxValue, ErrorMessage = "The Total field cannot be 0 or negative.")]
         public decimal Total { get; set; }
+
+        [Display(Name = "Paid Total")]
+        public decimal PaidTotal { get; set; }
 
         public decimal TotalCalculate => Subtotal + TaxableTotal - DiscountTotal;
     }

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Messages> 
+  <Message>
+    <MsgText id="IsExists">Category type is already exists, please enter a different name.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="NotFound">We did not found the category type you are looking. Please try again.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="NoRowFound">We did not find any category type, please add a category type.</MsgText>
+  </Message>
+
+  <Message>
+    <MsgText id="InsertFailure">Category type has not been created due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdatedFailure">Category type has not been updated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateFailure">Category type has not been activated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateFailure">Category type has not been deactivated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteFailure">Category type has not been deleted due to following error.</MsgText>
+  </Message>
+  
+  
+  <Message>
+    <MsgText id="InsertSuccess">Category type has been successfully created.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateSuccess">Category type has been successfully updated.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateSuccess">Category type has been activated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateSuccess">Category type has been deactivated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteSuccess">Category type has been successfully deleted.</MsgText>
+  </Message>
+</Messages>

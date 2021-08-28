@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Messages> 
+  <Message>
+    <MsgText id="IsExists">Category is already exists, please enter a different name.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="NotFound">We did not found the category you are looking. Please try again.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="NoRowFound">We did not find any category, please add a category.</MsgText>
+  </Message>
+
+  <Message>
+    <MsgText id="InsertFailure">Category has not been created due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdatedFailure">Category has not been updated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateFailure">Category has not been activated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateFailure">Category has not been deactivated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteFailure">Category has not been deleted due to following error.</MsgText>
+  </Message>
+  
+  
+  <Message>
+    <MsgText id="InsertSuccess">Category has been successfully created.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateSuccess">Category has been successfully updated.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateSuccess">Category has been activated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateSuccess">Category has been deactivated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteSuccess">Category has been successfully deleted.</MsgText>
+  </Message>
+</Messages>

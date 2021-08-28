@@ -132,9 +132,19 @@
     <Build Include="dbo\Stored Procedures\sps_Clients_GetRemainingAmountById.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetInvoiceCountByDays.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetPaymentCountByDays.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetLast5Invoices.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Dashboard_GetLast5Payments.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Payments_GetAllByPage.sql" />
+    <Build Include="dbo\Stored Procedures\spi_Payments_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Payments_GetPaidAmountByInvoiceId.sql" />
+    <Build Include="dbo\Stored Procedures\sps_InvoiceServices_GetAllByInvoiceId.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Payments_GetAllByInvoiceId.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Invoices_GetCounters.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Invoices_GetAllByClientId.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Payments_GetAllByClientId.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Profile\Paybook.SqlStructureLayer.publish.xml" />
+    <None Include="Profile\Paybook.Sql.publish.xml" />
     <None Include="Profile\PaybookProduction.Sql.publish.xml" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
-﻿using Paybook.DatabaseLayer.Invoice;
+﻿using Paybook.BusinessLayer.Business;
+using Paybook.DatabaseLayer.Invoice;
 using Paybook.DatabaseLayer.Setting;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
@@ -11,7 +12,7 @@ namespace Paybook.BusinessLayer.Invoice
 {
     public interface IInvoiceServiceProcessor
     {
-        List<InvoiceServiceModel> GetAllByInvoiceId(int businessId, int invoiceId);
+        List<InvoiceServiceModel> GetAllByInvoiceId(string username, int invoiceId);
         InvoiceServiceModel GetById(int businessId, int id);
         bool IsExist(string businessId, int id);
     }
@@ -19,11 +20,13 @@ namespace Paybook.BusinessLayer.Invoice
     {
         private readonly ILogger _logger;
         private readonly IInvoiceServiceRepository _serviceRepo;
+        private readonly IBusinessProcessor _business;
 
         public InvoiceServiceProcessor()
         {
             _logger = LoggerFactory.Instance;
             _serviceRepo = new InvoiceServiceRepository();
+            _business = new BusinessProcessor();
         }
         public bool IsExist(string businessId, int id)
         {
@@ -39,11 +42,13 @@ namespace Paybook.BusinessLayer.Invoice
         }
 
 
-        public List<InvoiceServiceModel> GetAllByInvoiceId(int businessId, int invoiceId)
+        public List<InvoiceServiceModel> GetAllByInvoiceId(string username, int invoiceId)
         {
             try
             {
-                return _serviceRepo.GetAllByInvoiceId(businessId, invoiceId);
+                var business = _business.GetSelectedByUsername(username);
+
+                return _serviceRepo.GetAllByInvoiceId(business.Id, invoiceId);
             }
             catch (Exception ex)
             {
@@ -91,7 +96,7 @@ namespace Paybook.BusinessLayer.Invoice
         {
             try
             {
-                return _serviceRepo.Activate(businessId, id,active);
+                return _serviceRepo.Activate(businessId, id, active);
             }
             catch (Exception ex)
             {

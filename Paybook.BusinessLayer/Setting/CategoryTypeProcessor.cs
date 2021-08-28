@@ -71,7 +71,7 @@ namespace Paybook.BusinessLayer.Setting
         {
             try
             {
-                CategoryTypeMasterModel output = new CategoryTypeMasterModel { IsSucceeded = false };
+                CategoryTypeMasterModel output = new CategoryTypeMasterModel();
 
                 var business = _business.GetSelectedByUsername(model.CreateBy);
 
@@ -81,9 +81,12 @@ namespace Paybook.BusinessLayer.Setting
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.CategoryTypeMaster, MStatus.InsertSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.CategoryTypeMaster, MStatus.InsertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -102,9 +105,12 @@ namespace Paybook.BusinessLayer.Setting
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.CategoryTypeMaster, MStatus.UpdateSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.CategoryTypeMaster, MStatus.UpdateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -126,9 +132,18 @@ namespace Paybook.BusinessLayer.Setting
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    if (active)
+                        output.ReturnMessage = Messages.Get(MTypes.CategoryTypeMaster, MStatus.ActivateSuccess);
+                    else
+                        output.ReturnMessage = Messages.Get(MTypes.CategoryTypeMaster, MStatus.DeactivateSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteActivateFail");
+
+                output.IsSucceeded = false;
+                if (active)
+                    output.ReturnMessage = Messages.Get(MTypes.CategoryTypeMaster, MStatus.ActivateFailure);
+                else
+                    output.ReturnMessage = Messages.Get(MTypes.CategoryTypeMaster, MStatus.DeactivateFailure);
                 return output;
 
             }
@@ -151,9 +166,12 @@ namespace Paybook.BusinessLayer.Setting
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.CategoryTypeMaster, MStatus.DeleteSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteDeleteFail");
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.CategoryTypeMaster, MStatus.DeleteFailure);
                 return output;
 
             }

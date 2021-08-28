@@ -1,11 +1,7 @@
-﻿using Paybook.BusinessLayer.Agency;
-using Paybook.BusinessLayer.Business;
-using Paybook.BusinessLayer.Client;
+﻿using Paybook.BusinessLayer.Business;
 using Paybook.BusinessLayer.Common;
 using Paybook.BusinessLayer.Setting;
-using Paybook.DatabaseLayer;
 using Paybook.DatabaseLayer.Invoice;
-using Paybook.ServiceLayer;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
@@ -14,14 +10,14 @@ using Paybook.ServiceLayer.Xml;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 
 namespace Paybook.BusinessLayer.Invoice
 {
 
     public interface IInvoiceProcessor
     {
+        InvoiceCountersModel GetAllCounters(string username);
+        List<InvoiceModel> GetAllByClientId(string username, int clientId);
         string Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID);
         string Activity_Insert_Overdue(string sCreatedBY, string sStatus_Core);
         InvoiceModel CreateWithServices(InvoiceModel invoice, List<InvoiceServiceModel> services);
@@ -55,6 +51,36 @@ namespace Paybook.BusinessLayer.Invoice
             _category = new CategoryProcessor();
         }
 
+        public InvoiceCountersModel GetAllCounters(string username)
+        {
+            try
+            {
+                var business = _business.GetSelectedByUsername(username);
+
+                return _invoiceRepo.GetAllCounters(business.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+
+                throw;
+            }
+        }
+        public List<InvoiceModel> GetAllByClientId(string username, int clientId)
+        {
+            try
+            {
+                var business = _business.GetSelectedByUsername(username);
+
+                return _invoiceRepo.GetAllByClientId(business.Id, clientId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+
+                throw;
+            }
+        }
         public string Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID)
         {
             try
@@ -62,7 +88,7 @@ namespace Paybook.BusinessLayer.Invoice
                 bool result = _invoiceRepo.Invoices_Update_CloseStatus(sParticular, sCreatedBY, sCategory_Core, sStatus_Core, sReason, sCustomer_ID);
                 if (result)
                 {
-                    return XmlProcessor.ReadXmlFile("INS303");
+                    return Messages.Get(MTypes.Invoice, MStatus.UpdateSuccess);
                 }
                 return string.Empty;
             }
@@ -112,7 +138,7 @@ namespace Paybook.BusinessLayer.Invoice
 
                         ActivityBuilder activity = new ActivityBuilder()
                             .AddHeader(model.StatusCategoryMaster.Name, model.InvoiceDate.ToShortDateString(), statusClass)
-                            .AddBody("Invoice", model.InvoiceNumber, model.Clients.Name, model.StatusCategoryMaster.Name, model.Total.ToString());
+                            .AddBody("Invoice", model.InvoiceNumber, model.Client.Name, model.StatusCategoryMaster.Name, model.Total.ToString());
 
                         var activityModel = new ActivityModel
                         {
@@ -128,7 +154,7 @@ namespace Paybook.BusinessLayer.Invoice
                     }
                 }
 
-                return XmlProcessor.ReadXmlFile("");
+                return Messages.Get(MTypes.Invoice, MStatus.InsertFailure);
             }
             catch (Exception ex)
             {
@@ -156,7 +182,7 @@ namespace Paybook.BusinessLayer.Invoice
         {
             try
             {
-                var output = new InvoiceModel { IsSucceeded = false };
+                var output = new InvoiceModel();
 
                 var business = _business.GetSelectedByUsername(invoice.CreateBy);
 
@@ -165,21 +191,21 @@ namespace Paybook.BusinessLayer.Invoice
                 invoice.BusinessId = business.Id;
                 invoice.StatusId = status.Id;
 
-                foreach(var item in services)
+                foreach (var item in services)
                 {
                     item.BusinessId = business.Id;
                 }
 
                 int result = _invoiceRepo.CreateWithServices(invoice, services);
-                if (result == 0)
+                if (result > 0)
                 {
-                    output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.InsertSuccess);
                     return output;
                 }
 
-                output.IsSucceeded = true;
-                output.ReturnMessage = "Invoice has been created successfully.";// XmlProcessor.ReadXmlFile("INS302");
-
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.InsertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -231,15 +257,15 @@ namespace Paybook.BusinessLayer.Invoice
                 model.BusinessId = business.Id;
 
                 int result = _invoiceRepo.Create(model);
-                if (result == 0)
+                if (result > 0)
                 {
-                    output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.InsertSuccess);
                     return output;
                 }
 
-                output.IsSucceeded = true;
-                output.ReturnMessage = "Invoice has been created successfully.";// XmlProcessor.ReadXmlFile("INS302");
-
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.InsertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -254,15 +280,15 @@ namespace Paybook.BusinessLayer.Invoice
             {
                 var output = new InvoiceModel { IsSucceeded = false };
                 int result = _invoiceRepo.Update(model);
-                if (result == 0)
+                if (result > 0)
                 {
-                    output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.UpdateSuccess);
                     return output;
                 }
 
-                output.IsSucceeded = true;
-                output.ReturnMessage = "Invoice has been updated successfully.";// XmlProcessor.ReadXmlFile("INS302");
-
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.UpdateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -275,20 +301,25 @@ namespace Paybook.BusinessLayer.Invoice
         {
             try
             {
-                var output = new InvoiceModel { IsSucceeded = false };
-
                 var business = _business.GetSelectedByUsername(username);
 
+                var output = new InvoiceModel();
                 int result = _invoiceRepo.Activate(business.Id, id, active);
-                if (result == 0)
+                if (result > 0)
                 {
-                    output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
+                    output.IsSucceeded = true;
+                    if (active)
+                        output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.ActivateSuccess);
+                    else
+                        output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.DeactivateSuccess);
                     return output;
                 }
 
-                output.IsSucceeded = true;
-                output.ReturnMessage = "Invoice has been activated/deactivated successfully.";// XmlProcessor.ReadXmlFile("INS302");
-
+                output.IsSucceeded = false;
+                if (active)
+                    output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.ActivateFailure);
+                else
+                    output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.DeactivateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -301,20 +332,19 @@ namespace Paybook.BusinessLayer.Invoice
         {
             try
             {
-                var output = new InvoiceModel { IsSucceeded = false };
-
                 var business = _business.GetSelectedByUsername(username);
 
+                var output = new InvoiceModel();
                 int result = _invoiceRepo.Delete(business.Id, id);
-                if (result == 0)
+                if (result > 0)
                 {
-                    output.ReturnMessage = "Current request failed due to technical issue, please try again.";// XmlProcessor.ReadXmlFile("OTW901");
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.DeleteSuccess);
                     return output;
                 }
 
-                output.IsSucceeded = true;
-                output.ReturnMessage = "Invoice has been deleted successfully.";// XmlProcessor.ReadXmlFile("INS302");
-
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.DeleteFailure);
                 return output;
             }
             catch (Exception ex)

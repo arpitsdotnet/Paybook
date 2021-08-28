@@ -14,6 +14,8 @@ namespace Paybook.DatabaseLayer.Invoice
 {
     public interface IInvoiceRepository : IBaseRepository<InvoiceModel>
     {
+        InvoiceCountersModel GetAllCounters(int businessId);
+        List<InvoiceModel> GetAllByClientId(int businessId, int clientId);
         bool Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID);
         bool Invoices_Update_OverdueStatus(string sInvoice_ID, string sCategory_Core, string sStatus_Core);
         bool CreateInvoiceActivity(string sCreatedBY, string sStatus_Core);
@@ -32,6 +34,40 @@ namespace Paybook.DatabaseLayer.Invoice
             _logger = LoggerFactory.Instance;
             _dbContext = DbContextFactory.Instance;
             _activityRepo = new ActivityRepository();
+        }
+
+        public InvoiceCountersModel GetAllCounters(int businessId)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId };
+
+                var result = _dbContext.LoadData<InvoiceCountersModel, dynamic>("sps_Invoices_GetCounters", p);
+
+                return result.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
+
+        public List<InvoiceModel> GetAllByClientId(int businessId, int clientId)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, ClientId = clientId };
+
+                var result = _dbContext.LoadData<InvoiceModel, dynamic>("sps_Invoices_GetAllByClientId", p);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
         }
 
         //public static clsInvoices[] Invoice_SelectParticular()

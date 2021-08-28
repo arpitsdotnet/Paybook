@@ -2,12 +2,12 @@
 
 @if (Model != null && Model.Count() > 0)
 {
-    <div class="" style="background-color:white;overflow:auto;">
+    <div style="background-color:white;overflow:auto;">
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
                     <th class="text-right">
-                        @Html.DisplayNameFor(model => model.OrderBy)
+                        #
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Name)
@@ -30,7 +30,7 @@
                     <th class="text-right">
                         Tax
                     </th>
-                    <th>Action</th>
+                    <th class="text-right">Action</th>
                 </tr>
             </thead>
             @foreach (var item in Model)
@@ -52,16 +52,16 @@
                         @Html.DisplayFor(modelItem => item.Qty)
                     </td>
                     <td class="text-right">
-                        @Html.DisplayFor(modelItem => item.Rate)
+                        ₹ @Html.DisplayFor(modelItem => item.Rate)
                     </td>
                     <td class="text-right">
-                        @Html.DisplayFor(modelItem => item.Subtotal)
+                        ₹ @Html.DisplayFor(modelItem => item.Subtotal)
                     </td>
                     <td class="text-right">
-                        @Html.DisplayFor(modelItem => item.TaxableTotal)
+                        ₹ @Html.DisplayFor(modelItem => item.TaxableTotal)
                     </td>
-                    <td>
-                        @Html.ActionLink("Delete", "Delete", "InvoiceService", new { area = "Chief", id = item.OrderBy }, new { })
+                    <td class="text-right">
+                        <button type="button" class="btn btn-danger btn-xs" title="Delete Product/Service" onclick="window.location.href='@Url.Action("Delete","InvoiceService", new { area = "Chief", id = item.OrderBy })';"><i class="glyphicon glyphicon-trash"></i></button>
                     </td>
                 </tr>
             }

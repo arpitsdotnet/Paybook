@@ -58,7 +58,7 @@
                                 <li><a href="@Url.Action("Create", "Invoice", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Invoice</a></li>
                                 <li class="divider"></li>
                                 <li><a href="@Url.Action("Index", "Payment", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Payment List</a></li>
-                                <li><a href="@Url.Action("Create", "Payment", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Payment</a></li>
+                                <li><a href="@Url.Action("Create", "Payment", new { area = "Chief" })" class="hide"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Payment</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -68,7 +68,6 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="@Url.Action("Index", "Note", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Note List</a></li>
                                 <li><a href="@Url.Action("Create", "Note", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Note</a></li>
-                                <li class="divider"></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -76,9 +75,6 @@
                                 <i class="glyphicon glyphicon-cog"></i>&nbsp; Settings <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="@Url.Action("Index", "Business", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Business List</a></li>
-                                <li><a href="@Url.Action("Create", "Business", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Business</a></li>
-                                <li class="divider"></li>
                                 <li><a href="@Url.Action("Index", "CategoryType", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Category Type List</a></li>
                                 <li><a href="@Url.Action("Index", "Category", new { area = "Chief" })"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Category List</a></li>
                             </ul>
@@ -155,9 +151,13 @@
 
             $("ul.nav li a[href]").each(function () {
                 $(this).parent().removeClass("active");
+
                 if (this.href == window.location.href) {
                     $(this).parent().parent().parent().addClass("active");
                     $(this).parent().addClass("active");
+                }
+                else if (window.location.href.includes(this.href)) {
+                    $(this).parent().parent().parent().addClass("active");
                 }
             });
             startTime();

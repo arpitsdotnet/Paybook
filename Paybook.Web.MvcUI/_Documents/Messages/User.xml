@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Messages> 
+  <Message>
+    <MsgText id="IsExists">User is already exists, please enter a different name.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="NotFound">We did not found the user you are looking. Please try again.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="NoRowFound">We did not find any user, please add an user.</MsgText>
+  </Message>
+
+  <Message>
+    <MsgText id="InsertFailure">User has not been created due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdatedFailure">User has not been updated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateFailure">User has not been activated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateFailure">User has not been deactivated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteFailure">User has not been deleted due to following error.</MsgText>
+  </Message>
+  
+  
+  <Message>
+    <MsgText id="InsertSuccess">User has been successfully created.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateSuccess">User has been successfully updated.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateSuccess">User has been activated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateSuccess">User has been deactivated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteSuccess">User has been successfully deleted.</MsgText>
+  </Message>
+</Messages>

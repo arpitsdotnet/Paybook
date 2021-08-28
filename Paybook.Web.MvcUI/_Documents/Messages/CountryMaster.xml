@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Messages> 
+  <Message>
+    <MsgText id="IsExists">Country is already exists, please enter a different name.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="NotFound">We did not found the country you are looking. Please try again.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="NoRowFound">We did not find any country, please add a country.</MsgText>
+  </Message>
+
+  <Message>
+    <MsgText id="InsertFailure">Country has not been created due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdatedFailure">Country has not been updated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateFailure">Country has not been activated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateFailure">Country has not been deactivated due to following error.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteFailure">Country has not been deleted due to following error.</MsgText>
+  </Message>
+  
+  
+  <Message>
+    <MsgText id="InsertSuccess">Country has been successfully created.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateSuccess">Country has been successfully updated.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateActivateSuccess">Country has been activated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="UpdateDeactivateSuccess">Country has been deactivated successfully.</MsgText>
+  </Message>
+  <Message>
+    <MsgText id="DeleteSuccess">Country has been successfully deleted.</MsgText>
+  </Message>
+</Messages>

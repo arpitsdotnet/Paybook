@@ -77,9 +77,11 @@ namespace Paybook.BusinessLayer.Identity
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.User, MStatus.InsertSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.User, MStatus.InsertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -98,9 +100,12 @@ namespace Paybook.BusinessLayer.Identity
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.User, MStatus.UpdateSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteUpdateFail");
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.User, MStatus.UpdateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -119,9 +124,18 @@ namespace Paybook.BusinessLayer.Identity
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    if (active)
+                        output.ReturnMessage = Messages.Get(MTypes.User, MStatus.ActivateSuccess);
+                    else
+                        output.ReturnMessage = Messages.Get(MTypes.User, MStatus.DeactivateSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteActivateFail");
+
+                output.IsSucceeded = false;
+                if (active)
+                    output.ReturnMessage = Messages.Get(MTypes.User, MStatus.ActivateFailure);
+                else
+                    output.ReturnMessage = Messages.Get(MTypes.User, MStatus.DeactivateFailure);
                 return output;
 
             }
@@ -141,9 +155,12 @@ namespace Paybook.BusinessLayer.Identity
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = XmlProcessor.ReadXmlFile("NDS902");
+                    output.ReturnMessage = Messages.Get(MTypes.User, MStatus.DeleteSuccess);
+                    return output;
                 }
-                output.ReturnMessage = XmlProcessor.ReadXmlFile("NoteDeleteFail");
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.User, MStatus.DeleteFailure);
                 return output;
 
             }
