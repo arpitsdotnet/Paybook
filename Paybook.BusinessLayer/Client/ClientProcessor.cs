@@ -14,7 +14,7 @@ namespace Paybook.BusinessLayer.Client
 {
     public interface IClientProcessor
     {
-        string IsExist(string createBy, string clientName);
+        bool IsExist(string createBy, string clientName);
         int GetCount(string username);
         ClientModel[] GetAllByText(string SearchText);
         ClientModel[] GetAllNamesByAgencyID(string sAgency_ID);
@@ -43,16 +43,11 @@ namespace Paybook.BusinessLayer.Client
             _businessRepo = new BusinessRepository();
         }
 
-        public string IsExist(string createBy, string clientName)
+        public bool IsExist(string createBy, string clientName)
         {
             try
             {
-                bool result = _clientRepo.IsExist(createBy, clientName);
-                if (result)
-                {
-                    return XmlProcessor.ReadXmlFile("CUW110");
-                }
-                return string.Empty;
+                return _clientRepo.IsExist(createBy, clientName);
             }
             catch (Exception ex)
             {
@@ -168,10 +163,11 @@ namespace Paybook.BusinessLayer.Client
             {
                 var output = new ClientModel { IsSucceeded = false };
 
-                string returnMessage = IsExist(model.CreateBy, model.Name);
-                if (!string.IsNullOrEmpty(returnMessage))
+                bool resultIsExists = IsExist(model.CreateBy, model.Name);
+                if (resultIsExists)
                 {
-                    output.ReturnMessage = "Client name already exist, please enter a new name";
+                    output.IsSucceeded = false;
+                    output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.IsExists);
                     return output;
                 }
                 var business = _businessRepo.GetSelectedByUsername(model.CreateBy);
@@ -179,14 +175,15 @@ namespace Paybook.BusinessLayer.Client
                 model.BusinessId = business.Id;
 
                 int result = _clientRepo.Create(model);
-                if (result == 0)
+                if (result > 0)
                 {
-                    output.ReturnMessage = "Current request failed due to technical issue, please try again later.";
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.InsertSuccess);
                     return output;
                 }
 
-                output.IsSucceeded = true;
-                output.ReturnMessage = "Client has been created successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.InsertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -206,15 +203,15 @@ namespace Paybook.BusinessLayer.Client
                 model.BusinessId = business.Id;
 
                 int result = _clientRepo.Update(model);
-                if (result == 0)
+                if (result > 0)
                 {
-                    output.ReturnMessage = "Current request failed due to technical issue, please try again later.";
-                    //return XmlProcessor.ReadXmlFile("CUS104");
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.UpdateSuccess);
                     return output;
                 }
 
-                output.IsSucceeded = true;
-                output.ReturnMessage = "Client has been updated successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.UpdateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -234,13 +231,19 @@ namespace Paybook.BusinessLayer.Client
                 int result = _clientRepo.Activate(business.Id, id, active);
                 if (result > 0)
                 {
-                    output.ReturnMessage = "Current request failed due to technical issue, please try again later.";
-                    //return XmlProcessor.ReadXmlFile("CUS104");
+                    output.IsSucceeded = true;
+                    if (active)
+                        output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.ActivateSuccess);
+                    else
+                        output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.DeactivateSuccess);
                     return output;
                 }
 
-                output.IsSucceeded = true;
-                output.ReturnMessage = "Client has been activated/deactivated successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                output.IsSucceeded = false;
+                if (active)
+                    output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.ActivateFailure);
+                else
+                    output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.DeactivateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -260,13 +263,13 @@ namespace Paybook.BusinessLayer.Client
                 int result = _clientRepo.Delete(business.Id, id);
                 if (result > 0)
                 {
-                    output.ReturnMessage = "Current request failed due to technical issue, please try again later.";
-                    //return XmlProcessor.ReadXmlFile("CUS104");
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.DeleteSuccess);
                     return output;
                 }
 
-                output.IsSucceeded = true;
-                output.ReturnMessage = "Client has been deleted successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.DeleteFailure);
                 return output;
             }
             catch (Exception ex)

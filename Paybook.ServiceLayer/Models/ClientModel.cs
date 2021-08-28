@@ -15,12 +15,14 @@ namespace Paybook.ServiceLayer.Models
         public bool IsActive { get; set; }
 
         [Display(Name = "Create date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MMM/yyyy}")]
         public DateTime? CreateDate { get; set; }
 
         [Display(Name = "Create by")]
         public string CreateBy { get; set; }
 
         [Display(Name = "Modify date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MMM/yyyy}")]
         public DateTime? ModifyDate { get; set; }
 
         [Display(Name = "Modify by")]
@@ -40,6 +42,7 @@ namespace Paybook.ServiceLayer.Models
         public string PhoneNumber2 { get; set; }
 
         [Required]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
 

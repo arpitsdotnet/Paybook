@@ -11,16 +11,16 @@ namespace Paybook.DatabaseLayer.Common
     public interface IDashboardRepository
     {
         DashboardCountersModel GetAllCounters(int businessId);
-        List<DashboardChartModel> GetClientCountByDays(int businessId, int days = 7);
-        List<DashboardChartModel> GetInvoiceCountAndAmountByDays(int businessId, int days = 7);
-        List<DashboardChartModel> GetPaymentCountAndAmountByDays(int businessId, int days = 7);
-        List<DashboardChartModel> GetPaymentAmountByLast10(int businessId);
+        List<DashboardChartModel> GetClientCounterByDays(int businessId, int days = 7);
+        List<DashboardChartModel> GetInvoiceCountAndTotalByDays(int businessId, int days = 7);
+        List<DashboardChartModel> GetPaymentCountAndTotalByDays(int businessId, int days = 7);
+        List<DashboardChartModel> GetPaymentTotalByLast10(int businessId);
 
-        [Obsolete]
-        DataTable Invoices_SelectCount();
+        int GetInvoiceCountByDays(int businessId, int days = 7);
+        int GetPaymentCountByDays(int businessId, int days = 7);
 
-        [Obsolete]
-        DataTable Payments_SelectCount();
+        List<InvoiceModel> GetLast5Invoices(int businessId);
+        List<PaymentModel> GetLast5Payments(int businessId);
     }
 
     public class DashboardRepository : IDashboardRepository
@@ -50,7 +50,7 @@ namespace Paybook.DatabaseLayer.Common
                 throw;
             }
         }
-        public List<DashboardChartModel> GetClientCountByDays(int businessId, int days = 7)
+        public List<DashboardChartModel> GetClientCounterByDays(int businessId, int days = 7)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace Paybook.DatabaseLayer.Common
                 throw;
             }
         }
-        public List<DashboardChartModel> GetInvoiceCountAndAmountByDays(int businessId, int days = 7)
+        public List<DashboardChartModel> GetInvoiceCountAndTotalByDays(int businessId, int days = 7)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace Paybook.DatabaseLayer.Common
                 throw;
             }
         }
-        public List<DashboardChartModel> GetPaymentCountAndAmountByDays(int businessId, int days = 7)
+        public List<DashboardChartModel> GetPaymentCountAndTotalByDays(int businessId, int days = 7)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace Paybook.DatabaseLayer.Common
                 throw;
             }
         }
-        public List<DashboardChartModel> GetPaymentAmountByLast10(int businessId)
+        public List<DashboardChartModel> GetPaymentTotalByLast10(int businessId)
         {
             try
             {
@@ -118,11 +118,14 @@ namespace Paybook.DatabaseLayer.Common
                 throw;
             }
         }
-        public DataTable Invoices_SelectCount()
+        public int GetInvoiceCountByDays(int businessId, int days = 7)
         {
             try
             {
-                return new DataTable();// _dbContext.LoadDataByProcedure("sps_Invoices_SelectCount", null);
+                var p = new { BusinessId = businessId, Days = days };
+                var result = _dbContext.LoadData<int, dynamic>("sps_Dashboard_GetInvoiceCountByDays", p);
+
+                return result.FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -131,11 +134,47 @@ namespace Paybook.DatabaseLayer.Common
                 throw;
             }
         }
-        public DataTable Payments_SelectCount()
+        public int GetPaymentCountByDays(int businessId, int days = 7)
         {
             try
             {
-                return new DataTable();//_dbContext.LoadDataByProcedure("sps_Payments_SelectCount", null);
+                var p = new { BusinessId = businessId, Days = days };
+                var result = _dbContext.LoadData<int, dynamic>("sps_Dashboard_GetPaymentCountByDays", p);
+
+                return result.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+
+                throw;
+            }
+        }
+
+        public List<InvoiceModel> GetLast5Invoices(int businessId)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId};
+                var result = _dbContext.LoadData<InvoiceModel, dynamic>("sps_Dashboard_GetLast5Invoices", p);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+
+                throw;
+            }
+        }
+        public List<PaymentModel> GetLast5Payments(int businessId)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId };
+                var result = _dbContext.LoadData<PaymentModel, dynamic>("sps_Dashboard_GetLast5Payments", p);
+
+                return result;
             }
             catch (Exception ex)
             {

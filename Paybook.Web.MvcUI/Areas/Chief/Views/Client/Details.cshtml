@@ -1,0 +1,79 @@
+﻿@model Paybook.Web.MvcUI.Models.ViewModels.ClientViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="row bg-default container-fluid">
+    <div class="col-lg-6 col-md-6">
+        <h4 class="bold"><i class="glyphicon glyphicon-user"></i>&nbsp; @Model.Client.Name</h4>
+    </div>
+    <div class="col-lg-6 col-md-6 text-right">
+        <div class="btn-group pt-3">
+            <a href="@Url.Action("Index")" class="btn btn-default text-primary"><i class="glyphicon glyphicon-repeat"></i>&nbsp; BACK</a>
+            @*<button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok-sign"></i>&nbsp; SAVE</button>*@
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 pt-5">
+            <div class="medium pt-5">
+                @if (!string.IsNullOrEmpty(Model.Client.PhoneNumber1))
+                {
+                    <span><i class="glyphicon glyphicon-phone-alt"></i> &nbsp; @Model.Client.PhoneNumber1 &nbsp; <i class="glyphicon glyphicon-option-vertical"></i> &nbsp;</span>
+                }
+                @if (!string.IsNullOrEmpty(Model.Client.PhoneNumber2))
+                {
+                    <span><i class="glyphicon glyphicon-phone"></i> &nbsp; @Model.Client.PhoneNumber2 &nbsp; <i class="glyphicon glyphicon-option-vertical"></i> &nbsp;</span>
+                }
+                @if (!string.IsNullOrEmpty(Model.Client.Email))
+                {
+                    <span><i class="glyphicon glyphicon-envelope"></i> &nbsp; @Model.Client.Email</span>
+                }
+            </div>
+            <div class="medium pt-5">
+                @if (!string.IsNullOrEmpty(Model.Client.AgencyName))
+                {
+                    <span><i class="glyphicon glyphicon-briefcase"></i> &nbsp; @Model.Client.AgencyName &nbsp; <i class="glyphicon glyphicon-option-vertical"></i> &nbsp;</span>
+                }
+                <span><i class="glyphicon glyphicon-map-marker"></i> &nbsp; @Model.Client.AddressLine1, @Model.Client.AddressLine2, @Model.Client.City, @Model.Client.StateMaster.Name, @Model.Client.CountryMaster.Name (@Model.Client.Pincode)</span>
+            </div>
+        </div>
+        <div class="col-lg-offset-2 col-lg-2 col-xs-12 pt-5">
+            <blockquote class="warning">
+                <div class="large">₹ 0.00</div>
+                <div class="small">OPEN</div>
+            </blockquote>
+        </div>
+        <div class="col-lg-2 col-xs-12 pt-5">
+            <blockquote class="danger">
+                <div class="large">₹ 0.00</div>
+                <div class="small">OVERDUE</div>
+            </blockquote>
+        </div>
+        <div class="col-lg-offset-10 col-lg-2 col-xs-12 pt-5">
+            <blockquote class="success">
+                <div class="large">₹ 0.00</div>
+                <div class="small">PAYMENT</div>
+            </blockquote>
+        </div>
+    </div>
+
+    <div class="row">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#invoices" data-toggle="tab" aria-expanded="true">Invoices</a></li>
+            <li class=""><a href="#payments" data-toggle="tab" aria-expanded="false">Payments</a></li>
+        </ul>
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active in" id="invoices">
+                @Html.Partial("_ClientInvoicesTablePartial", Model.Invoices)
+            </div>
+            <div class="tab-pane fade" id="payments">
+                @Html.Partial("_ClientPaymentsTablePartial", Model.Payments)
+            </div>
+        </div>
+    </div>
+</div>

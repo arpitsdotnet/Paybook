@@ -1,5 +1,7 @@
 ﻿using Paybook.BusinessLayer.Client;
 using Paybook.BusinessLayer.Identity;
+using Paybook.BusinessLayer.Invoice;
+using Paybook.BusinessLayer.Payment;
 using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Logger;
@@ -18,12 +20,23 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
     public class ClientController : Controller
     {
         private readonly IClientProcessor _client;
+        private readonly IInvoiceProcessor _invoice;
+        private readonly IPaymentProcessor _payment;
+        private readonly ICategoryProcessor _category;
         private readonly ICountryProcessor _country;
         private readonly IStateProcessor _state;
 
-        public ClientController(IClientProcessor client, ICountryProcessor country, IStateProcessor state)
+        public ClientController(IClientProcessor client,
+                                    IInvoiceProcessor invoice,
+                                    IPaymentProcessor payment,
+                                    ICategoryProcessor category,
+                                    ICountryProcessor country,
+                                    IStateProcessor state)
         {
             _client = client;
+            _invoice = invoice;
+            _payment = payment;
+            _category = category;
             _country = country;
             _state = state;
         }
@@ -34,6 +47,30 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             List<ClientModel> model = _client.GetAllByPage(User.Identity.Name, 0, "", "");
 
             return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult Details(int id)
+        {
+            var client = _client.GetById(User.Identity.Name, id);
+            client.StateMaster = _state.GetById(client.StateId);
+            client.CountryMaster = _country.GetById(client.CountryId);
+
+            var invoices = _invoice.GetAllByClientId(User.Identity.Name, id);
+            foreach (var item in invoices)
+            {
+                item.StatusCategoryMaster = _category.GetById(User.Identity.Name, item.StatusId);
+            }
+            var payments = _payment.GetAllByClientId(User.Identity.Name, id);
+
+            var clientVM = new ClientViewModel
+            {
+                Client = client,
+                Invoices = invoices,
+                Payments = payments
+            };
+
+            return View(clientVM);
         }
 
         [HttpGet]
