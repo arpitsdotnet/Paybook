@@ -1,4 +1,5 @@
 ﻿using Paybook.BusinessLayer.Business;
+using Paybook.BusinessLayer.Client;
 using Paybook.BusinessLayer.Common;
 using Paybook.BusinessLayer.Identity;
 using Paybook.BusinessLayer.Setting;
@@ -23,14 +24,24 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         private readonly IDashboardProcessor _dashboard;
         private readonly IBusinessProcessor _business;
         private readonly IUserProcessor _user;
+        private readonly IClientProcessor _client;
+        private readonly ICategoryProcessor _category;
         private readonly ICountryProcessor _country;
         private readonly IStateProcessor _state;
 
-        public BusinessController(IDashboardProcessor dashboard, IBusinessProcessor business, IUserProcessor user, ICountryProcessor country, IStateProcessor state)
+        public BusinessController(IDashboardProcessor dashboard,
+                                    IBusinessProcessor business,
+                                    IUserProcessor user,
+                                    IClientProcessor client,
+                                    ICategoryProcessor category,
+                                    ICountryProcessor country,
+                                    IStateProcessor state)
         {
             _dashboard = dashboard;
             _business = business;
             _user = user;
+            _client = client;
+            _category = category;
             _country = country;
             _state = state;
         }
@@ -38,14 +49,18 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Dashboard()
         {
+            BusinessModel business = _business.GetSelectedByUsername(User.Identity.Name);
+
             DashboardCountersModel model = _dashboard.GetAllCounters(User.Identity.Name);
 
             DashboardViewModel dashboardVM = new DashboardViewModel
             {
+                Business = business,
+
                 CounterInvoicesOpen = new DashboardCounterWidgetModel
                 {
                     BgColorClass = "fwt-blue-grey",
-                    BgColorHoverClass = "fwt-hover-grey",
+                    BgColorHoverClass = "fwt-hover-black",
                     RsSymbolColor = "color: #4d5f68;",
                     CountText = "Open Invoices",
                     Count = model.CountTotalOpenInvoice,
@@ -54,7 +69,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 CounterInvoicesOpenLastWeek = new DashboardCounterWidgetModel
                 {
                     BgColorClass = "fwt-deep-purple",
-                    BgColorHoverClass = "fwt-hover-grey",
+                    BgColorHoverClass = "fwt-hover-black",
                     RsSymbolColor = "color: #562f9A;",
                     CountText = "Open Invoices (Week)",
                     Count = model.CountLastWeekOpenInvoice,
@@ -63,7 +78,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 CounterInvoicesOverdue = new DashboardCounterWidgetModel
                 {
                     BgColorClass = "fwt-red",
-                    BgColorHoverClass = "fwt-hover-grey",
+                    BgColorHoverClass = "fwt-hover-black",
                     RsSymbolColor = "color: #bd4339;",
                     CountText = "Overdues",
                     Count = model.CountOfOverdue,
@@ -72,7 +87,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 CounterPaymentPaidPartial = new DashboardCounterWidgetModel
                 {
                     BgColorClass = "fwt-teal",
-                    BgColorHoverClass = "fwt-hover-grey",
+                    BgColorHoverClass = "fwt-hover-black",
                     RsSymbolColor = "color: #007469;",
                     CountText = "Payments (Month)",
                     Count = model.CountOfPaidPartial,
@@ -81,7 +96,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 CounterPaymentPaidLastMonth = new DashboardCounterWidgetModel
                 {
                     BgColorClass = "fwt-blue",
-                    BgColorHoverClass = "fwt-hover-grey",
+                    BgColorHoverClass = "fwt-hover-black",
                     RsSymbolColor = "color: #1b76be;",
                     CountText = "Paid Invoice (Month)",
                     Count = model.CountOfPaidAmount,
@@ -90,7 +105,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 CounterPaymentTotal = new DashboardCounterWidgetModel
                 {
                     BgColorClass = "fwt-green",
-                    BgColorHoverClass = "fwt-hover-grey",
+                    BgColorHoverClass = "fwt-hover-black",
                     RsSymbolColor = "color: #2d8630;",
                     CountText = "Total Revenue",
                     Count = model.CountOfPaymentTotal,
@@ -218,26 +233,43 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet, AllowAnonymous]
         public ActionResult GetInvoiceAmountsAndPaymentsByLastWeek(string username)
         {
-            IDashboardProcessor dashboard = new DashboardProcessor();
-            List<DashboardInvoiceChartModel> model = dashboard.GetInvoiceAmountsAndPaymentsByDays(username, 7);
+            List<DashboardInvoiceChartModel> model = _dashboard.GetInvoiceAmountsAndPaymentsByDays(username, 7);
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet, AllowAnonymous]
         public ActionResult GetPaymentsLast10(string username)
         {
-            IDashboardProcessor dashboard = new DashboardProcessor();
-            List<DashboardInvoiceChartModel> model = dashboard.GetPaymentsLast10(username);
+            List<DashboardInvoiceChartModel> model = _dashboard.GetPaymentsLast10(username);
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet,AllowAnonymous]
+        [HttpGet, AllowAnonymous]
         public ActionResult GetClientCountByLastWeek(string username)
         {
-            IDashboardProcessor dashboard = new DashboardProcessor();
-            List<DashboardClientChartModel> model = dashboard.GetClientCountByDays(username);
+            List<DashboardClientChartModel> model = _dashboard.GetClientCountByDays(username);
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet, AllowAnonymous]
+        public ActionResult GetLast5Invoices(string username)
+        {
+            List<InvoiceModel> model = _dashboard.GetLast5Invoices(username);
+            foreach (var item in model)
+            {
+                item.Client = _client.GetById(username, item.ClientId);
+                item.StatusCategoryMaster = _category.GetById(username, item.StatusId);
+            }
+            return PartialView("_DashboardInvoiceTablePartial", model);
+        }
+
+        [HttpGet, AllowAnonymous]
+        public ActionResult GetLast5Payments(string username)
+        {
+            List<PaymentModel> model = _dashboard.GetLast5Payments(username);
+            return PartialView("_DashboardPaymentTablePartial", model);
+        }
+
 
 
         [NonAction]

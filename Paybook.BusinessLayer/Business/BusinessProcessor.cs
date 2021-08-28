@@ -93,23 +93,26 @@ namespace Paybook.BusinessLayer.Business
         {
             try
             {
-                var output = new BusinessModel { IsSucceeded = false };
+                var output = new BusinessModel();
 
                 bool isExist = IsExist(model.CreateBy, model.Name);
                 if (isExist)
                 {
-                    output.ReturnMessage = "Business name already exist, please enter a new name";
-                    return output;
-                }
-                int result = _businessRepo.Create(model);
-                if (result == 0)
-                {
-                    output.ReturnMessage = "Current request failed due to technical issue, please try again later.";
+                    output.IsSucceeded = false;
+                    output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.IsExists);
                     return output;
                 }
 
-                output.IsSucceeded = true;
-                output.ReturnMessage = "Business has been created successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                int result = _businessRepo.Create(model);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.InsertSuccess);
+                    return output;
+                }
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.InsertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -122,13 +125,17 @@ namespace Paybook.BusinessLayer.Business
         {
             try
             {
-                var output = new BusinessModel { IsSucceeded = false, ReturnMessage = "Current request failed due to technical issue, please try again later." };
+                var output = new BusinessModel();
                 int result = _businessRepo.Update(model);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = "Business has been updated successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                    output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.UpdateSuccess);
+                    return output;
                 }
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.UpdateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -142,13 +149,17 @@ namespace Paybook.BusinessLayer.Business
         {
             try
             {
-                var output = new BusinessModel { IsSucceeded = false, ReturnMessage = "Current request failed due to technical issue, please try again later." };
+                var output = new BusinessModel();
                 int result = _businessRepo.UpdateSelected(id, username);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = "Business has been deleted successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                    output.ReturnMessage = Messages.Get(MTypes.Business, MStatusBusiness.SelectedUpdateSuccess);
+                    return output;
                 }
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Business, MStatusBusiness.SelectedUpdateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -162,13 +173,23 @@ namespace Paybook.BusinessLayer.Business
         {
             try
             {
-                var output = new BusinessModel { IsSucceeded = false, ReturnMessage = "Current request failed due to technical issue, please try again later." };
+                var output = new BusinessModel();
                 int result = _businessRepo.Activate(id, username, active);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = "Business has been activated/deactivated successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                    if (active)
+                        output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.ActivateSuccess);
+                    else
+                        output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.DeactivateSuccess);
+                    return output;
                 }
+
+                output.IsSucceeded = false;
+                if (active)
+                    output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.ActivateFailure);
+                else
+                    output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.DeactivateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -187,8 +208,12 @@ namespace Paybook.BusinessLayer.Business
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = "Business has been deleted successfully.";// XmlProcessor.ReadXmlFile("CPS401");
+                    output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.DeleteSuccess);
+                    return output;
                 }
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Business, MStatus.DeleteFailure);
                 return output;
             }
             catch (Exception ex)

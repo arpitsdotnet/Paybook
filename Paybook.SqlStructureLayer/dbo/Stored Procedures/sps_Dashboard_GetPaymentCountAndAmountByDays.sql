@@ -3,10 +3,12 @@
 	@Days int = 7
 AS
 BEGIN
-	SELECT COUNT(Id)as [Count],SUM(ISNULL(Amount,0)) as [Amount],PaymentDate AS [Date]
-	FROM [Payments]
-	WHERE BusinessId = @BusinessId AND IsActive = 1 AND 
+	SELECT COUNT(pay.Id)as [Count],ISNULL(SUM(Amount),0) as [Amount], CONVERT(DATE,PaymentDate) AS [Date]
+	FROM [Payments] pay
+		INNER JOIN InvoicePayments ipay ON pay.Id = ipay.PaymentId
+		INNER JOIN Invoices inv ON ipay.InvoiceId = inv.Id
+	WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND inv.IsActive = 1 AND 
 		(PaymentDate BETWEEN DATEADD(DAY, -(@Days), GETDATE()) AND GETDATE())
-	GROUP BY PaymentDate
-	ORDER BY PaymentDate DESC
+	GROUP BY CONVERT(DATE, PaymentDate)
+	ORDER BY CONVERT(DATE, PaymentDate) DESC;
 END

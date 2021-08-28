@@ -3,8 +3,7 @@
 	@Days INT = 7
 AS
 BEGIN
-	SELECT COUNT(ID) AS [Count] 
+	SELECT COUNT(Id) AS [Count] 
 	FROM Invoices
-	WHERE BusinessId = @BusinessId AND IsActive = 1 AND
-		(InvoiceDate BETWEEN DATEADD(DAY, -(@Days), GETDATE()) AND GETDATE())
+	WHERE BusinessId = @BusinessId AND IsActive = 1
 END

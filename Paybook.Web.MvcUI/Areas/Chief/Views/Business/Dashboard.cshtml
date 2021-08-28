@@ -7,7 +7,14 @@
 
 <div class="row bg-default container-fluid">
     <div class="col-lg-3">
-        <h3 class="bold"><i class="glyphicon glyphicon-dashboard"></i>&nbsp; DASHBOARD</h3>
+        @{
+            var companyLogo = "CompanyIco.png";
+            if (!string.IsNullOrEmpty(Model.Business.Image))
+            {
+                companyLogo = Model.Business.Image;
+            }
+        }
+        <h3 class="bold"><img src="~/_Documents/Logo/@companyLogo" alt="Business Logo" height="30" /> &nbsp; @Model.Business.Name</h3>
     </div>
 </div>
 
@@ -29,24 +36,58 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-5 col-md-12 pt-5">
-                <div class="fwt-container-small bg-secondary fwt-round">
-                    <h4 class="fwt-bold fwt-text-deep-orange">Summary of last 7 days</h4>
-                    <div id="idInvoicePaymentCount_Chart"></div>
+            <div class="col-lg-4 col-md-12 pt-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Invoice count vs payment count
+                    </div>
+                    <div class="panel-body">
+                        <div id="idInvoicePaymentCount_Chart"></div>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-7 col-md-12 pt-5">
-                <div class="fwt-container-small bg-secondary fwt-round">
-                    <h4 class="fwt-bold fwt-text-deep-orange">Invoice Amount / Payments of last 7 days</h4>
-                    <div id="idIPaymentAgainstInvoice_Chart"></div>
+            <div class="col-lg-8 col-md-12 pt-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Invoice total vs payment total of last 7 days
+                    </div>
+                    <div class="panel-body">
+                        <div id="idIPaymentAgainstInvoice_Chart"></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="row">
+        @*<div class="row">
             <div class="col-lg-12 col-md-12 pt-5">
-                <div class="fwt-container-small bg-secondary fwt-round">
-                    <h4 class="fwt-bold fwt-text-deep-orange">Last 10 Payments of all times</h4>
-                    <div id="idPaymentsLast10_Chart"></div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Last 10 Payments
+                    </div>
+                    <div class="panel-body">
+                        <div id="idPaymentsLast10_Chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+        <div class="row">
+            <div class="col-lg-6 col-md-12 pt-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Latest 5 invoices
+                    </div>
+                    <div class="panel-body">
+                        <div id="divLast5Invoices"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 pt-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Latest 5 payments
+                    </div>
+                    <div class="panel-body">
+                        <div id="divLast5Payments"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,7 +124,7 @@
         $(document).ready(function () {
             var jsonVar = "?username=@User.Identity.Name";
 
-            CallAjaxMethod("Business/GetCountOfInvoicesAndPaymentsByLastWeek", jsonVar, function (data) {
+            CallAjaxMethod("/Chief/Business/GetCountOfInvoicesAndPaymentsByLastWeek", jsonVar, function (data) {
                 try {
                     var $Data = data.data;
                     console.log($Data);
@@ -110,6 +151,10 @@
                                     title: '',
                                     pieHole: 0.4,
                                     height: 300,
+                                    animation: {
+                                        duration: 1000,
+                                        easing: 'out',
+                                    },
                                 };
                                 var chart = new google.visualization.PieChart(document.getElementById('idInvoicePaymentCount_Chart'));
                                 chart.draw(chartdata, options);
@@ -122,7 +167,7 @@
                 }
             });
 
-            CallAjaxMethod("Business/GetInvoiceAmountsAndPaymentsByLastWeek", jsonVar, function (data) {
+            CallAjaxMethod("/Chief/Business/GetInvoiceAmountsAndPaymentsByLastWeek", jsonVar, function (data) {
                 try {
 
                     var $Data = data.data;
@@ -152,6 +197,10 @@
                                     height: 300,
                                     colors: ['#1b9e77', '#7570b3'],
                                     legend: { position: 'top' },
+                                    animation: {
+                                        duration: 1000,
+                                        easing: 'out',
+                                    },
                                 };
                                 var chart = new google.visualization.LineChart(document.getElementById('idIPaymentAgainstInvoice_Chart'));
                                 chart.draw(chartdata, options);
@@ -164,50 +213,53 @@
                 }
             });
 
-            CallAjaxMethod("Business/GetPaymentsLast10", jsonVar, function (data) {
-                try {
+            //CallAjaxMethod("/Chief/Business/GetPaymentsLast10", jsonVar, function (data) {
+            //    try {
 
-                    var $Data = data.data;
-                    console.log($Data);
-                    if ($Data.length > 0) {
-                        if ($Data[0].ERROR != null && $Data[0].ERROR != "") {
-                            alert("Error occured: " + $Data[0].ERROR);
-                        }
-                        else {
-                            console.log("Dashboard_GetPaymentsLast20_Callback >> " + $Data);
-                            google.charts.load('current', { 'packages': ['corechart'] });
-                            google.charts.setOnLoadCallback(drawChart);
-                            function drawChart() {
-                                var sData = new Array($Data.length + 1);
+            //        var $Data = data.data;
+            //        console.log($Data);
+            //        if ($Data.length > 0) {
+            //            console.log("Dashboard_GetPaymentsLast20_Callback >> " + $Data);
+            //            google.charts.load('current', { 'packages': ['corechart'] });
+            //            google.charts.setOnLoadCallback(drawChart);
+            //            function drawChart() {
+            //                var sData = new Array($Data.length + 1);
 
-                                sData[0] = ["Date", "PaymentAmount"];
-                                for (var i = 0; i < $Data.length; i++) {
-                                    //$Data[i].InvoiceAmount == "" ? 0 : $Data[i].InvoiceAmount;
-                                    //$Data[i].PaymentAmount == "" ? 0 : $Data[i].PaymentAmount;
-                                    sData[i + 1] = [$Data[i].Date, parseInt($Data[i].PaymentAmount)];
-                                }
-                                console.log(">>>" + sData);
-                                var chartdata = new google.visualization.arrayToDataTable(sData);
-                                var options = {
-                                    backgroundColor: 'fwt-grey',
-                                    title: '',
-                                    vAxis: { format: '₹##,##,###.##', title: 'Payments' },
-                                    height: 300,
-                                    colors: ['#7570b3'],
-                                    legend: { position: 'top' },
-                                };
-                                var chart = new google.visualization.ColumnChart(document.getElementById('idPaymentsLast10_Chart'));
-                                chart.draw(chartdata, options);
-                            }
-                        }
-                    }
-                }
-                catch (err) {
-                    alert("Error occured: " + err);
-                }
-            });
+            //                sData[0] = ["Date", "PaymentAmount"];
+            //                for (var i = 0; i < $Data.length; i++) {
+            //                    //$Data[i].InvoiceAmount == "" ? 0 : $Data[i].InvoiceAmount;
+            //                    //$Data[i].PaymentAmount == "" ? 0 : $Data[i].PaymentAmount;
+            //                    sData[i + 1] = [$Data[i].Date, parseInt($Data[i].PaymentAmount)];
+            //                }
+            //                console.log(">>>" + sData);
+            //                var chartdata = new google.visualization.arrayToDataTable(sData);
+            //                var options = {
+            //                    backgroundColor: 'fwt-grey',
+            //                    title: '',
+            //                    vAxis: { format: '₹##,##,###.##', title: 'Payments' },
+            //                    height: 300,
+            //                    colors: ['#7570b3'],
+            //                    legend: { position: 'top' },
+            //                    animation: {
+            //                        duration: 1000,
+            //                        easing: 'out',
+            //                    },
+            //                };
+            //                var chart = new google.visualization.ColumnChart(document.getElementById('idPaymentsLast10_Chart'));
+            //                chart.draw(chartdata, options);
 
-            CallAjaxMethod("Business/GetClientCountByLastWeek", jsonVar, function (data) {
+            //            }
+            //        }
+            //        else {
+            //            $("#idPaymentsLast10_Chart").css({ height: "300px;" }).html("<div class='alert alert-info'>We did not find any payment for you to work, you can <a class='alert-link' href='/Chief/Payment/Create'>create a payment</a> here.</div>");
+            //        }
+            //    }
+            //    catch (err) {
+            //        alert("Error occured: " + err);
+            //    }
+            //});
+
+            CallAjaxMethod("/Chief/Business/GetClientCountByLastWeek", jsonVar, function (data) {
                 try {
 
                     var $Data = data.data;
@@ -242,6 +294,10 @@
                                             color: 'transparent'
                                         }
                                     },
+                                    animation: {
+                                        duration: 1000,
+                                        easing: 'out',
+                                    },
                                 };
 
                                 var chart = new google.visualization.ColumnChart(document.getElementById('idCustomer_Chart'));
@@ -252,6 +308,40 @@
                 }
                 catch (err) {
                     alert("Error occured: " + err);
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                url: "/Chief/Business/GetLast5Invoices",
+                contentType: "application/json; chatset=utf-8",
+                data: { "username": "@User.Identity.Name" },
+                cache: false,
+                dataType: "html",
+                success: function (data) {
+                    //console.log(data);
+                    $("#divLast5Invoices").html(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                url: "/Chief/Business/GetLast5Payments",
+                contentType: "application/json; chatset=utf-8",
+                data: { "username": "@User.Identity.Name" },
+                cache: false,
+                dataType: "html",
+                success: function (data) {
+                    //console.log(data);
+                    $("#divLast5Payments").html(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
                 }
             });
         });

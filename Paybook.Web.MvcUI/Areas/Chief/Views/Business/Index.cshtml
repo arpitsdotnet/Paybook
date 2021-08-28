@@ -4,7 +4,7 @@
     ViewBag.Title = "Business List";
 }
 
-@Html.Partial("_ListHeaderPagePartial", "BUSINESS LIST")
+@Html.Partial("_PageHeaderListPartial", "BUSINESS LIST")
 
 @if (Model != null && Model.Count() > 0)
 {
@@ -51,7 +51,7 @@ else
                 <th>
                     @Html.DisplayNameFor(model => model.StateId)
                 </th>
-                <th></th>
+                <th class="text-right">ACTION</th>
             </tr>
         </thead>
         @foreach (var item in Model)
@@ -81,9 +81,10 @@ else
                 <td>
                     @Html.DisplayFor(modelItem => item.StateMaster.Name), @Html.DisplayFor(modelItem => item.CountryMaster.Name)
                 </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                <td class="text-right">
+                    <div class="btn-group">
+                        @Html.Partial("_ListDefaultButtonsPartial", item.Id)
+                    </div>
                 </td>
             </tr>
         }

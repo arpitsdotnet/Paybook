@@ -27,9 +27,15 @@ textarea { height: 80px !important; }
 .control-label { color: #444; }
 .bg-default { background-color: #E0E0E0 !important; color: #005A73 !important; border-bottom: solid 3px #D0D0D0; margin-bottom: 20px; }
 
+blockquote { padding: 5px 15px; }
+    blockquote .large, blockquote .small { line-height: 20px !important; color: #555; }
+    blockquote.danger { border-color: #ffb3b3 }
+    blockquote.warning { border-color: #ffd893 }
+    blockquote.success { border-color: #92ff9e }
 
 .bold { font-weight: 600 !important; }
 .tiny { font-size: 12px; }
+.medium { font-size: 15px; }
 .large { font-size: 30px; }
 .left { float: left; }
 
@@ -64,12 +70,15 @@ textarea { height: 80px !important; }
 .pb-5 { padding-bottom: calc(var(--spacer)*5) !important; }
 
 .p-1 { padding: calc(var(--spacer)*1) !important; }
-.p-2 { padding: calc(var(--spacer)*2) !important; }
-.p-3 { padding: calc(var(--spacer)*3) !important; }
-.p-4 { padding: calc(var(--spacer)*4) !important; }
+.p-2 { padding: calc(var(--spacer)*4) !important; }
+.p-3 { padding: calc(var(--spacer)*9) !important; }
+.p-4 { padding: calc(var(--spacer)*16) !important; }
 .pr-5 { padding-right: calc(var(--spacer)*5) !important; }
 
 .list-unstyled ul { list-style: none; }
+.table thead tr th { text-transform: uppercase; }
+
+.fwt-hover-black { transition: 0.5s all; }
 
 .fwt-amber, .fwt-hover-amber:hover { color: #000 !important; background-color: #ffc107 !important; }
 .fwt-aqua, .fwt-hover-aqua:hover { color: #000 !important; background-color: #00ffff !important; }
