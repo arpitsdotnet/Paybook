@@ -7,6 +7,7 @@
     [CreateBy] NVARCHAR(256) NOT NULL, 
     [ModifyDate] DATETIME NULL, 
     [ModifyBy] NVARCHAR(256) NULL, 
+    [TransactionId] NVARCHAR(256) NULL,
     [PaymentDate] DATETIME NOT NULL, 
     [IsSuccess] BIT NULL, 
     [Method] NVARCHAR(50) NULL,
