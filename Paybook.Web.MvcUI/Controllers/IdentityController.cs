@@ -34,7 +34,7 @@ namespace Paybook.Web.MvcUI.Controllers
         {
             if (!string.IsNullOrEmpty(User.Identity.Name))
             {
-                SaveUserdataIntoSession(User.Identity.Name);
+                SaveUserdataIntoCookies(User.Identity.Name);
                 if (!string.IsNullOrEmpty(returnUrl))
                     return Redirect(returnUrl);
                 return RedirectToAction("Dashboard", "Business", new { area = "Chief" });
@@ -58,7 +58,7 @@ namespace Paybook.Web.MvcUI.Controllers
                 {
                     FormsAuthentication.SetAuthCookie(model.Username, model.IsPersistent);
 
-                    SaveUserdataIntoSession(model.Username);
+                    SaveUserdataIntoCookies(model.Username);
 
                     //var claimsIdentity = (ClaimsIdentity)User.Identity;
                     //claimsIdentity.AddClaim(new Claim("FullName", $"{userData.FirstName} {userData.LastName}"));
@@ -79,9 +79,10 @@ namespace Paybook.Web.MvcUI.Controllers
             //{
             //    TempData.Remove(key);
             //}
-            Session[CookieNames.LoginUserFullname] = null;
-            Session[CookieNames.LoginUserImage] = null;
-            Session[CookieNames.InvoiceServices] = null;
+            HttpContext.Response.Cookies.Remove(CookieNames.LoginUserFullname);
+            HttpContext.Response.Cookies.Remove(CookieNames.LoginUserImage);
+            HttpContext.Response.Cookies.Remove(CookieNames.InvoiceServices);
+            HttpContext.Response.Cookies.Remove(CookieNames.InvoiceServices);
 
             FormsAuthentication.SignOut();
 
@@ -91,11 +92,10 @@ namespace Paybook.Web.MvcUI.Controllers
             return View();
         }
 
-        private void SaveUserdataIntoSession(string username)
+        private void SaveUserdataIntoCookies(string username)
         {
+            // USER DATA
             IdentityUserModel userData = _user.GetByUsername(username);
-
-            BusinessModel business = _business.GetSelectedByUsername(username);
 
             HttpCookie LoginUserFullname = new HttpCookie(CookieNames.LoginUserFullname, $"{userData.FirstName} {userData.LastName}");
             LoginUserFullname.Expires.AddDays(30);
@@ -104,6 +104,9 @@ namespace Paybook.Web.MvcUI.Controllers
             HttpCookie LoginUserImage = new HttpCookie(CookieNames.LoginUserImage, "/" + _FolderPath.UserLogo + (string.IsNullOrEmpty(userData.Image) == true ? "Default.png" : userData.Image));
             LoginUserImage.Expires.AddDays(30);
             HttpContext.Response.Cookies.Add(LoginUserImage);
+
+            // SELECTED BUSINESS DATA
+            BusinessModel business = _business.GetSelectedByUsername(username);
 
             HttpCookie SelectedBusinessId = new HttpCookie(CookieNames.SelectedBusinessId, business.Id.ToString());
             SelectedBusinessId.Expires.AddDays(30);

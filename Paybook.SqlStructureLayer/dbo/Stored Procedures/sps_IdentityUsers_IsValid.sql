@@ -4,9 +4,9 @@
 	@Message NVARCHAR(20) OUT
 AS
 BEGIN
-	IF EXISTS(SELECT Id FROM IdentityUsers WHERE Username=@UserName AND IsActive = 1)
+	IF EXISTS(SELECT Id FROM IdentityUsers WHERE Username=@Username AND IsActive = 1)
 	BEGIN 	
-		IF EXISTS(SELECT Id FROM IdentityUsers WHERE Username=@UserName AND [PasswordHash]=@PasswordHash)
+		IF EXISTS(SELECT Id FROM IdentityUsers WHERE Username=@Username AND [PasswordHash]=@PasswordHash)
 		BEGIN
 			SET	@Message = 'UserMatch';
 		END
