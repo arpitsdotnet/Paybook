@@ -3,7 +3,7 @@
 	@TypeCore NVARCHAR(256)
 AS
 BEGIN
-	SELECT cm.[Id], cm.[Name], cm.[Value]
+	SELECT cm.[Id], cm.[Name], cm.[Value], cm.[Color]
 	FROM CategoryMaster cm
 		INNER JOIN CategoryTypeMaster ctm ON cm.CategoryTypeId = ctm.Id
 	WHERE cm.BusinessId = @BusinessId AND ctm.Core = @TypeCore AND cm.IsActive = 1

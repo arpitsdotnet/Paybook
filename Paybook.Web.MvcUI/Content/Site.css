@@ -27,11 +27,18 @@ textarea { height: 80px !important; }
 .control-label { color: #444; }
 .bg-default { background-color: #E0E0E0 !important; color: #005A73 !important; border-bottom: solid 3px #D0D0D0; margin-bottom: 20px; }
 
-blockquote { padding: 5px 15px; }
+blockquote { padding: 5px 5px; }
     blockquote .large, blockquote .small { line-height: 20px !important; color: #555; }
+    blockquote .medium { line-height: 18px !important; font-size: 20px; font-weight: 600; color: #555; }
     blockquote.danger { border-color: #ffb3b3 }
     blockquote.warning { border-color: #ffd893 }
     blockquote.success { border-color: #92ff9e }
+    blockquote .small { font-size: 12px; }
+    blockquote.danger .medium { color: #ff2424; }
+    blockquote.warning .medium { color: #fb7008; }
+    blockquote.success .medium { color: #03b216; }
+
+.nowrap { text-wrap: none; }
 
 .bold { font-weight: 600 !important; }
 .tiny { font-size: 12px; }
@@ -124,8 +131,11 @@ blockquote { padding: 5px 15px; }
 
 .Dashboard_CustomerCount { background-color: #072D45; color: white; padding: 12px; border-bottom: solid 5px rgba(0, 0, 0, .5); }
 
-.activity-timeline { min-height: 500px; }
-    .activity-timeline ul { margin: 0; padding: 0; height: 530px; overflow-y: auto; }
-        .activity-timeline ul li { padding: 10px; border-bottom: solid 1px #DDD; list-style: none; transition: 0.2s ease-in-out; }
-            .activity-timeline ul li span.nowrap { white-space: nowrap; }
-            .activity-timeline ul li:hover { background: #FFF; box-shadow: #999 0px 1px 4px; }
+
+.activity-timeline { height: 530px; overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; }
+    .activity-timeline::-webkit-scrollbar { display: none; }
+    .activity-timeline .header { position: relative }
+        .activity-timeline .header i { font-size: 20px; position: absolute; top: 6px }
+        .activity-timeline .header .title { padding-left: 30px; font-size: 22px; text-transform: capitalize; }
+    .activity-timeline .body { padding-left: 30px; }
+        .activity-timeline .body .nowrap { white-space: nowrap; }
