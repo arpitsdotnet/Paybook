@@ -46,6 +46,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -109,9 +112,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Unity.Abstractions, Version=5.11.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.5.11.10\lib\net45\Unity.Abstractions.dll</HintPath>
@@ -144,6 +144,7 @@
     <Compile Include="Areas\Chief\Controllers\BusinessController.cs" />
     <Compile Include="Areas\Chief\Controllers\ClientController.cs" />
     <Compile Include="Areas\Chief\Controllers\InvoiceController.cs" />
+    <Compile Include="Areas\Chief\Controllers\InvoicePayController.cs" />
     <Compile Include="Areas\Chief\Controllers\InvoiceServiceController.cs" />
     <Compile Include="Areas\Chief\Controllers\PaymentController.cs" />
     <Compile Include="Controllers\IdentityController.cs" />
@@ -156,6 +157,8 @@
     <Compile Include="Models\ViewModels\BusinessViewModel.cs" />
     <Compile Include="Models\ViewModels\DashboardViewModel.cs" />
     <Compile Include="Models\ViewModels\IdentityUserViewModel.cs" />
+    <Compile Include="Models\ViewModels\InvoicePagingViewModel.cs" />
+    <Compile Include="Models\ViewModels\InvoicePayViewModel.cs" />
     <Compile Include="Models\ViewModels\InvoiceServiceViewModel.cs" />
     <Compile Include="Models\ViewModels\InvoiceViewModel.cs" />
     <Compile Include="Models\ViewModels\PaymentViewModel.cs" />
@@ -246,10 +249,15 @@
     <Content Include="Views\Shared\_ListDefaultButtonsPartial.cshtml" />
     <Content Include="Views\Shared\_ClientInvoicesTablePartial.cshtml" />
     <Content Include="Views\Shared\_ClientPaymentsTablePartial.cshtml" />
+    <Content Include="Views\Shared\_InvoicePaymentFormPartial.cshtml" />
+    <Content Include="Views\Shared\_CategoryMasterBadgeColorPartial.cshtml" />
+    <Content Include="Views\Shared\_DashboardActivityTablePartial.cshtml" />
+    <Content Include="Views\Shared\_PagingPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Controllers\" />
+    <Folder Include="Areas\Chief\Views\InvoicePay\" />
     <Folder Include="Areas\Chief\Views\InvoiceService\" />
     <Folder Include="Content\IMG\" />
   </ItemGroup>

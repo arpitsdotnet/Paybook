@@ -129,19 +129,24 @@
     <Build Include="dbo\Stored Procedures\spi_InvoiceServices_Insert.sql" />
     <Build Include="dbo\Stored Procedures\spu_InvoiceServices_Update.sql" />
     <Build Include="dbo\Stored Procedures\sps_CategoryMaster_GetById.sql" />
-    <Build Include="dbo\Stored Procedures\sps_Clients_GetRemainingAmountById.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Clients_GetBalanceTotalById.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetInvoiceCountByDays.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetPaymentCountByDays.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetLast5Invoices.sql" />
     <Build Include="dbo\Stored Procedures\sps_Dashboard_GetLast5Payments.sql" />
     <Build Include="dbo\Stored Procedures\sps_Payments_GetAllByPage.sql" />
     <Build Include="dbo\Stored Procedures\spi_Payments_Insert.sql" />
-    <Build Include="dbo\Stored Procedures\sps_Payments_GetPaidAmountByInvoiceId.sql" />
+    <Build Include="dbo\Stored Procedures\sps_InvoicePayments_GetPaidTotalByInvoiceId.sql" />
     <Build Include="dbo\Stored Procedures\sps_InvoiceServices_GetAllByInvoiceId.sql" />
-    <Build Include="dbo\Stored Procedures\sps_Payments_GetAllByInvoiceId.sql" />
     <Build Include="dbo\Stored Procedures\sps_Invoices_GetCounters.sql" />
     <Build Include="dbo\Stored Procedures\sps_Invoices_GetAllByClientId.sql" />
     <Build Include="dbo\Stored Procedures\sps_Payments_GetAllByClientId.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Clients_GetCountersById.sql" />
+    <Build Include="dbo\Tables\ClientPayments.sql" />
+    <Build Include="dbo\Tables\ClientBalances.sql" />
+    <Build Include="dbo\Stored Procedures\spi_InvoicePayments_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\sps_InvoicePayments_GetAllByInvoiceId.sql" />
+    <Build Include="dbo\Stored Procedures\sps_Invoices_GetAllPagesCount.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Profile\Paybook.Sql.publish.xml" />

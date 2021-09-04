@@ -58,8 +58,8 @@
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <blockquote>
-                                <div class="bold">Remaining amount till today:</div>
-                                <p class="text-danger lead">₹ <span id="divRemainingTotal">0.00</span></p>
+                                <div class="bold">Balance amount till today:</div>
+                                <div id="divBalanceTotal"><p class='text-danger lead'>₹ 0.00</p></div>
                             </blockquote>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                             <div class="form-group">
                                 @Html.LabelFor(model => model.Invoice.Description, htmlAttributes: new { @class = "control-label" })
                                 <div>
-                                    @Html.TextAreaFor(model => model.Invoice.Description, htmlAttributes: new { @class = "form-control" })
+                                    @Html.TextAreaFor(model => model.Invoice.Description, htmlAttributes: new { id = "txtDescription", @class = "form-control" })
                                     @Html.ValidationMessageFor(model => model.Invoice.Description, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -126,10 +126,7 @@
             </div>
 
             <div id="divInvoiceServiceTable">
-                @if (Model.InvoiceServices != null && Model.InvoiceServices.Count() > 0)
-                {
-                    Html.RenderPartial("_InvoiceServicesTablePartial", Model.InvoiceServices);
-                }
+                @Html.Partial("_InvoiceServicesTablePartial", Model.InvoiceServices)
             </div>
 
             <div class="row pt-3">
@@ -222,7 +219,6 @@
 
         $(document).ready(function () {
 
-
             $("#ddlClients").on('change', function () {
                 $ddl = $(this);
                 console.log($ddl.val());
@@ -283,7 +279,7 @@
         });
 
         function GetClientById(id) {
-            var url = "/Chief/Invoice/GetClientById";
+            var url = "/Chief/Client/GetClientById";
             $.getJSON(url, { "id": id }, function (data) {
                 console.log("Client Get By Id Started.");
                 //console.log(data);
@@ -294,18 +290,25 @@
                 //    data.Client.StateMaster.Name + "\r\n" + data.Client.CountryMaster.Name + "\r\n" + data.Client.Pincode);
 
                 $("#txtClientEmail").val(data.Client.Email);
-                $("#divRemainingTotal").html(DBNullCheck(data.RemainingAmount, 0).toFixed(2));
 
-                var addressline1 = DBNullCheck(data.Client.AddressLine1, "");
-                var addressline2 = DBNullCheck(data.Client.AddressLine2, "");
-                var city = DBNullCheck(data.Client.City, "");
-                var state = DBNullCheck(data.Client.StateMaster.Name, "");
-                var country = DBNullCheck(data.Client.CountryMaster.Name, "");
-                var pincode = DBNullCheck(data.Client.Pincode, "");
+                var divBalance = "<p class='text-danger lead'>₹ 0.00</p>";
+                if (parseFloat(data.BalanceTotal) > 0) {
+                    divBalance = "<p class='text-success lead'>₹ " + DBNullCheck(data.BalanceTotal, 0).toFixed(2) + "</p>";
+                }
+                $("#divBalanceTotal").html(divBalance);
 
-                $("#txtBillingAddress").val(addressline1 + (addressline2 == "" ? "" : "\r\n" + addressline2)
-                    + (city == "" ? "" : "\r\n" + city) + (state == "" ? "" : "\r\n" + state)
-                    + (country == "" ? "" : "\r\n" + country) + (pincode == "" ? "" : "\r\n" + pincode));
+                //var addressline1 = DBNullCheck(data.Client.AddressLine1, "");
+                //var addressline2 = DBNullCheck(data.Client.AddressLine2, "");
+                //var city = DBNullCheck(data.Client.City, "");
+                //var state = DBNullCheck(data.Client.StateMaster.Name, "");
+                //var country = DBNullCheck(data.Client.CountryMaster.Name, "");
+                //var pincode = DBNullCheck(data.Client.Pincode, "");
+
+                //$("#txtBillingAddress").val(addressline1 + (addressline2 == "" ? "" : "\r\n" + addressline2)
+                //    + (city == "" ? "" : "\r\n" + city) + (state == "" ? "" : "\r\n" + state)
+                //    + (country == "" ? "" : "\r\n" + country) + (pincode == "" ? "" : "\r\n" + pincode));
+
+                $("#txtBillingAddress").val(DBNullCheck(data.Client.CompleteAddress, ""));
             });
         }
 
@@ -384,6 +387,17 @@
                     console.log("Invoice Service Table Update Started.");
                     //console.log(result);
                     $("#divInvoiceServiceTable").html(result);
+
+
+                    var $txtDesc = $("#txtDescription");
+                    if ($txtDesc.val() == "") {
+                        var $table = $("#divInvoiceServiceTable table tbody");
+                        $table.find('tr').each(function (i, el) {
+                            var $tds = $(this).find('td');
+
+                            $txtDesc.val($.trim($tds.eq(1).html()) + " - " + $.trim($tds.eq(2).html()));
+                        });
+                    }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);

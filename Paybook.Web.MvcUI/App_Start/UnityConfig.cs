@@ -39,6 +39,7 @@ namespace Paybook.Web.MvcUI
             container.RegisterType<IClientProcessor, ClientProcessor>();
             container.RegisterType<IInvoiceProcessor, InvoiceProcessor>();
             container.RegisterType<IInvoiceServiceProcessor, InvoiceServiceProcessor>();
+            container.RegisterType<IInvoicePayProcessor, InvoicePayProcessor>();
             //container.RegisterType<IRemarkProcessor, RemarkProcessor>();
             container.RegisterType<IPaymentProcessor, PaymentProcessor>();
             container.RegisterType<INoteProcessor, NoteProcessor>();

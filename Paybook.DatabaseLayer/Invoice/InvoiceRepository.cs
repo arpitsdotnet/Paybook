@@ -21,6 +21,10 @@ namespace Paybook.DatabaseLayer.Invoice
         bool CreateInvoiceActivity(string sCreatedBY, string sStatus_Core);
         DataTable GetByStatusOverdue();
         int CreateWithServices(InvoiceModel invoice, List<InvoiceServiceModel> services);
+        int UpdateVoid(int businessId, int invoiceId);
+        int UpdateWriteOff(int businessId, int invoiceId);
+
+        int GetAllPagesCount(int businessId, int page, string search, string orderBy);
     }
 
     public class InvoiceRepository : IInvoiceRepository
@@ -293,9 +297,56 @@ namespace Paybook.DatabaseLayer.Invoice
                 throw;
             }
         }
+        public int UpdateVoid(int businessId, int invoiceId)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, InvoiceId = invoiceId };
+
+                var result = _dbContext.SaveData("spu_Invoices_UpdateVoid", p);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
+        public int UpdateWriteOff(int businessId, int invoiceId)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, InvoiceId = invoiceId };
+
+                var result = _dbContext.SaveData("spu_Invoices_UpdateWriteOff", p);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
 
 
+        public int GetAllPagesCount(int businessId, int page, string search, string orderBy)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
 
+                var result = _dbContext.LoadData<int, dynamic>("sps_Invoices_GetAllPagesCount", p);
+
+                return result.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
         public List<InvoiceModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
@@ -358,11 +409,11 @@ namespace Paybook.DatabaseLayer.Invoice
                 throw;
             }
         }
-        public int Activate(int businessId, int id, bool active)
+        public int Activate(int businessId, string username, int id, bool active)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id, IsActive = active };
+                var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
 
                 var result = _dbContext.SaveData("spu_Invoices_Activate", p);
 
@@ -374,11 +425,11 @@ namespace Paybook.DatabaseLayer.Invoice
                 throw;
             }
         }
-        public int Delete(int businessId, int id)
+        public int Delete(int businessId, string username, int id)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id };
+                var p = new { BusinessId = businessId, Username = username, Id = id };
 
                 var result = _dbContext.SaveData("spd_Invoices_Delete", p);
 

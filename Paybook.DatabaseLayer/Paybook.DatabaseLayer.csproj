@@ -71,6 +71,7 @@
     <Compile Include="IDbContext.cs" />
     <Compile Include="Identity\LoginRepository.cs" />
     <Compile Include="Identity\UserRepository.cs" />
+    <Compile Include="Invoice\InvoicePayRepository.cs" />
     <Compile Include="Invoice\InvoiceRepository.cs" />
     <Compile Include="IBaseRepository.cs" />
     <Compile Include="Note\NoteRepository.cs" />

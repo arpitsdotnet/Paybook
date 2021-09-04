@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\ActivityConst.cs" />
     <Compile Include="Constants\ActivityStatusCss.cs" />
     <Compile Include="Constants\CategoryTypes.cs" />
     <Compile Include="Constants\InvoiceStatusConst.cs" />
@@ -66,12 +67,15 @@
     <Compile Include="Logger\LoggerFactory.cs" />
     <Compile Include="Logger\FileLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />
+    <Compile Include="Models\ActivityBuilderModel.cs" />
     <Compile Include="Models\ActivityModel.cs" />
     <Compile Include="Models\AgencyModel.cs" />
     <Compile Include="Models\BaseResultStatusModel.cs" />
     <Compile Include="Models\BusinessModel.cs" />
     <Compile Include="Models\CategoryMasterModel.cs" />
     <Compile Include="Models\CategoryTypeMasterModel.cs" />
+    <Compile Include="Models\ClientDetailsCountersModel.cs" />
+    <Compile Include="Models\ClientBalanceModel.cs" />
     <Compile Include="Models\DashboardClientChartModel.cs" />
     <Compile Include="Models\DashboardInvoiceChartModel.cs" />
     <Compile Include="Models\ClientModel.cs" />
@@ -79,6 +83,7 @@
     <Compile Include="Models\DashboardChartModel.cs" />
     <Compile Include="Models\DashboardCountersModel.cs" />
     <Compile Include="Models\InvoiceCountersModel.cs" />
+    <Compile Include="Models\InvoicePayModel.cs" />
     <Compile Include="Models\InvoiceServiceMiniModel.cs" />
     <Compile Include="Models\InvoiceModel.cs" />
     <Compile Include="Models\LastSavedNumberModel.cs" />
@@ -90,6 +95,9 @@
     <Compile Include="Models\ReportModel.cs" />
     <Compile Include="Models\ReportViewModel.cs" />
     <Compile Include="Models\StateMasterModel.cs" />
+    <Compile Include="Paging\IPagedList.cs" />
+    <Compile Include="Paging\PagedList.cs" />
+    <Compile Include="Paging\PagingEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ActivityBuilder.cs" />
     <Compile Include="Xml\Messages.cs" />

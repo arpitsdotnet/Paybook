@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Paybook.ServiceLayer.Models.PaymentModel>
+﻿@model IEnumerable<Paybook.ServiceLayer.Models.InvoicePayModel>
 
 @if (Model == null || Model.Count() == 0)
 {
@@ -14,47 +14,29 @@ else
                         #
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.PaymentDate)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.IsSuccess)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.IsRefund)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Method)
+                        @Html.DisplayNameFor(model => model.PayDate)
                     </th>
                     <th class="text-right">
-                        @Html.DisplayNameFor(model => model.Amount)
+                        @Html.DisplayNameFor(model => model.PayAmount)
                     </th>
                 </tr>
             </thead>
-
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td class="text-right">
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PaymentDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IsSuccess)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IsRefund)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Method)
-                    </td>
-                    <td class="text-right">
-                        ₹ @Html.DisplayFor(modelItem => item.Amount)
-                    </td>
-                </tr>
-            }
-
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-right">
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PayDate)
+                        </td>
+                        <td class="text-right">
+                            ₹ @Html.DisplayFor(modelItem => item.PayAmount)
+                        </td>
+                    </tr>
+                }
+            </tbody>
         </table>
     </div>
 }

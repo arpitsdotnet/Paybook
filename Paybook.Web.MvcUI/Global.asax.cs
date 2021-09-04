@@ -27,5 +27,10 @@ namespace Paybook.Web.MvcUI
             //ILogger logger = LoggerFactory.Instance;
             //logger.Error(ex.Source, ex);
         }
+
+        protected void Session_Start(object sender, EventArgs e)
+        {
+            Session.Timeout = 20;
+        }
     }
 }

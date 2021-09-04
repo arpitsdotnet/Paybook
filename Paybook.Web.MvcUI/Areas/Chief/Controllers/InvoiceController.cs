@@ -1,4 +1,5 @@
-﻿using Paybook.BusinessLayer.Client;
+﻿using Newtonsoft.Json;
+using Paybook.BusinessLayer.Client;
 using Paybook.BusinessLayer.Common;
 using Paybook.BusinessLayer.Invoice;
 using Paybook.BusinessLayer.Payment;
@@ -6,6 +7,8 @@ using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Models;
+using Paybook.ServiceLayer.Paging;
+using Paybook.ServiceLayer.Services;
 using Paybook.Web.MvcUI.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -23,75 +26,82 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         private readonly IInvoiceServiceProcessor _service;
         private readonly IClientProcessor _client;
         private readonly IPaymentProcessor _payment;
+        private readonly IInvoicePayProcessor _invoicePay;
         private readonly ICategoryProcessor _category;
         private readonly ILastSavedNumberProcessor _numberProcessor;
         private readonly IStateProcessor _state;
         private readonly ICountryProcessor _country;
+        private readonly IActivityProcessor _activity;
 
         public InvoiceController(IInvoiceProcessor invoice,
             IInvoiceServiceProcessor service,
             IClientProcessor client,
             IPaymentProcessor payment,
+            IInvoicePayProcessor invoicePay,
             ICategoryProcessor category,
             ILastSavedNumberProcessor numberProcessor,
             IStateProcessor state,
-            ICountryProcessor country)
+            ICountryProcessor country,
+            IActivityProcessor activity)
         {
             _invoice = invoice;
             _service = service;
             _client = client;
             _payment = payment;
+            _invoicePay = invoicePay;
             _category = category;
             _numberProcessor = numberProcessor;
             _state = state;
             _country = country;
+            _activity = activity;
         }
 
-        [HttpGet, AllowAnonymous]
-        public ActionResult GetCounters(string username)
-        {
-            InvoiceCountersModel model = _invoice.GetAllCounters(username);
-            return Json(new { data = model }, JsonRequestBehavior.AllowGet);
-        }
+        private int BusinessId { get { return Convert.ToInt32(Request.Cookies[CookieNames.SelectedBusinessId].Value); } }
+
 
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, string search = "", string orderBy = "")
         {
-            List<InvoiceModel> model = _invoice.GetAllByPage(User.Identity.Name, 0, "", "");
+            List<InvoiceModel> model = _invoice.GetAllByPage(BusinessId, page, search, orderBy);
 
             foreach (var item in model)
             {
-                item.StatusCategoryMaster = _category.GetById(User.Identity.Name, item.StatusId);
-                item.Client = _client.GetById(User.Identity.Name, item.ClientId);
-                item.PaidTotal = _payment.GetPaidAmountByInvoiceId(User.Identity.Name, item.Id);
+                item.Description = string.IsNullOrEmpty(item.Description) ? string.Empty : item.Description;
+                item.StatusCategoryMaster = _category.GetById(BusinessId, item.StatusId);
+                item.Client = _client.GetById(BusinessId, item.ClientId);
+                item.PaidTotal = _invoicePay.GetPaidTotalByInvoiceId(BusinessId, item.Id);
             }
 
-            return View(model);
+            int totalPages = _invoice.GetAllPagesCount(BusinessId, page, search, orderBy);
+            var paging = new PagingEntity { CurrentPage = page, TotalPages = totalPages };
+
+            var invoicePagingVM = new InvoicePagingViewModel { Invoices = model, Paging = paging };
+
+            return View(invoicePagingVM);
         }
 
         [HttpGet]
         public ActionResult Create()
         {
-            var clients = _client.GetAllByPage(User.Identity.Name, 0, "", "");
-            var terms = _category.GetAllByTypeCore(User.Identity.Name, "Terms");
-            var discountTypes = _category.GetAllByTypeCore(User.Identity.Name, "DiscountTypes");
-            var invoiceMessage = _category.GetByCore(User.Identity.Name, "InvoiceMessage");
+            var clients = _client.GetAllByPage(BusinessId, 0, "", "");
+            var terms = _category.GetAllByTypeCore(BusinessId, "Terms");
+            var discountTypes = _category.GetAllByTypeCore(BusinessId, "DiscountTypes");
+            var invoiceMessage = _category.GetByCore(BusinessId, "InvoiceMessage");
+            var workTypes = _category.GetAllByTypeCore(BusinessId, "WorkTypes");
+            var taxTypes = _category.GetAllByTypeCore(BusinessId, "TaxTypes");
 
-            List<InvoiceServiceModel> servicesData;
+            //Session[CookieNames.InvoiceServices] = null;
+            SaveCookie(CookieNames.InvoiceServices, string.Empty, -1);
 
-            if (Session[CookieNames.InvoiceServices] == null)
-                servicesData = new List<InvoiceServiceModel>();
-            else
-                servicesData = (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
-
+            List<InvoiceServiceModel> servicesData = new List<InvoiceServiceModel>();
 
             var invoiceVM = new InvoiceViewModel
             {
                 Invoice = new InvoiceModel
                 {
                     Message = invoiceMessage.Value,
-                    Subtotal = servicesData.Sum(x => x.Subtotal),
-                    TaxableTotal = servicesData.Sum(x => x.TaxableTotal)
+                    Subtotal = 0,
+                    TaxableTotal = 0
                 },
                 InvoiceServices = servicesData,
                 Clients = GetSelectListItemsClient(clients),
@@ -107,23 +117,25 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreatePost(InvoiceViewModel modelVM)
         {
-            if (Session[CookieNames.InvoiceServices] == null)
-                ModelState.AddModelError(string.Empty, "Services are required to save, please add atleast one service.");
+            var invoiceServices = GetServices();
 
-            var invoiceServices = Session[CookieNames.InvoiceServices] == null ? null : (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
+            if (invoiceServices == null || invoiceServices.Count() == 0)
+                ModelState.AddModelError(string.Empty, "Products/Services are required to save, please add atleast one product/service.");
+
+            //var invoiceServices = Session[CookieNames.InvoiceServices] == null ? new List<InvoiceServiceModel>() : (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
 
             if (invoiceServices != null && invoiceServices.Count() > 0)
             {
                 // ADD WORK TYPE FOR EACH ITEM
                 foreach (var item in invoiceServices)
                 {
-                    item.WorkTypeCategoryMaster = _category.GetById(User.Identity.Name, item.WorkTypeId);
+                    item.WorkTypeCategoryMaster = _category.GetById(BusinessId, item.WorkTypeId);
                 }
             }
 
-            var clients = _client.GetAllByPage(User.Identity.Name, 0, "", "");
-            var terms = _category.GetAllByTypeCore(User.Identity.Name, "Terms");
-            var discountTypes = _category.GetAllByTypeCore(User.Identity.Name, "DiscountTypes");
+            var clients = _client.GetAllByPage(BusinessId, 0, "", "");
+            var terms = _category.GetAllByTypeCore(BusinessId, "Terms");
+            var discountTypes = _category.GetAllByTypeCore(BusinessId, "DiscountTypes");
 
             var invoiceVM = new InvoiceViewModel
             {
@@ -138,9 +150,10 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             {
                 string newNumber = _numberProcessor.GetNewNumberByType(User.Identity.Name, LastSavedNumberTypes.Invoice);
 
+                invoiceVM.Invoice.BusinessId = BusinessId;
                 invoiceVM.Invoice.CreateBy = User.Identity.Name;
                 invoiceVM.Invoice.InvoiceNumber = newNumber;
-                
+
                 // TermsId on Create page is Value of the Terms
                 foreach (var item in terms)
                 {
@@ -149,11 +162,6 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                         invoiceVM.Invoice.TermsId = item.Id;
                         break;
                     }
-                }                
-
-                foreach (var service in invoiceVM.InvoiceServices)
-                {
-                    service.CreateBy = User.Identity.Name;
                 }
 
                 var output = new InvoiceViewModel
@@ -162,10 +170,28 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                     Terms = invoiceVM.Terms,
                     DiscountTypes = invoiceVM.DiscountTypes
                 };
+
                 output.Invoice = _invoice.CreateWithServices(invoiceVM.Invoice, invoiceVM.InvoiceServices);
 
                 if (output.Invoice.IsSucceeded == true)
+                {
+                    var client = _client.GetById(BusinessId, invoiceVM.Invoice.ClientId);
+
+                    _activity.Create(new ActivityBuilderModel
+                    {
+                        BusinessId = BusinessId,
+                        CreateBy = User.Identity.Name,
+                        Title = ActivityConst.TitleCreated,
+                        TitleCss = ActivityConst.CssSuccess,
+                        Date = invoiceVM.Invoice.InvoiceDate.ToString("dd/MMM/yyyy"),
+                        Type = ActivityConst.TypeInvoice,
+                        TypeNumber = invoiceVM.Invoice.InvoiceNumber,
+                        ClientName = client.Name,
+                        Amount = invoiceVM.Invoice.Total.ToString("0.00")
+                    });
+
                     return RedirectToAction("Index");
+                }
 
                 return View(invoiceVM);
             }
@@ -176,29 +202,30 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Edit(int id)
         {
-            var invoice = _invoice.GetById(User.Identity.Name, id);
-            invoice.Client = _client.GetById(User.Identity.Name, invoice.ClientId);
-            invoice.PaidTotal = _payment.GetPaidAmountByInvoiceId(User.Identity.Name, id);
+            var invoice = _invoice.GetById(BusinessId, id);
+            invoice.Client = _client.GetById(BusinessId, invoice.ClientId);
+            invoice.PaidTotal = _invoicePay.GetPaidTotalByInvoiceId(BusinessId, invoice.Id);
 
-            var payments = _payment.GetAllByInvoiceId(User.Identity.Name, id, 0, "", "");
+            var invoicePayments = _invoicePay.GetAllByInvoiceId(BusinessId, id, 0, "", "");
 
-            var terms = _category.GetAllByTypeCore(User.Identity.Name, "Terms");
-            var discountTypes = _category.GetAllByTypeCore(User.Identity.Name, "DiscountTypes");
+            var terms = _category.GetAllByTypeCore(BusinessId, "Terms");
+            var discountTypes = _category.GetAllByTypeCore(BusinessId, "DiscountTypes");
 
-            Session[CookieNames.InvoiceServices] = _service.GetAllByInvoiceId(User.Identity.Name, id);
 
-            List<InvoiceServiceModel> servicesData;
-            if (Session[CookieNames.InvoiceServices] == null)
-                servicesData = new List<InvoiceServiceModel>();
-            else
-                servicesData = (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
+            var servicesData = _service.GetAllByInvoiceId(User.Identity.Name, id);
+            SaveServices(servicesData);
+
+            //if (Session[CookieNames.InvoiceServices] == null)
+            //    servicesData = new List<InvoiceServiceModel>();
+            //else
+            //    servicesData = (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
 
             if (servicesData != null && servicesData.Count() > 0)
             {
                 // ADD WORK TYPE FOR EACH ITEM
                 foreach (var item in servicesData)
                 {
-                    item.WorkTypeCategoryMaster = _category.GetById(User.Identity.Name, item.WorkTypeId);
+                    item.WorkTypeCategoryMaster = _category.GetById(BusinessId, item.WorkTypeId);
                 }
             }
 
@@ -206,7 +233,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             {
                 Invoice = invoice,
                 InvoiceServices = servicesData,
-                InvoicePayments = payments,
+                InvoicePayments = invoicePayments,
                 //Clients = GetSelectListItemsClient(clients),
                 Terms = GetSelectListItemsTerms(terms),
                 DiscountTypes = GetSelectListItemsCategory(discountTypes)
@@ -230,13 +257,13 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 // ADD WORK TYPE FOR EACH ITEM
                 foreach (var item in invoiceServices)
                 {
-                    item.WorkTypeCategoryMaster = _category.GetById(User.Identity.Name, item.WorkTypeId);
+                    item.WorkTypeCategoryMaster = _category.GetById(BusinessId, item.WorkTypeId);
                 }
             }
 
-            var clients = _client.GetAllByPage(User.Identity.Name, 0, "", "");
-            var terms = _category.GetAllByTypeCore(User.Identity.Name, "Terms");
-            var discountTypes = _category.GetAllByTypeCore(User.Identity.Name, "DiscountTypes");
+            var clients = _client.GetAllByPage(BusinessId, 0, "", "");
+            var terms = _category.GetAllByTypeCore(BusinessId, "Terms");
+            var discountTypes = _category.GetAllByTypeCore(BusinessId, "DiscountTypes");
 
             var invoiceVM = new InvoiceViewModel
             {
@@ -249,8 +276,6 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 
             if (ModelState.IsValid)
             {
-                string newNumber = _numberProcessor.GetNewNumberByType(User.Identity.Name, LastSavedNumberTypes.Invoice);
-
                 // TermsId on Create page is Value of the Terms
                 foreach (var item in terms)
                 {
@@ -260,18 +285,8 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                         break;
                     }
                 }
-                foreach (var service in invoiceVM.InvoiceServices)
-                {
-                    service.CreateBy = User.Identity.Name;
-                }
 
                 invoiceVM.Invoice.ModifyBy = User.Identity.Name;
-                invoiceVM.Invoice.InvoiceNumber = newNumber;
-
-                foreach (var service in invoiceVM.InvoiceServices)
-                {
-                    service.CreateBy = User.Identity.Name;
-                }
 
                 var output = new InvoiceViewModel
                 {
@@ -279,7 +294,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                     Terms = invoiceVM.Terms,
                     DiscountTypes = invoiceVM.DiscountTypes
                 };
-                output.Invoice = _invoice.CreateWithServices(invoiceVM.Invoice, invoiceVM.InvoiceServices);
+                //output.Invoice = _invoice.UpdateWithServices(invoiceVM.Invoice, invoiceVM.InvoiceServices);
 
                 if (output.Invoice.IsSucceeded == true)
                     return RedirectToAction("Index");
@@ -290,16 +305,118 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             return View(invoiceVM);
         }
 
-
         [HttpGet]
-        public ActionResult Calculate(decimal discountTotal)
+        public ActionResult Void(int id)
         {
-            List<InvoiceServiceModel> servicesData;
+            InvoiceModel output = _invoice.UpdateVoid(BusinessId, id);
+            if (output.IsSucceeded)
+                return RedirectToAction(nameof(Index));
 
+            var invoice = _invoice.GetById(BusinessId, id);
+            invoice.IsSucceeded = output.IsSucceeded;
+            invoice.ReturnMessage = output.ReturnMessage;
+
+            invoice.Client = _client.GetById(BusinessId, invoice.ClientId);
+            invoice.PaidTotal = _invoicePay.GetPaidTotalByInvoiceId(BusinessId, invoice.Id);
+
+            var invoicePayments = _invoicePay.GetAllByInvoiceId(BusinessId, id, 0, "", "");
+
+            var terms = _category.GetAllByTypeCore(BusinessId, "Terms");
+            var discountTypes = _category.GetAllByTypeCore(BusinessId, "DiscountTypes");
+
+            Session[CookieNames.InvoiceServices] = _service.GetAllByInvoiceId(User.Identity.Name, id);
+
+            List<InvoiceServiceModel> servicesData;
             if (Session[CookieNames.InvoiceServices] == null)
                 servicesData = new List<InvoiceServiceModel>();
             else
                 servicesData = (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
+
+            if (servicesData != null && servicesData.Count() > 0)
+            {
+                // ADD WORK TYPE FOR EACH ITEM
+                foreach (var item in servicesData)
+                {
+                    item.WorkTypeCategoryMaster = _category.GetById(BusinessId, item.WorkTypeId);
+                }
+            }
+
+            var invoiceVM = new InvoiceViewModel
+            {
+                Invoice = invoice,
+                InvoiceServices = servicesData,
+                InvoicePayments = invoicePayments,
+                //Clients = GetSelectListItemsClient(clients),
+                Terms = GetSelectListItemsTerms(terms),
+                DiscountTypes = GetSelectListItemsCategory(discountTypes)
+            };
+            invoiceVM.Invoice.Total = invoiceVM.Invoice.TotalCalculate;
+
+            return View(invoiceVM);
+        }
+
+        [HttpGet]
+        public ActionResult WriteOff(int id)
+        {
+            InvoiceModel output = _invoice.UpdateWriteOff(BusinessId, id);
+            if (output.IsSucceeded)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var invoice = _invoice.GetById(BusinessId, id);
+
+            invoice.IsSucceeded = output.IsSucceeded;
+            invoice.ReturnMessage = output.ReturnMessage;
+
+            invoice.Client = _client.GetById(BusinessId, invoice.ClientId);
+            invoice.PaidTotal = _invoicePay.GetPaidTotalByInvoiceId(BusinessId, invoice.Id);
+
+            var invoicePayments = _invoicePay.GetAllByInvoiceId(BusinessId, id, 0, "", "");
+
+            var terms = _category.GetAllByTypeCore(BusinessId, "Terms");
+            var discountTypes = _category.GetAllByTypeCore(BusinessId, "DiscountTypes");
+
+            Session[CookieNames.InvoiceServices] = _service.GetAllByInvoiceId(User.Identity.Name, id);
+
+            List<InvoiceServiceModel> servicesData;
+            if (Session[CookieNames.InvoiceServices] == null)
+                servicesData = new List<InvoiceServiceModel>();
+            else
+                servicesData = (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
+
+            if (servicesData != null && servicesData.Count() > 0)
+            {
+                // ADD WORK TYPE FOR EACH ITEM
+                foreach (var item in servicesData)
+                {
+                    item.WorkTypeCategoryMaster = _category.GetById(BusinessId, item.WorkTypeId);
+                }
+            }
+
+            var invoiceVM = new InvoiceViewModel
+            {
+                Invoice = invoice,
+                InvoiceServices = servicesData,
+                InvoicePayments = invoicePayments,
+                //Clients = GetSelectListItemsClient(clients),
+                Terms = GetSelectListItemsTerms(terms),
+                DiscountTypes = GetSelectListItemsCategory(discountTypes)
+            };
+            invoiceVM.Invoice.Total = invoiceVM.Invoice.TotalCalculate;
+
+            return View(invoiceVM);
+        }
+
+        [HttpGet]
+        public ActionResult Calculate(decimal discountTotal)
+        {
+            List<InvoiceServiceModel> servicesData = GetServices();
+
+            //if (Session[CookieNames.InvoiceServices] == null)
+            //    servicesData = new List<InvoiceServiceModel>();
+            //else
+            //    servicesData = (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
 
             InvoiceModel model = new InvoiceModel()
             {
@@ -312,20 +429,13 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public ActionResult GetClientById(int id)
+
+        [OutputCache(Duration = 180)]
+        [HttpGet, AllowAnonymous]
+        public ActionResult GetCounters(string username)
         {
-            ClientModel client = _client.GetById(User.Identity.Name, id);
-            client.StateMaster = _state.GetById(client.StateId);
-            client.CountryMaster = _country.GetById(client.CountryId);
-
-            ClientViewModel clientVM = new ClientViewModel
-            {
-                Client = client,
-                RemainingTotal = _client.GetRemainingAmountById(User.Identity.Name, id)
-            };
-
-            return Json(clientVM, JsonRequestBehavior.AllowGet);
+            InvoiceCountersModel model = _invoice.GetAllCounters(BusinessId);
+            return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [NonAction]
@@ -369,6 +479,39 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 });
             }
             return selectList;
+        }
+
+        private void SaveServices(List<InvoiceServiceModel> data)
+        {
+            DeleteServices();
+            SaveCookie(CookieNames.InvoiceServices, JsonConvert.SerializeObject(data));
+        }
+        private List<InvoiceServiceModel> GetServices()
+        {
+            string services = GetCookie(CookieNames.InvoiceServices);
+
+            if (!string.IsNullOrEmpty(services))
+                return JsonConvert.DeserializeObject<List<InvoiceServiceModel>>(services);
+
+            return new List<InvoiceServiceModel>();
+        }
+        private void DeleteServices()
+        {
+            SaveCookie(CookieNames.InvoiceServices, string.Empty, -1);
+        }
+        private void SaveCookie(string cookieName, string data, double expiryDays = 1)
+        {
+            HttpCookie InvoiceServiceCookie = new HttpCookie(cookieName, data);
+            InvoiceServiceCookie.Expires = DateTime.Now.AddDays(expiryDays);
+            HttpContext.Response.Cookies.Add(InvoiceServiceCookie);
+        }
+        private string GetCookie(string cookieName)
+        {
+            if (Request.Cookies[cookieName] != null)
+            {
+                return Request.Cookies[cookieName].Value;
+            }
+            return string.Empty;
         }
     }
 }

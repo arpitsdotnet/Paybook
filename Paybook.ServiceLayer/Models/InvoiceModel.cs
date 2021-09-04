@@ -7,7 +7,7 @@ namespace Paybook.ServiceLayer.Models
     {
         public int Id { get; set; }
         public int BusinessId { get; set; }
-        public virtual BusinessModel Businesses { get; set; }
+        public virtual BusinessModel Business { get; set; }
 
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
@@ -42,14 +42,13 @@ namespace Paybook.ServiceLayer.Models
         public int StatusId { get; set; }
         public virtual CategoryMasterModel StatusCategoryMaster { get; set; }
         public int AgencyId { get; set; }
-        public virtual AgencyModel Agencies { get; set; }
+        public virtual AgencyModel Agency { get; set; }
 
         [Required]
         [Display(Name = "Client")]
         public int ClientId { get; set; }
         public virtual ClientModel Client { get; set; }
 
-        [Required]
         [Display(Name = "Client's email")]
         [DataType(DataType.EmailAddress)]
         [RegularExpression(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", ErrorMessage = "Please enter a valid email address.")]
@@ -86,19 +85,19 @@ namespace Paybook.ServiceLayer.Models
         [Range(1, double.MaxValue, ErrorMessage = "The Subtotal field cannot be 0 or negative.")]
         public decimal Subtotal { get; set; } = 0;
 
-        [Display(Name = "Taxable Total")]
+        [Display(Name = "Taxable total")]
         //[DataType(DataType.Currency)]
         public decimal TaxableTotal { get; set; } = 0;
 
-        [Display(Name = "Discount Type")]
+        [Display(Name = "Discount type")]
         public int? DiscountTypeId { get; set; }
         public virtual CategoryMasterModel DiscountTypeCategoryMaster { get; set; }
 
-        [Display(Name = "Discount Amount")]
+        [Display(Name = "Discount amount")]
         //[DataType(DataType.Currency)]
         public decimal DiscountAmount { get; set; } = 0;
 
-        [Display(Name = "Discount Total")]
+        [Display(Name = "Discount total")]
         //[DataType(DataType.Currency)]
         public decimal DiscountTotal { get; set; } = 0;
 
@@ -107,7 +106,7 @@ namespace Paybook.ServiceLayer.Models
         [Range(1, double.MaxValue, ErrorMessage = "The Total field cannot be 0 or negative.")]
         public decimal Total { get; set; }
 
-        [Display(Name = "Paid Total")]
+        [Display(Name = "Paid total")]
         public decimal PaidTotal { get; set; }
 
         public decimal TotalCalculate => Subtotal + TaxableTotal - DiscountTotal;

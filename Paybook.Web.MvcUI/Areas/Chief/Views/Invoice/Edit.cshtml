@@ -19,10 +19,10 @@
                 <a href="@Url.Action("Index")" class="btn btn-default"><i class="glyphicon glyphicon-repeat"></i>&nbsp; BACK</a>
                 @if (Model.Invoice.Total != Model.Invoice.PaidTotal)
                 {
-                    <button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-erase"></i>&nbsp; VOID</button>
+                    <a href="@Url.Action("Void","Invoice",new {area="Chief",id=Model.Invoice.Id })" onclick="return confirm('Are you sure, you want to void this invoice, invoice will not be visible afterwards?')" class="btn btn-danger disabled"><i class="glyphicon glyphicon-erase"></i>&nbsp; VOID</a>
                     if (Model.Invoice.PaidTotal > 0)
                     {
-                        <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-remove"></i>&nbsp; WRITE OFF</button>
+                        <a href="@Url.Action("WriteOff","Invoice",new {area="Chief",id=Model.Invoice.Id })" onclick="return confirm('Are you sure, you want to write off this invoice, invoice balance due will be marked as paid and invoice will be closed?')" class="btn btn-success disabled"><i class="glyphicon glyphicon-remove"></i>&nbsp;  WRITE OFF</a>
                     }
                     else
                     {
@@ -77,8 +77,8 @@
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <blockquote>
-                                <div class="bold">Remaining amount till today:</div>
-                                <p class="text-danger lead">₹ <span id="divRemainingTotal">0.00</span></p>
+                                <div class="bold">Balance amount till today:</div>
+                                <div id="divBalanceTotal"><p class='text-danger lead'>₹ 0.00</p></div>
                             </blockquote>
                         </div>
                     </div>
@@ -139,15 +139,16 @@
                 <div class="col-lg-3 col-md-3 col-sm-12 text-right p-4">
                     <div style="position: relative;" class="text-primary">
                         <div style="position: absolute; right: 0; top: -15px;" class="bold">INVOICE BALANCE DUE</div>
-                        <h1 class="pt-5 bold">₹ <span id="divInvoiceTotal">@Model.Invoice.Total.ToString("0.00")</span></h1>
+                        @{ var invoiceBalanceDue = Model.Invoice.Total - Model.Invoice.PaidTotal; }
+                        <h1 class="pt-5 bold">₹ <span id="divInvoiceBalanceDue">@invoiceBalanceDue.ToString("0.00")</span></h1>
                     </div>
                 </div>
             </div>
 
             <div>
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#services" aria-controls="services" role="tab" data-toggle="tab">PRODUCTS/SERVICES</a></li>
-                    <li role="presentation" class=""><a href="#payments" aria-controls="payments" role="tab" data-toggle="tab">PAYMENTS</a></li>
+                    <li role="presentation" class="active"><a href="#services" aria-controls="services" role="tab" data-toggle="tab">Products/Services</a></li>
+                    <li role="presentation" class=""><a href="#payments" aria-controls="payments" role="tab" data-toggle="tab">Payments</a></li>
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane fade in active" id="services">
@@ -223,6 +224,14 @@
                         <div class="col-md-5">
                             @Html.EditorFor(model => model.Invoice.Total, new { htmlAttributes = new { id = "txtTotal", @class = "form-control text-right", @readonly = "readonly" } })
                             @Html.ValidationMessageFor(model => model.Invoice.Total, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Invoice.PaidTotal, htmlAttributes: new { @class = "control-label col-md-7" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.Invoice.PaidTotal, new { htmlAttributes = new { id = "txtPaidTotal", @class = "form-control text-right", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.Invoice.PaidTotal, "", new { @class = "text-danger" })
                         </div>
                     </div>
                 </div>
@@ -319,7 +328,7 @@
         });
 
         function GetClientById(id) {
-            var url = "/Chief/Invoice/GetClientById";
+            var url = "/Chief/Client/GetClientById";
             $.getJSON(url, { "id": id }, function (data) {
                 console.log("Client Get By Id Started.");
                 //console.log(data);
@@ -329,7 +338,11 @@
                 //console.log("Address: " + data.Client.AddressLine1 + "\r\n" + data.Client.AddressLine2 + "\r\n" + data.Client.City + "\r\n" +
                 //    data.Client.StateMaster.Name + "\r\n" + data.Client.CountryMaster.Name + "\r\n" + data.Client.Pincode);
 
-                $("#divRemainingTotal").html(DBNullCheck(data.RemainingAmount, 0).toFixed(2));
+                var divBalance = "<p class='text-danger lead'>₹ 0.00</p>";
+                if (parseFloat(data.BalanceTotal) > 0) {
+                    divBalance = "<p class='text-success lead'>₹ " + DBNullCheck(data.BalanceTotal, 0).toFixed(2) + "</p>";
+                }
+                $("#divBalanceTotal").html(divBalance);
 
             });
         }
@@ -430,7 +443,7 @@
                     $("#txtTaxableTotal").val(result.TaxableTotal.toFixed(2));
                     $("#txtTotal").val(result.TotalCalculate.toFixed(2));
 
-                    $("#divInvoiceTotal").html(result.TotalCalculate.toFixed(2));
+                    $("#divInvoiceBalanceDue").html((parseFloat(result.TotalCalculate) - parseFloat($("#txtPaidTotal").val())).toFixed(2));
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
@@ -478,7 +491,8 @@
             var total = (parseFloat($Subtotal.val()) + parseFloat($TaxableTotal.val()) - parseFloat($DiscountTotal.val())).toFixed(2)
 
             $Total.val(total);
-            $("#divInvoiceTotal").html(total);
+
+            $("#divInvoiceBalanceDue").html((parseFloat(total) - parseFloat($("#txtPaidTotal").val())).toFixed(2));
             //console.log("$Total.val(): " + $Total.val());
         }
 
