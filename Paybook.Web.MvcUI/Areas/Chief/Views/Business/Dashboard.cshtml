@@ -58,17 +58,17 @@
             </div>
         </div>
         @*<div class="row">
-            <div class="col-lg-12 col-md-12 pt-5">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Last 10 Payments
-                    </div>
-                    <div class="panel-body">
-                        <div id="idPaymentsLast10_Chart"></div>
+                <div class="col-lg-12 col-md-12 pt-5">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Last 10 Payments
+                        </div>
+                        <div class="panel-body">
+                            <div id="idPaymentsLast10_Chart"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>*@
+            </div>*@
         <div class="row">
             <div class="col-lg-6 col-md-12 pt-5">
                 <div class="panel panel-default">
@@ -109,8 +109,13 @@
                 </div>
             </div>
             <div class="fwt-light-grey">
-                <h3 class="text-center text-success pt-2">Need Attention</h3>
-                <div id="idActivitiesList" runat="server" class="activity-timeline">
+                <div class="panel panel-default mt-5">
+                    <div class="panel-heading text-center text-info">
+                        Need Attention
+                    </div>
+                    <div class="panel-body">
+                        <div id="divActivitiesList"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -122,7 +127,9 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
         $(document).ready(function () {
-            var jsonVar = "?username=@User.Identity.Name";
+            var username = "@User.Identity.Name";
+
+            var jsonVar = "?username=" + username;
 
             CallAjaxMethod("/Chief/Business/GetCountOfInvoicesAndPaymentsByLastWeek", jsonVar, function (data) {
                 try {
@@ -163,7 +170,7 @@
                     }
                 }
                 catch (err) {
-                    alert("Error occured: " + err);
+                    $("#idInvoicePaymentCount_Chart").html("<div class='alert alert-danger'>Error occured due to " + err + "</div>");
                 }
             });
 
@@ -209,7 +216,7 @@
                     }
                 }
                 catch (err) {
-                    alert("Error occured: " + err);
+                    $("#idIPaymentAgainstInvoice_Chart").html("<div class='alert alert-danger'>Error occured due to " + err + "</div>");
                 }
             });
 
@@ -307,15 +314,22 @@
                     }
                 }
                 catch (err) {
-                    alert("Error occured: " + err);
+                    $("#idCustomer_Chart").html("<div class='alert alert-danger'>Error occured due to " + err+"</div>");
                 }
             });
 
+            GetLast5Invoices(username);
+            GetLast5Payments(username);
+
+            GetAllActivities(username);
+        });
+
+        function GetLast5Invoices(username) {
             $.ajax({
                 type: "GET",
                 url: "/Chief/Business/GetLast5Invoices",
                 contentType: "application/json; chatset=utf-8",
-                data: { "username": "@User.Identity.Name" },
+                data: { "username": username },
                 cache: false,
                 dataType: "html",
                 success: function (data) {
@@ -327,12 +341,13 @@
                     console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
                 }
             });
-
+        }
+        function GetLast5Payments(username) {
             $.ajax({
                 type: "GET",
                 url: "/Chief/Business/GetLast5Payments",
                 contentType: "application/json; chatset=utf-8",
-                data: { "username": "@User.Identity.Name" },
+                data: { "username": username },
                 cache: false,
                 dataType: "html",
                 success: function (data) {
@@ -344,6 +359,25 @@
                     console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
                 }
             });
-        });
+        }
+
+        function GetAllActivities(username) {
+            $.ajax({
+                type: "GET",
+                url: "/Chief/Business/GetAllActivities",
+                contentType: "application/json; chatset=utf-8",
+                data: { "username": username },
+                cache: false,
+                dataType: "html",
+                success: function (data) {
+                    //console.log(data);
+                    $("#divActivitiesList").html(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
+                }
+            });
+        }
     </script>
 }

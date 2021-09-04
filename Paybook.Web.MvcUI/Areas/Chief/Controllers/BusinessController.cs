@@ -28,6 +28,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         private readonly ICategoryProcessor _category;
         private readonly ICountryProcessor _country;
         private readonly IStateProcessor _state;
+        private readonly IActivityProcessor _activity;
 
         public BusinessController(IDashboardProcessor dashboard,
                                     IBusinessProcessor business,
@@ -35,7 +36,8 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                                     IClientProcessor client,
                                     ICategoryProcessor category,
                                     ICountryProcessor country,
-                                    IStateProcessor state)
+                                    IStateProcessor state,
+                                    IActivityProcessor activity)
         {
             _dashboard = dashboard;
             _business = business;
@@ -44,7 +46,11 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             _category = category;
             _country = country;
             _state = state;
+            _activity = activity;
         }
+
+        private int BusinessId { get { return Convert.ToInt32(Request.Cookies[CookieNames.SelectedBusinessId].Value); } }
+
 
         [HttpGet]
         public ActionResult Dashboard()
@@ -251,14 +257,17 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
+
         [HttpGet, AllowAnonymous]
         public ActionResult GetLast5Invoices(string username)
         {
+            var business = _business.GetSelectedByUsername(username);
+
             List<InvoiceModel> model = _dashboard.GetLast5Invoices(username);
             foreach (var item in model)
             {
-                item.Client = _client.GetById(username, item.ClientId);
-                item.StatusCategoryMaster = _category.GetById(username, item.StatusId);
+                item.Client = _client.GetById(business.Id, item.ClientId);
+                item.StatusCategoryMaster = _category.GetById(business.Id, item.StatusId);
             }
             return PartialView("_DashboardInvoiceTablePartial", model);
         }
@@ -266,10 +275,26 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet, AllowAnonymous]
         public ActionResult GetLast5Payments(string username)
         {
+            var business = _business.GetSelectedByUsername(username);
+
             List<PaymentModel> model = _dashboard.GetLast5Payments(username);
+            foreach (var item in model)
+            {
+                item.Client = _client.GetById(business.Id, item.ClientId);
+            }
             return PartialView("_DashboardPaymentTablePartial", model);
         }
 
+
+        [HttpGet, AllowAnonymous]
+        public ActionResult GetAllActivities(string username)
+        {
+            var business = _business.GetSelectedByUsername(username);
+
+            List<ActivityModel> model = _activity.GetAllByPage(business.Id, 0, "", "");
+            
+            return PartialView("_DashboardActivityTablePartial", model);
+        }
 
 
         [NonAction]

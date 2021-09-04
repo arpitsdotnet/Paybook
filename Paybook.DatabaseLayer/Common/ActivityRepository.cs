@@ -12,7 +12,7 @@ namespace Paybook.DatabaseLayer.Common
     public interface IActivityRepository
     {
         List<ActivityModel> GetAllByPage(int businessId, int page, string search, string orderBy);
-        int Create(ActivityModel activityModel);
+        int Create(ActivityModel model);
     }
 
     public class ActivityRepository : IActivityRepository
@@ -30,9 +30,9 @@ namespace Paybook.DatabaseLayer.Common
         {
             try
             {
-                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
+                var p = new { BusinessId = businessId, CreateBy = ""};
 
-                var result = _dbContext.LoadData<ActivityModel, dynamic>("sps_Activities_GetAllByPage", p);
+                var result = _dbContext.LoadData<ActivityModel, dynamic>("sps_Activities_GetAll", p);
 
                 return result;
             }
@@ -43,11 +43,12 @@ namespace Paybook.DatabaseLayer.Common
             }
         }
 
-        public int Create(ActivityModel activityModel)
+        public int Create(ActivityModel model)
         {
             try
             {
-                int result = _dbContext.SaveData("spi_Activities_Insert", activityModel);
+                var p = new { model.BusinessId, model.CreateBy, model.Status, model.Text, model.TextHtml };
+                int result = _dbContext.SaveData("spi_Activities_Insert", p);
 
                 return result;
             }
