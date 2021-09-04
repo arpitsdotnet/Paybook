@@ -3,7 +3,7 @@
 	@Count INT OUT
 AS
 BEGIN
-	SELECT @Count = COUNT(ID)
+	SELECT @Count = COUNT(Id)
 	FROM Clients
 	WHERE BusinessId = @BusinessId AND IsActive = 1;
 END

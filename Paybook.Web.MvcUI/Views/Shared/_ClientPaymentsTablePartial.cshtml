@@ -28,32 +28,41 @@
                     <th class="text-right">
                         @Html.DisplayNameFor(model => model.Amount)
                     </th>
+                    <th class="text-right">
+                        ACTION
+                    </th>
                 </tr>
             </thead>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td class="text-right">
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PaymentDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IsSuccess)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Method)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IsRefund)
-                    </td>
-                    <td class="text-right">
-                        ₹ @Html.DisplayFor(modelItem => item.Amount)
-                    </td>
-                </tr>
-            }
-
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-right">
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PaymentDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsSuccess)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Method)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsRefund)
+                        </td>
+                        <td class="text-right">
+                            ₹ @Html.DisplayFor(modelItem => item.Amount)
+                        </td>
+                        <td class="text-right">
+                            <div class="btn-group">
+                                <a href="@Url.Action("Revert", new {id = item.Id  })" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-erase"></i>&nbsp; REVERT</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
         </table>
     }
 </div>

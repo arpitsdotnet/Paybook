@@ -11,7 +11,7 @@
     [AgencyName] NVARCHAR(256) NULL, 
     [PhoneNumber1] NVARCHAR(20) NOT NULL, 
     [PhoneNumber2] NVARCHAR(20) NULL, 
-    [Email] NVARCHAR(256) NOT NULL, 
+    [Email] NVARCHAR(256) NULL, 
     [AddressLine1] NVARCHAR(256) NULL, 
     [AddressLine2] NVARCHAR(256) NULL, 
     [City] NVARCHAR(50) NULL, 

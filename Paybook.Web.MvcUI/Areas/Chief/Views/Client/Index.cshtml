@@ -51,35 +51,36 @@ else
                 </th>
             </tr>
         </thead>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AgencyName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber1)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.City)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreateDate)
-                </td>
-                <td class="text-right">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary btn-sm" title="View" onclick="window.location.href='@Url.Action("Details", new { id = item.Id })';"><i class="glyphicon glyphicon-eye-open"></i>&nbsp; VIEW</button>
-                        @Html.Partial("_ListDefaultButtonsPartial", item.Id)
-                    </div>
-                </td>
-            </tr>
-        }
-
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AgencyName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreateDate)
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success btn-sm" title="Add Deposit" onclick="window.location.href='@Url.Action("Create", "Payment", new { id = item.Id })';"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp; DEPOSIT</button>
+                            <button type="button" class="btn btn-primary btn-sm" title="View" onclick="window.location.href='@Url.Action("Details", new { id = item.Id })';"><i class="glyphicon glyphicon-eye-open"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
 }

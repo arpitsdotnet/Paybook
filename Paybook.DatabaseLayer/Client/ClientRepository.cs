@@ -15,7 +15,8 @@ namespace Paybook.DatabaseLayer.Client
     {
         bool IsExist(string createBy, string name);
         int GetCount(int businessId);
-        decimal GetRemainingAmountById(int businessId, int id);
+        ClientDetailsCountersModel GetCountersById(int businessId, int Id);
+        decimal GetBalanceTotalById(int businessId, int id);
 
         [Obsolete]
         ClientModel[] GetPaymentByClientID(string sCustomer_ID);
@@ -132,6 +133,22 @@ namespace Paybook.DatabaseLayer.Client
                 throw;
             }
         }
+        public ClientDetailsCountersModel GetCountersById(int businessId, int id)
+        {
+            try
+            {
+                var p = new { BusinessId = businessId, Id = id };
+
+                var result = _dbContext.LoadData<ClientDetailsCountersModel, dynamic>("sps_Clients_GetCountersById", p);
+
+                return result.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
         public bool IsExist(string createBy, string name)
         {
             try
@@ -157,13 +174,13 @@ namespace Paybook.DatabaseLayer.Client
             }
 
         }
-        public decimal GetRemainingAmountById(int businessId, int id)
+        public decimal GetBalanceTotalById(int businessId, int id)
         {
             try
             {
                 var p = new { BusinessId = businessId, Id = id };
 
-                var result = _dbContext.LoadData<decimal, dynamic>("sps_Clients_GetRemainingAmountById", p);
+                var result = _dbContext.LoadData<decimal, dynamic>("sps_Clients_GetBalanceTotalById", p);
 
                 return result.FirstOrDefault();
             }
@@ -224,13 +241,14 @@ namespace Paybook.DatabaseLayer.Client
                     model.City,
                     model.StateId,
                     model.CountryId,
-                    model.Pincode
+                    model.Pincode,
+                    model.OpeningBalance,
                 };
 
-                var result = _dbContext.SaveDataOutParam("spi_Clients_Insert", p, out int client, DbType.Int32, null, "Id");
+                var result = _dbContext.SaveDataOutParam("spi_Clients_Insert", p, out int clientId, DbType.Int32, null, "Id");
                 //_dbContext.LoadDataByProcedure("sps_Customer_Insert", oParams);
 
-                model.Id = client;
+                model.Id = clientId;
 
                 return result;
             }
@@ -273,11 +291,11 @@ namespace Paybook.DatabaseLayer.Client
                 throw;
             }
         }
-        public int Activate(int businessId, int id, bool active)
+        public int Activate(int businessId, string username, int id, bool active)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id, IsActive = active };
+                var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
 
                 var result = _dbContext.SaveData("spu_Clients_Activate", p);
                 //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
@@ -290,11 +308,11 @@ namespace Paybook.DatabaseLayer.Client
                 throw;
             }
         }
-        public int Delete(int businessId, int id)
+        public int Delete(int businessId, string username, int id)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id };
+                var p = new { BusinessId = businessId, Username = username, Id = id };
 
                 var result = _dbContext.SaveData("spd_Clients_Delete", p);
                 //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);

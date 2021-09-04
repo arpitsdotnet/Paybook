@@ -11,6 +11,8 @@
     <div class="col-lg-6 col-md-6 text-right">
         <div class="btn-group pt-3">
             <a href="@Url.Action("Index")" class="btn btn-default text-primary"><i class="glyphicon glyphicon-repeat"></i>&nbsp; BACK</a>
+            <a href="@Url.Action("Create","Payment", new {id=Model.Client.Id })" class="btn btn-success"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp; DEPOSIT</a>
+            <a href="@Url.Action("Edit", new {id=Model.Client.Id })" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>&nbsp; EDIT</a>
             @*<button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok-sign"></i>&nbsp; SAVE</button>*@
         </div>
     </div>
@@ -39,25 +41,46 @@
                 {
                     <span><i class="glyphicon glyphicon-briefcase"></i> &nbsp; @Model.Client.AgencyName &nbsp; <i class="glyphicon glyphicon-option-vertical"></i> &nbsp;</span>
                 }
-                <span><i class="glyphicon glyphicon-map-marker"></i> &nbsp; @Model.Client.AddressLine1, @Model.Client.AddressLine2, @Model.Client.City, @Model.Client.StateMaster.Name, @Model.Client.CountryMaster.Name (@Model.Client.Pincode)</span>
+                <span><i class="glyphicon glyphicon-map-marker"></i> &nbsp; @Model.Client.CompleteAddress</span>
             </div>
         </div>
-        <div class="col-lg-offset-2 col-lg-2 col-xs-12 pt-5">
+        @{
+            var paymentClass = @Model.Counters.PaymentTotal > 0 ? "success" : "danger";
+        }
+        <div class="col-lg-offset-2 col-lg-2 col-xs-offset-4 col-xs-4 pt-5">
+            <blockquote class="@paymentClass">
+                <div class="medium">₹ @Model.Counters.PaymentTotal</div>
+                <div class="small">PAYMENT</div>
+            </blockquote>
+        </div>
+        @{
+            var balanceClass = @Model.Counters.BalanceTotal > 0 ? "success" : "danger";
+        }
+        <div class="col-lg-2 col-xs-4 pt-5">
+            <blockquote class="@balanceClass">
+                <div class="medium">₹ @Model.Counters.BalanceTotal</div>
+                <div class="small">BALANCE</div>
+            </blockquote>
+        </div>
+        <div class="col-lg-offset-6 col-lg-2 col-xs-4 pt-5">
             <blockquote class="warning">
-                <div class="large">₹ 0.00</div>
+                <div class="medium nowrap">₹ @Model.Counters.OpenTotal</div>
                 <div class="small">OPEN</div>
             </blockquote>
         </div>
-        <div class="col-lg-2 col-xs-12 pt-5">
-            <blockquote class="danger">
-                <div class="large">₹ 0.00</div>
-                <div class="small">OVERDUE</div>
+        @{
+            var unpaidClass = @Model.Counters.UnpaidTotal > 0 ? "danger" : "success";
+        }
+        <div class="col-lg-2 col-xs-4 pt-5">
+            <blockquote class="@unpaidClass">
+                <div class="medium">₹ @Model.Counters.UnpaidTotal</div>
+                <div class="small">UNPAID</div>
             </blockquote>
         </div>
-        <div class="col-lg-offset-10 col-lg-2 col-xs-12 pt-5">
-            <blockquote class="success">
-                <div class="large">₹ 0.00</div>
-                <div class="small">PAYMENT</div>
+        <div class="col-lg-2 col-xs-4 pt-5">
+            <blockquote class="warning">
+                <div class="medium">₹ @Model.Counters.OverdueTotal</div>
+                <div class="small">OVERDUE</div>
             </blockquote>
         </div>
     </div>
@@ -68,7 +91,7 @@
             <li class=""><a href="#payments" data-toggle="tab" aria-expanded="false">Payments</a></li>
         </ul>
         <div id="myTabContent" class="tab-content">
-            <div class="tab-pane fade active in" id="invoices">
+            <div class="tab-pane fade in active" id="invoices">
                 @Html.Partial("_ClientInvoicesTablePartial", Model.Invoices)
             </div>
             <div class="tab-pane fade" id="payments">
@@ -77,3 +100,80 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="myModal" tabindex="1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-light">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <center>
+                        <h5 class="modal-title">FIX INVOICE PAYMENT</h5>
+                    </center>
+                </div>
+                <div class="col-xs-1" style="padding-top:2px;">
+                    <button type="button" class="float-right btn btn-outline-dark close" style="" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="glyphicon glyphicon-remove-circle"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body justify-content-center" id="myModalContent">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+                       
+            $(".anchor-pay-create").click(function () {
+                var $button = $(this);
+                var $id = $button.attr("data-id");
+
+                LoadInvoicePayFormInModal($id);
+            });
+
+            // WHEN THE MODAL WILL CLOSE, FETCH THE SERVICE TABLE
+            // AND UPDATE INVOICE TOTAL
+            $('#myModal').on('hidden.bs.modal', function (e) {
+                //console.log('myModal >> closed');
+                // FILL INVOICE SERVICE TABLE
+                //LoadInvoiceServiceTable();
+
+                // UPDATE TOTAL INVOICE DUE AMOUNT
+                // UPDATE FIELDS SUBTOTAL, TAXABLETOTAL, TOTAL
+                //UpdateInvoiceTotal();
+                location.reload();
+            });
+        });
+
+
+        function LoadInvoicePayFormInModal(id) {
+
+            $.ajax({
+                type: "GET",
+                url: "/Chief/InvoicePay/Create",
+                contentType: "application/json; chatset=utf-8",
+                data: { "id": id },
+                cache: false,
+                dataType: "html",
+                success: function (data) {
+                    //console.log(data);
+                    $("#myModalContent").html(data);
+                    $('#myModalContent form').data('validator', null);
+                    $.validator.unobtrusive.parse('#myModalContent form');
+
+                    $("#myModal").modal('show');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    console.log("Dynamic content failed to load. >>jqXHR>" + jqXHR.responseText + " >>textStatus> " + textStatus + " >>errorThrown> " + errorThrown);
+                }
+            });
+        }
+    </script>
+}

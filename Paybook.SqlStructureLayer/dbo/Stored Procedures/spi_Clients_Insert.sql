@@ -12,17 +12,33 @@
     @City NVARCHAR(50), 
     @StateId INT, 
     @CountryId INT, 
-    @Pincode NVARCHAR(10)
+    @Pincode NVARCHAR(10),
+	@OpeningBalance DECIMAL(18,2)
 AS
 BEGIN
 	BEGIN TRY		
 		BEGIN TRANSACTION
 
 		INSERT INTO [dbo].[Clients]([BusinessId],[IsActive],[CreateDate],[CreateBy],[Name],[AgencyName],[PhoneNumber1],[PhoneNumber2],[Email],[AddressLine1],[AddressLine2],[City],[StateId],[CountryId],[Pincode])
-			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@Name,@AgencyName,@PhoneNumber1,@PhoneNumber2,@Email,@AddressLine1,@AddressLine2,@City,@StateId,@CountryId,@Pincode)
+			 VALUES(@BusinessId,1,GETDATE(),@CreateBy,@Name,@AgencyName,@PhoneNumber1,@PhoneNumber2,@Email,@AddressLine1,@AddressLine2,@City,@StateId,@CountryId,@Pincode);
 			 
 		SET @Id = SCOPE_IDENTITY();
-		
+
+		IF(@OpeningBalance > 0)
+		BEGIN
+			-- INSERT PAYMENT
+			INSERT INTO [dbo].[Payments]([BusinessId],[IsActive],[CreateDate],[CreateBy],[PaymentDate],[IsSuccess],[Method],[Amount])
+				 VALUES(@BusinessId,1,GETDATE(),@CreateBy,GETDATE(),1,'OpeningBalance',@OpeningBalance)
+			 
+			DECLARE @PaymentId INT = SCOPE_IDENTITY();
+
+			INSERT INTO [dbo].[ClientPayments]([ClientId],[PaymentId])
+				VALUES(@Id,@PaymentId)
+
+			INSERT INTO [dbo].[ClientBalances]([BusinessId],[IsActive],[CreateDate],[CreateBy],ClientId,Balance)
+				VALUES(@BusinessId,1,GETDATE(),@CreateBy,@Id,@OpeningBalance);
+		END
+
 		COMMIT TRANSACTION
 	END TRY
 	BEGIN CATCH		

@@ -34,7 +34,7 @@ BEGIN
 			[CountryId] = @CountryId,
 			[Pincode] = @Pincode
 		WHERE BusinessId = @BusinessId AND Id = @Id AND IsActive = 1;
-		
+				
 		COMMIT TRANSACTION
 	END TRY
 	BEGIN CATCH		
