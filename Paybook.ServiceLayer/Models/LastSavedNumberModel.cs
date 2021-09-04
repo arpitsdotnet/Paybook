@@ -6,7 +6,7 @@ namespace Paybook.ServiceLayer.Models
     {
         public int Id { get; set; }
         public int BusinessId { get; set; }
-        public virtual BusinessModel Businesses { get; set; }
+        public virtual BusinessModel Business { get; set; }
         public bool IsActive { get; set; }
         public string Type { get; set; }
         public string Prefix { get; set; }

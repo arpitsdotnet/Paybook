@@ -126,11 +126,11 @@ namespace Paybook.DatabaseLayer.Setting
                 throw;
             }
         }
-        public int Activate(int businessId, int id, bool active)
+        public int Activate(int businessId, string username, int id, bool active)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id, IsActive = active };
+                var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
 
                 var result = _dbContext.SaveData("spu_CategoryMaster_Activate", p);
                 //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
@@ -143,11 +143,11 @@ namespace Paybook.DatabaseLayer.Setting
                 throw;
             }
         }
-        public int Delete(int businessId, int id)
+        public int Delete(int businessId, string username, int id)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id };
+                var p = new { BusinessId = businessId, Username = username, Id = id };
 
                 var result = _dbContext.SaveData("spd_CategoryMaster_Delete", p);
                 //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);

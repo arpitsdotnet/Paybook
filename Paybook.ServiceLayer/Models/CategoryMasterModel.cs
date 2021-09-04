@@ -6,7 +6,7 @@ namespace Paybook.ServiceLayer.Models
     {
         public int Id { get; set; }
         public int BusinessId { get; set; }
-        public virtual BusinessModel Businesses { get; set; }
+        public virtual BusinessModel Business { get; set; }
         public bool IsActive { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? ModifyDate { get; set; }
@@ -17,6 +17,7 @@ namespace Paybook.ServiceLayer.Models
         public string Name { get; set; }
         public string Core { get; set; }
         public string Value { get; set; }
+        public string Color { get; set; }
         public int OrderBy { get; set; }
     }
 }
