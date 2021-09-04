@@ -1,48 +1,48 @@
 ﻿@model Paybook.Web.MvcUI.Models.ViewModels.PaymentViewModel
 
 @{
-    ViewBag.Title = "Create a Payment";
+    ViewBag.Title = "Create a Deposit";
 }
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-    @Html.Partial("_PageHeaderCreatePartial", "PAYMENT CREATE")
+    @Html.Partial("_PageHeaderCreatePartial", "DEPOSIT CREATE")
 
     <div class="form-horizontal">
 
         @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
 
-        @Html.HiddenFor(model => model.Payment.InvoiceId)
-
-        <div class="form-group container-fluid p-4">
-            <label for="txtMethod">Choose payment method below</label>
-            <div class="row">
-                <div class="col-lg-2 col-md-3 col-xs-6 text-center text-primary pt-2">
-                    <div class="text-center p-3 fwt-hover-blue" style="border:solid 2px #0094ff;border-radius:5px;position:relative;">
-                        <i class="glyphicon glyphicon-usd large"></i>
-                        <h6>CASH</h6>
-                        <div class="fwt-blue img-circle p-2" style="position: absolute; top: -10px; right: -10px;width: 35px;height:35px;"><i class="glyphicon glyphicon-asterisk medium "></i></div>
+        <div class="container-fluid">
+            <div class="form-group p-2">
+                <label for="txtMethod">Choose payment method below</label>
+                <div class="row">
+                    <div class="col-lg-2 col-md-3 col-xs-6 text-center text-primary pt-2">
+                        <div class="text-center p-3 fwt-hover-blue" style="border:solid 2px #0094ff;border-radius:5px;position:relative;">
+                            <i class="glyphicon glyphicon-usd large"></i>
+                            <h6>CASH</h6>
+                            <div class="fwt-blue img-circle p-2" style="position: absolute; top: -10px; right: -10px;width: 35px;height:35px;"><i class="glyphicon glyphicon-asterisk medium "></i></div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-2 col-md-3 col-xs-6 text-center disabled pt-2">
-                    <div class="text-center p-3 fwt-hover-pale-blue" style="border:solid 2px #808080;border-radius:5px;">
-                        <i class="glyphicon glyphicon-phone large"></i>
-                        <h6>ONLINE</h6>
+                    <div class="col-lg-2 col-md-3 col-xs-6 text-center pt-2">
+                        <div class="text-center p-3 fwt-hover-pale-blue" style="border: solid 2px #808080; border-radius: 5px;">
+                            @*<svg xmlns="http://www.w3.org/2000/svg" width="120" height="60" fill-rule="evenodd"><path d="M95.678 42.9L110 29.835l-6.784-13.516z" fill="#097939" /><path d="M90.854 42.9l14.322-13.065-6.784-13.516z" fill="#ed752e" /><path d="M22.41 16.47l-6.03 21.475 21.407.15 5.88-21.625h5.427l-7.05 25.14c-.27.96-1.298 1.74-2.295 1.74H12.31c-1.664 0-2.65-1.3-2.2-2.9l6.724-23.98zm66.182-.15h5.427l-7.538 27.03h-5.58zM49.698 27.582l27.136-.15 1.81-5.707H51.054l1.658-5.256 29.4-.27c1.83-.017 2.92 1.4 2.438 3.167L81.78 29.49c-.483 1.766-2.36 3.197-4.19 3.197H53.316L50.454 43.8h-5.28z" fill="#747474" /></svg>*@
+                            <i class="glyphicon glyphicon-barcode large"></i>
+                            <h6>UPI</h6>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-2 col-md-3 col-xs-6 text-center disabled pt-2">
-                    <div class="text-center p-3 fwt-hover-pale-blue" style="border: solid 2px #808080; border-radius: 5px;">
-                        <i class="glyphicon glyphicon-credit-card barcode large"></i>
-                        <h6>CARD</h6>
+                    <div class="col-lg-2 col-md-3 col-xs-6 text-center disabled pt-2">
+                        <div class="text-center p-3 fwt-hover-pale-blue" style="border:solid 2px #808080;border-radius:5px;">
+                            <i class="glyphicon glyphicon-phone large"></i>
+                            <h6>ONLINE</h6>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-2 col-md-3 col-xs-6 text-center pt-2">
-                    <div class="text-center p-3 fwt-hover-pale-blue" style="border: solid 2px #808080; border-radius: 5px;">
-                        @*<svg xmlns="http://www.w3.org/2000/svg" width="120" height="60" fill-rule="evenodd"><path d="M95.678 42.9L110 29.835l-6.784-13.516z" fill="#097939" /><path d="M90.854 42.9l14.322-13.065-6.784-13.516z" fill="#ed752e" /><path d="M22.41 16.47l-6.03 21.475 21.407.15 5.88-21.625h5.427l-7.05 25.14c-.27.96-1.298 1.74-2.295 1.74H12.31c-1.664 0-2.65-1.3-2.2-2.9l6.724-23.98zm66.182-.15h5.427l-7.538 27.03h-5.58zM49.698 27.582l27.136-.15 1.81-5.707H51.054l1.658-5.256 29.4-.27c1.83-.017 2.92 1.4 2.438 3.167L81.78 29.49c-.483 1.766-2.36 3.197-4.19 3.197H53.316L50.454 43.8h-5.28z" fill="#747474" /></svg>*@
-                        <i class="glyphicon glyphicon-barcode large"></i>
-                        <h6>UPI</h6>
+                    <div class="col-lg-2 col-md-3 col-xs-6 text-center disabled pt-2">
+                        <div class="text-center p-3 fwt-hover-pale-blue" style="border: solid 2px #808080; border-radius: 5px;">
+                            <i class="glyphicon glyphicon-credit-card barcode large"></i>
+                            <h6>CARD</h6>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -50,64 +50,7 @@
 
         <div class="row container-fluid">
             <div class="col-lg-6">
-                <h3 class="text-primary"><i class="glyphicon glyphicon-file"></i> Invoice Info</h3>
-                <hr />
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Invoice.InvoiceNumber, htmlAttributes: new { @class = "control-label col-md-4" })
-                    <div class="col-md-4">
-                        <div class="form-control-static">
-                            @Model.Invoice.InvoiceNumber
-                        </div>
-                    </div>
-                    @*<div class="col-md-4">
-                            @Html.DropDownListFor(model => model.Payment.InvoiceId, Model.Invoices, "- Select Invoice -", htmlAttributes: new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.Payment.InvoiceId, "", new { @class = "text-danger" })
-                        </div>*@
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Invoice.Total, htmlAttributes: new { @class = "control-label col-md-4" })
-                    <div class="col-md-4">
-                        <div class="form-control-static">
-                            ₹ @Model.Invoice.Total
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Invoice.ClientId, htmlAttributes: new { @class = "control-label col-md-4" })
-                    <div class="col-md-4">
-                        <div class="form-control-static">
-                            @Model.Client.Name
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Invoice.ClientEmail, htmlAttributes: new { @class = "control-label col-md-4" })
-                    <div class="col-md-4">
-                        <div class="form-control-static">
-                            @Model.Invoice.ClientEmail
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-md-4">Billing address</label>
-                    <div class="col-md-4">
-                        <div class="form-control-static">
-                            @Model.Client.AddressLine1, <br />
-                            @Model.Client.AddressLine2, <br />
-                            @Model.Client.City, @Model.Client.StateMaster.Name, <br />
-                            @Model.Client.CountryMaster.Name (@Model.Client.Pincode)
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <h3 class="text-primary"><i class="glyphicon glyphicon-file"></i> Payment Info</h3>
+                <h3 class="text-primary"><i class="glyphicon glyphicon-file"></i> Deposit Info</h3>
                 <hr />
 
                 <div class="form-group">
@@ -139,11 +82,115 @@
                         <input type="submit" value="Save" class="btn btn-primary form-control" />
                     </div>
                     <div class="col-md-3">
-                        @Html.ActionLink("Back to Payment List", "Index")
+                        @Html.ActionLink("Back to Deposit List", "Index")
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-6">
+                <h3 class="text-primary"><i class="glyphicon glyphicon-file"></i> Invoice Info</h3>
+                <hr />
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Payment.ClientId, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-4">
+                        <div class="form-control-static">
+                            @Html.DropDownListFor(model => model.Payment.ClientId, Model.Clients, "- Select Client -", htmlAttributes: new { id = "ddlClients", @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Payment.ClientId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BalanceTotal, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-4">
+                        <div id="divBalanceTotal" class="form-control-static">
+                            @Model.BalanceTotal
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Client.Email, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-4">
+                        <div id="divClientEmail" class="form-control-static">
+                            @Model.Client.Email
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-4">Billing address</label>
+                    <div class="col-md-4">
+                        <div id="divClientAddress" class="form-control-static">
+                            @Html.Raw(Model.Client.CompleteAddressHtml)
+                            @*@Model.Client.AddressLine1, <br />
+                    @{var address = string.IsNullOrEmpty(Model.Client.AddressLine2) ? "" : Model.Client.AddressLine2 + ","; <span>@address</span>} <br />
+                    @Model.Client.City, @Model.Client.StateMaster.Name, <br />
+                    @Model.Client.CountryMaster.Name (@Model.Client.Pincode)*@
+
+                        </div>
                     </div>
                 </div>
 
             </div>
         </div>
     </div>
+}
+
+@section Scripts
+{
+    <script>
+
+        $(document).ready(function () {
+
+
+            $("#ddlClients").on('change', function () {
+                $ddl = $(this);
+                console.log($ddl.val());
+                GetClientById($ddl.val());
+            });
+
+        });
+
+
+        function GetClientById(id) {
+            var url = "/Chief/Client/GetClientById";
+            $.getJSON(url, { "id": id }, function (data) {
+                console.log("Client Get By Id Started.");
+                //console.log(data);
+
+                //console.log("Email: " + data.Client.Email);
+                //console.log("RemainingAmount: " + data.RemainingAmount.toFixed(2));
+                //console.log("Address: " + data.Client.AddressLine1 + "\r\n" + data.Client.AddressLine2 + "\r\n" + data.Client.City + "\r\n" +
+                //    data.Client.StateMaster.Name + "\r\n" + data.Client.CountryMaster.Name + "\r\n" + data.Client.Pincode);
+
+                $("#divBalanceTotal").html(DBNullCheck(data.BalanceTotal, 0).toFixed(2));
+
+                //var addressline1 = DBNullCheck(data.Client.AddressLine1, "");
+                //var addressline2 = DBNullCheck(data.Client.AddressLine2, "");
+                //var city = DBNullCheck(data.Client.City, "");
+                //var state = DBNullCheck(data.Client.StateMaster.Name, "");
+                //var country = DBNullCheck(data.Client.CountryMaster.Name, "");
+                //var pincode = DBNullCheck(data.Client.Pincode, "");
+
+                //$("#txtBillingAddress").val(addressline1 + (addressline2 == "" ? "" : "\r\n" + addressline2)
+                //    + (city == "" ? "" : "\r\n" + city) + (state == "" ? "" : "\r\n" + state)
+                //    + (country == "" ? "" : "\r\n" + country) + (pincode == "" ? "" : "\r\n" + pincode));
+
+                $("#divClientEmail").html(data.Client.Email);
+                $("#divClientAddress").html(DBNullCheck(data.Client.CompleteAddressHtml, ""));
+            });
+        }
+
+
+        function DBNullCheck(value, returnValue) {
+            if (value == null || (value).length == 0) {
+                return returnValue;
+            }
+            return value;
+        }
+
+    </script>
 }

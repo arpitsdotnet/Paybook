@@ -1,19 +1,19 @@
 ﻿@model IEnumerable<Paybook.ServiceLayer.Models.PaymentModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Deposit List";
 }
 
 @*@Html.Partial("_PageHeaderListPartial", "PAYMENT LIST")*@
 
 <div class="row bg-default container-fluid">
     <div class="col-lg-3 col-xs-6">
-        <h4 class="bold"><i class="glyphicon glyphicon-time"></i>&nbsp; PAYMENT LIST</h4>
+        <h4 class="bold"><i class="glyphicon glyphicon-time"></i>&nbsp; DEPOSIT LIST</h4>
     </div>
     <div class="col-lg-offset-6 col-lg-3 col-xs-6 text-right">
         <div class="btn-group pt-3">
-            <a href="@Url.Action("Index", "Invoice")" class="btn btn-default"><i class="glyphicon glyphicon-repeat"></i>&nbsp; BACK</a>
-            @*<button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok-sign"></i>&nbsp; SAVE</button>*@
+            <a href="@Url.Action("Index", "Client")" class="btn btn-default"><i class="glyphicon glyphicon-repeat"></i>&nbsp; BACK</a>
+            <a href="@Url.Action("Create", "Payment")" class="btn btn-default"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp; ADD DEPOSIT</a>
         </div>
     </div>
 </div>
@@ -32,86 +32,70 @@
 
 @if (Model == null || Model.Count() == 0)
 {
-    <div class="alert alert-info">We did not find any payment for you to work, you can <a class="alert-link" href="@Url.Action("Create")">create a payment</a> here.</div>
+    <div class="alert alert-info">We did not find any deposit for you to work, you can <a class="alert-link" href="@Url.Action("Create")">create a deposit</a> here.</div>
 }
 else
 {
     <table class="table table-striped table-hover">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsSuccess)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Method)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsRefund)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Invoice.InvoiceNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Invoice.InvoiceDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Invoice.ClientId)
-            </th>
-            <th>
-                Invoice total
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>Action</th>
-        </tr>
-
-        @foreach (var item in Model)
-        {
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PaymentDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsSuccess)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Method)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsRefund)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Invoice.InvoiceNumber)
-                    <a href="@Url.Action("Edit","Invoice",new { area = "Chief"})/@item.InvoiceId" class="btn btn-link"><i class="glyphicon glyphicon-pencil"></i></a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Invoice.InvoiceDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Invoice.Client.Name)
-                    <a href="@Url.Action("Edit","Client",new { area = "Chief"})/@item.Invoice.ClientId" class="btn btn-link"><i class="glyphicon glyphicon-pencil"></i></a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Invoice.Total)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
-                </td>
-                <td>
-                    @*@Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Revert", "Revert", new { id = item.Id })*@
-                </td>
+                <th class="text-right">
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClientId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PaymentDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsSuccess)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Method)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsRefund)
+                </th>
+                <th class="text-right">
+                    @Html.DisplayNameFor(model => model.Amount)
+                </th>
+                <th class="text-right">Action</th>
             </tr>
-        }
-
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-right">
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Client.Name)
+                        &nbsp;<a href="@Url.Action("Details","Client",new { area = "Chief"})/@item.ClientId" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-eye-open"></i></a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PaymentDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsSuccess)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Method)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsRefund)
+                    </td>
+                    <td class="text-right">
+                        ₹ @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <a href="@Url.Action("Revert", new {id = item.Id  })" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-erase"></i>&nbsp; REVERT</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
 }

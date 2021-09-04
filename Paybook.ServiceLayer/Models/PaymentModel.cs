@@ -7,7 +7,7 @@ namespace Paybook.ServiceLayer.Models
     {
         public int Id { get; set; }
         public int BusinessId { get; set; }
-        public virtual BusinessModel Businesses { get; set; }
+        public virtual BusinessModel Business { get; set; }
 
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
@@ -18,8 +18,10 @@ namespace Paybook.ServiceLayer.Models
         [Display(Name = "Create by")]
         public string CreateBy { get; set; }
 
-        public int InvoiceId { get; set; }
-        public virtual InvoiceModel Invoice { get; set; }
+        [Required]
+        [Display(Name = "Client")]
+        public int ClientId { get; set; }
+        public virtual ClientModel Client { get; set; }
 
         [Display(Name = "Transaction Id")]
         public string TransactionId { get; set; }
