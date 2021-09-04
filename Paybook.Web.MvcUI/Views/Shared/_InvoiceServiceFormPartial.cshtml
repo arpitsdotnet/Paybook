@@ -11,8 +11,8 @@
 
         <div class="row bg-default">
             <div class="col-lg-12 text-right">
-                <div class="btn-group p-3">
-                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp; SAVE</button>
+                <div class="btn-group p-1">
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp; SAVE</button>
                 </div>
             </div>
         </div>
@@ -40,6 +40,72 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
             @Html.HiddenFor(model => model.Service.InvoiceId)
+
+            @*<div class="row container-fluid">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.Service.WorkTypeId, htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownListFor(model => model.Service.WorkTypeId, Model.WorkTypes, "- Select Work Type -", htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Service.WorkTypeId, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.Service.Name, htmlAttributes: new { @class = "control-label text-left" })
+                        @Html.EditorFor(model => model.Service.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Service.Name, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.Service.VehicleNumber, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Service.VehicleNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Service.VehicleNumber, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                        <div class="container-fluid row pt-3">
+                            <div class="col-xs-4">
+                                <div class="form-group text-right">
+                                    @Html.LabelFor(model => model.Service.Qty, htmlAttributes: new { @class = "control-label" })
+                                    <div class="">
+                                        @Html.EditorFor(model => model.Service.Qty, new { htmlAttributes = new { id = "txtServiceQty", @class = "form-control text-right" } })
+                                        @Html.ValidationMessageFor(model => model.Service.Qty, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group text-right">
+                                    @Html.LabelFor(model => model.Service.Rate, htmlAttributes: new { @class = "control-label" })
+                                    <div class="">
+                                        @Html.EditorFor(model => model.Service.Rate, new { htmlAttributes = new { id = "txtServiceRate", @class = "form-control text-right" } })
+                                        @Html.ValidationMessageFor(model => model.Service.Rate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group text-right">
+                                    @Html.LabelFor(model => model.Service.Subtotal, htmlAttributes: new { @class = "control-label" })
+                                    <div class="">
+                                        @Html.TextBoxFor(model => model.Service.Subtotal, htmlAttributes: new { id = "txtServiceSubtotal", @class = "form-control text-right", @readonly = "readonly" })
+                                        @Html.ValidationMessageFor(model => model.Service.Subtotal, "", new { @class = "text-danger disabled" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="pt-4">&nbsp;</div>
+                        @Html.EditorFor(model => model.Service.IsTaxable)&nbsp;@Html.LabelFor(model => model.Service.IsTaxable, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-1">
+                        @Html.LabelFor(model => model.Service.TaxableTotal, htmlAttributes: new { @class = "control-label" })
+                        @Html.TextBoxFor(model => model.Service.TaxableTotal, htmlAttributes: new { id = "txtServiceTaxableTotal", @class = "form-control text-right", @readonly = "readonly" })
+                    </div>
+                    <div class="col-md-1">
+                        @Html.LabelFor(model => model.Service.Total, htmlAttributes: new { @class = "control-label" })
+                        @Html.TextBoxFor(model => model.Service.Total, htmlAttributes: new { id = "txtServiceTotal", @class = "form-control text-right", @readonly = "readonly" })
+                        @Html.ValidationMessageFor(model => model.Service.Total, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-1 text-right">
+                        <div class="pt-4">&nbsp;</div>
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp; SAVE</button>
+                    </div>
+                </div>*@
 
             <div class="form-group">
                 @Html.LabelFor(model => model.Service.WorkTypeId, htmlAttributes: new { @class = "control-label col-md-4" })
@@ -196,7 +262,6 @@
         </div>
     }
 </div>
-
 
 <script>
     $(document).ready(function () {

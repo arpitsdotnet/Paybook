@@ -7,7 +7,7 @@ namespace Paybook.ServiceLayer.Models
     {
         public int Id { get; set; }
         public int BusinessId { get; set; }
-        public virtual BusinessModel Businesses { get; set; }
+        public virtual BusinessModel Business { get; set; }
 
         [Display(Name = "Active")]
         public bool IsActive { get; set; }

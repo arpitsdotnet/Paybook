@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Paybook.DatabaseLayer.Invoice
 {
-    public interface IInvoiceServiceRepository:IBaseRepository<InvoiceServiceModel>
+    public interface IInvoiceServiceRepository : IBaseRepository<InvoiceServiceModel>
     {
         List<InvoiceServiceModel> GetAllByInvoiceId(int businessId, int invoiceId);
         bool IsExist(string businessId, int id);
@@ -120,11 +120,11 @@ namespace Paybook.DatabaseLayer.Invoice
                 throw;
             }
         }
-        public int Activate(int businessId, int id, bool active)
+        public int Activate(int businessId, string username, int id, bool active)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id, IsActive = active };
+                var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
 
                 var result = _dbContext.SaveData("spu_InvoiceServices_Activate", p);
 
@@ -136,11 +136,11 @@ namespace Paybook.DatabaseLayer.Invoice
                 throw;
             }
         }
-        public int Delete(int businessId, int id)
+        public int Delete(int businessId, string username, int id)
         {
             try
             {
-                var p = new { BusinessId = businessId, Id = id };
+                var p = new { BusinessId = businessId, Username = username, Id = id };
 
                 var result = _dbContext.SaveData("spd_InvoiceServices_Delete", p);
 

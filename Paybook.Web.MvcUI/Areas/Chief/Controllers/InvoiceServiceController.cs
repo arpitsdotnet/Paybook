@@ -1,4 +1,5 @@
-﻿using Paybook.BusinessLayer.Invoice;
+﻿using Newtonsoft.Json;
+using Paybook.BusinessLayer.Invoice;
 using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Models;
@@ -24,23 +25,25 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             _category = category;
         }
 
+        private int BusinessId { get { return Convert.ToInt32(Request.Cookies[CookieNames.SelectedBusinessId].Value); } }
+
 
 
         public ActionResult Index()
         {
-            List<InvoiceServiceModel> servicesData;
+            List<InvoiceServiceModel> servicesData = GetServices();
 
-            if (Session[CookieNames.InvoiceServices] == null)
-                servicesData = new List<InvoiceServiceModel>();
-            else
-                servicesData = (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
+            //if (Session[CookieNames.InvoiceServices] == null)
+            //    servicesData = new List<InvoiceServiceModel>();
+            //else
+            //    servicesData = (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
 
             if (servicesData != null && servicesData.Count() > 0)
             {
                 // ADD WORK TYPE FOR EACH ITEM
                 foreach (var item in servicesData)
                 {
-                    item.WorkTypeCategoryMaster = _category.GetById(User.Identity.Name, item.WorkTypeId);
+                    item.WorkTypeCategoryMaster = _category.GetById(BusinessId, item.WorkTypeId);
                 }
             }
 
@@ -50,8 +53,8 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Create(int? invoiceId)
         {
-            var workTypes = _category.GetAllByTypeCore(User.Identity.Name, "WorkTypes");
-            var taxTypes = _category.GetAllByTypeCore(User.Identity.Name, "TaxTypes");
+            var workTypes = _category.GetAllByTypeCore(BusinessId, "WorkTypes");
+            var taxTypes = _category.GetAllByTypeCore(BusinessId, "TaxTypes");
 
             var serviceVM = new InvoiceServiceViewModel
             {
@@ -65,7 +68,6 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 
             if (invoiceId != null)
             {
-
                 serviceVM.Service.InvoiceId = invoiceId.Value;
             }
 
@@ -76,8 +78,8 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreatePost(InvoiceServiceViewModel modelVM)
         {
-            var workTypes = _category.GetAllByTypeCore(User.Identity.Name, "WorkTypes");
-            var taxTypes = _category.GetAllByTypeCore(User.Identity.Name, "TaxTypes");
+            var workTypes = _category.GetAllByTypeCore(BusinessId, "WorkTypes");
+            var taxTypes = _category.GetAllByTypeCore(BusinessId, "TaxTypes");
 
             InvoiceServiceViewModel output = new InvoiceServiceViewModel
             {
@@ -92,23 +94,26 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 
             if (ModelState.IsValid)
             {
-                List<InvoiceServiceModel> servicesData;
-                if (Session[CookieNames.InvoiceServices] == null)
-                    servicesData = new List<InvoiceServiceModel>();
-                else
-                    servicesData = (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
+                List<InvoiceServiceModel> serviceData = GetServices();
 
-                int orderBy = servicesData.Count();
+                //if (Session[CookieNames.InvoiceServices] == null)
+                //    servicesData = new List<InvoiceServiceModel>();
+                //else
+                //    servicesData = (List<InvoiceServiceModel>)Session[CookieNames.InvoiceServices];
 
+                int orderBy = serviceData.Count();
+
+                modelVM.Service.BusinessId = BusinessId;
                 modelVM.Service.CreateBy = User.Identity.Name;
                 modelVM.Service.OrderBy = orderBy + 1;
 
                 if (modelVM.Service.TaxTypeId == 0)
                     modelVM.Service.TaxTypeId = null;
                 // ADD NEW ITEM
-                servicesData.Add(modelVM.Service);
+                serviceData.Add(modelVM.Service);
 
-                Session[CookieNames.InvoiceServices] = servicesData;
+                //Session[CookieNames.InvoiceServices] = servicesData;
+                SaveServices(serviceData);
 
                 // UPDATE FEATURE HAS BEEN OBSOLETE
                 //if (servicesData != null && servicesData.Count > 0)
@@ -173,7 +178,8 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet, ActionName("RemoveAll")]
         public void RemoveAllServices()
         {
-            Session[CookieNames.InvoiceServices] = null;
+            //Session[CookieNames.InvoiceServices] = null;
+            DeleteServices();
         }
 
 
@@ -191,6 +197,40 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 });
             }
             return selectList;
+        }
+
+
+        private void SaveServices(List<InvoiceServiceModel> data)
+        {
+            DeleteServices();
+            SaveCookie(CookieNames.InvoiceServices, JsonConvert.SerializeObject(data));
+        }
+        private List<InvoiceServiceModel> GetServices()
+        {
+            string services = GetCookie(CookieNames.InvoiceServices);
+
+            if (!string.IsNullOrEmpty(services))
+                return JsonConvert.DeserializeObject<List<InvoiceServiceModel>>(services);
+
+            return new List<InvoiceServiceModel>();
+        }
+        private void DeleteServices()
+        {
+            SaveCookie(CookieNames.InvoiceServices, string.Empty, -1);
+        }
+        private void SaveCookie(string cookieName, string data, double expiryDays = 1)
+        {
+            HttpCookie InvoiceServiceCookie = new HttpCookie(cookieName, data);
+            InvoiceServiceCookie.Expires = DateTime.Now.AddDays(expiryDays);
+            HttpContext.Response.Cookies.Add(InvoiceServiceCookie);
+        }
+        private string GetCookie(string cookieName)
+        {
+            if (Request.Cookies[cookieName] != null)
+            {
+                return Request.Cookies[cookieName].Value;
+            }
+            return string.Empty;
         }
     }
 }
