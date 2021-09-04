@@ -12,16 +12,10 @@ using System.Text;
 
 namespace Paybook.BusinessLayer.Setting
 {
-    public interface ICategoryProcessor
+    public interface ICategoryProcessor : IBaseProcessor<CategoryMasterModel>
     {
-        List<CategoryMasterModel> GetAllByTypeCore(string username, string typeCore);
-        CategoryMasterModel GetByCore(string username, string core);
-        List<CategoryMasterModel> GetAllByPage(string username, int page, string search, string orderBy);
-        CategoryMasterModel GetById(string username, int id);
-        CategoryMasterModel Create(CategoryMasterModel model);
-        CategoryMasterModel Update(CategoryMasterModel model);
-        CategoryMasterModel Activate(string username, int id, bool active);
-        CategoryMasterModel Delete(string username, int id);
+        List<CategoryMasterModel> GetAllByTypeCore(int businessId, string typeCore);
+        CategoryMasterModel GetByCore(int businessId, string core);
     }
 
     public class CategoryProcessor : ICategoryProcessor
@@ -37,14 +31,11 @@ namespace Paybook.BusinessLayer.Setting
             _business = new BusinessProcessor();
         }
 
-        public List<CategoryMasterModel> GetAllByTypeCore(string username, string typeCore)
+        public List<CategoryMasterModel> GetAllByTypeCore(int businessId, string typeCore)
         {
             try
             {
-
-                var business = _business.GetSelectedByUsername(username);
-
-                return _category.GetAllByTypeCore(business.Id, typeCore);
+                return _category.GetAllByTypeCore(businessId, typeCore);
             }
             catch (Exception ex)
             {
@@ -52,14 +43,11 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public CategoryMasterModel GetByCore(string username, string core)
+        public CategoryMasterModel GetByCore(int businessId, string core)
         {
             try
             {
-
-                var business = _business.GetSelectedByUsername(username);
-
-                return _category.GetByCore(business.Id, core);
+                return _category.GetByCore(businessId, core);
             }
             catch (Exception ex)
             {
@@ -69,14 +57,11 @@ namespace Paybook.BusinessLayer.Setting
         }
 
 
-        public List<CategoryMasterModel> GetAllByPage(string username, int page, string search, string orderBy)
+        public List<CategoryMasterModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-
-                var business = _business.GetSelectedByUsername(username);
-
-                return _category.GetAllByPage(business.Id, page, search, orderBy);
+                return _category.GetAllByPage(businessId, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -84,14 +69,11 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public CategoryMasterModel GetById(string username, int id)
+        public CategoryMasterModel GetById(int businessId, int id)
         {
             try
             {
-
-                var business = _business.GetSelectedByUsername(username);
-
-                return _category.GetById(business.Id, id);
+                return _category.GetById(businessId, id);
             }
             catch (Exception ex)
             {
@@ -103,11 +85,7 @@ namespace Paybook.BusinessLayer.Setting
         {
             try
             {
-                var business = _business.GetSelectedByUsername(model.CreateBy);
-
                 var output = new CategoryMasterModel();
-                model.BusinessId = business.Id;
-
                 int result = _category.Create(model);
                 if (result > 0)
                 {
@@ -149,15 +127,12 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public CategoryMasterModel Activate(string username, int id, bool active)
+        public CategoryMasterModel Activate(int businessId, string username, int id, bool active)
         {
             try
             {
-
-                var business = _business.GetSelectedByUsername(username);
-
                 var output = new CategoryMasterModel();
-                int result = _category.Activate(business.Id, id, active);
+                int result = _category.Activate(businessId, username, id, active);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
@@ -181,14 +156,12 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public CategoryMasterModel Delete(string username, int id)
+        public CategoryMasterModel Delete(int businessId, string username, int id)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
                 var output = new CategoryMasterModel();
-                int result = _category.Delete(business.Id, id);
+                int result = _category.Delete(businessId, username, id);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;

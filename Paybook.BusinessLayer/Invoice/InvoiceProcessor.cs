@@ -14,50 +14,39 @@ using System.Data;
 namespace Paybook.BusinessLayer.Invoice
 {
 
-    public interface IInvoiceProcessor
+    public interface IInvoiceProcessor : IBaseProcessor<InvoiceModel>
     {
-        InvoiceCountersModel GetAllCounters(string username);
-        List<InvoiceModel> GetAllByClientId(string username, int clientId);
+        InvoiceCountersModel GetAllCounters(int businessId);
+        List<InvoiceModel> GetAllByClientId(int businessId, int clientId);
         string Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID);
         string Activity_Insert_Overdue(string sCreatedBY, string sStatus_Core);
         InvoiceModel CreateWithServices(InvoiceModel invoice, List<InvoiceServiceModel> services);
+        InvoiceModel UpdateVoid(int businessId, int invoiceId);
+        InvoiceModel UpdateWriteOff(int businessId, int invoiceId);
 
-        List<InvoiceModel> GetAllByPage(string username, int page, string search, string orderBy);
-        InvoiceModel GetById(string username, int id);
-        InvoiceModel Create(InvoiceModel model);
-        InvoiceModel Update(InvoiceModel model);
-        InvoiceModel Activate(string username, int id, bool active);
-        InvoiceModel Delete(string username, int id);
+        int GetAllPagesCount(int businessId, int page, string search, string orderBy);
     }
 
     public partial class InvoiceProcessor : IInvoiceProcessor
     {
         private readonly ILogger _logger;
         private readonly IInvoiceRepository _invoiceRepo;
-        private readonly IInvoiceServiceRepository _serviceRepo;
         private readonly IBusinessProcessor _business;
-        private readonly ILastSavedNumberProcessor _lastSavedNumber;
-        private readonly ICategoryTypeProcessor _categoryType;
         private readonly ICategoryProcessor _category;
 
         public InvoiceProcessor()
         {
             _logger = LoggerFactory.Instance;
             _invoiceRepo = new InvoiceRepository();
-            _serviceRepo = new InvoiceServiceRepository();
             _business = new BusinessProcessor();
-            _lastSavedNumber = new LastSavedNumberProcessor();
-            _categoryType = new CategoryTypeProcessor();
             _category = new CategoryProcessor();
         }
 
-        public InvoiceCountersModel GetAllCounters(string username)
+        public InvoiceCountersModel GetAllCounters(int businessId)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                return _invoiceRepo.GetAllCounters(business.Id);
+                return _invoiceRepo.GetAllCounters(businessId);
             }
             catch (Exception ex)
             {
@@ -66,13 +55,11 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-        public List<InvoiceModel> GetAllByClientId(string username, int clientId)
+        public List<InvoiceModel> GetAllByClientId(int businessId, int clientId)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                return _invoiceRepo.GetAllByClientId(business.Id, clientId);
+                return _invoiceRepo.GetAllByClientId(businessId, clientId);
             }
             catch (Exception ex)
             {
@@ -113,42 +100,7 @@ namespace Paybook.BusinessLayer.Invoice
 
                         };
 
-
-                        string statusClass = "";
-
-                        //switch (model.StatusCategoryMaster.Core)
-                        //{
-                        //    case InvoiceStatusConst.Overdue:
-                        //        statusClass = ActivityStatusCss.DANGER;
-                        //        break;
-                        //    case InvoiceStatusConst.Paid:
-                        //    case InvoiceStatusConst.PaidPartial:
-                        //        statusClass = ActivityStatusCss.SUCCESS;
-                        //        break;
-                        //    case InvoiceStatusConst.Open:
-                        //        statusClass = ActivityStatusCss.INFO;
-                        //        break;
-                        //    case InvoiceStatusConst.Close:
-                        //        statusClass = ActivityStatusCss.DEFAULT;
-                        //        break;
-                        //    default:
-                        //        statusClass = ActivityStatusCss.DEFAULT;
-                        //        break;
-                        //}
-
-                        ActivityBuilder activity = new ActivityBuilder()
-                            .AddHeader(model.StatusCategoryMaster.Name, model.InvoiceDate.ToShortDateString(), statusClass)
-                            .AddBody("Invoice", model.InvoiceNumber, model.Client.Name, model.StatusCategoryMaster.Name, model.Total.ToString());
-
-                        var activityModel = new ActivityModel
-                        {
-                            CreateBy = model.CreateBy,
-                            //BusinessID = invoiceModel.BusinessID,
-                            Status = model.StatusCategoryMaster.Name,
-                            Text = activity.ToString(),
-                            HtmlText = activity.ToStringHtml()
-                        };
-
+                        // TODO
                         //_activityRepo.Create(activityModel);
                         _invoiceRepo.Invoices_Update_OverdueStatus(model.InvoiceNumber, "", "");
                     }
@@ -184,17 +136,9 @@ namespace Paybook.BusinessLayer.Invoice
             {
                 var output = new InvoiceModel();
 
-                var business = _business.GetSelectedByUsername(invoice.CreateBy);
+                var status = _category.GetByCore(invoice.BusinessId, InvoiceStatusConst.Open);
 
-                var status = _category.GetByCore(invoice.CreateBy, InvoiceStatusConst.Open);
-
-                invoice.BusinessId = business.Id;
                 invoice.StatusId = status.Id;
-
-                foreach (var item in services)
-                {
-                    item.BusinessId = business.Id;
-                }
 
                 int result = _invoiceRepo.CreateWithServices(invoice, services);
                 if (result > 0)
@@ -214,16 +158,59 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-
-
-
-        public List<InvoiceModel> GetAllByPage(string username, int page, string search, string orderBy)
+        public InvoiceModel UpdateVoid(int businessId, int invoiceId)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
+                var output = new InvoiceModel();
+                int result = _invoiceRepo.UpdateVoid(businessId, invoiceId);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.ActivateSuccess);
+                    return output;
+                }
 
-                return _invoiceRepo.GetAllByPage(business.Id, page, search, orderBy);
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.ActivateFailure);
+                return output;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
+        public InvoiceModel UpdateWriteOff(int businessId, int invoiceId)
+        {
+            try
+            {
+                var output = new InvoiceModel();
+                int result = _invoiceRepo.UpdateWriteOff(businessId, invoiceId);
+                if (result > 0)
+                {
+                    output.IsSucceeded = true;
+                    output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.ActivateSuccess);
+                    return output;
+                }
+
+                output.IsSucceeded = false;
+                output.ReturnMessage = Messages.Get(MTypes.Invoice, MStatus.ActivateFailure);
+                return output;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
+                throw;
+            }
+        }
+
+
+        public int GetAllPagesCount(int businessId, int page, string search, string orderBy)
+        {
+            try
+            {
+                return _invoiceRepo.GetAllPagesCount(businessId, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -232,13 +219,24 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-        public InvoiceModel GetById(string username, int id)
+        public List<InvoiceModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
+                return _invoiceRepo.GetAllByPage(businessId, page, search, orderBy);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
 
-                return _invoiceRepo.GetById(business.Id, id);
+                throw;
+            }
+        }
+        public InvoiceModel GetById(int businessId, int id)
+        {
+            try
+            {
+                return _invoiceRepo.GetById(businessId, id);
             }
             catch (Exception ex)
             {
@@ -297,14 +295,12 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-        public InvoiceModel Activate(string username, int id, bool active)
+        public InvoiceModel Activate(int businessId, string username, int id, bool active)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
                 var output = new InvoiceModel();
-                int result = _invoiceRepo.Activate(business.Id, id, active);
+                int result = _invoiceRepo.Activate(businessId, username, id, active);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
@@ -328,14 +324,12 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-        public InvoiceModel Delete(string username, int id)
+        public InvoiceModel Delete(int businessId, string username, int id)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
                 var output = new InvoiceModel();
-                int result = _invoiceRepo.Delete(business.Id, id);
+                int result = _invoiceRepo.Delete(businessId, username, id);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;

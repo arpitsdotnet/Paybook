@@ -14,10 +14,9 @@ namespace Paybook.BusinessLayer.Payment
     public interface IPaymentProcessor : IBaseProcessor<PaymentModel>
     {
         string Payments_SelectMonthsales();
-        List<PaymentModel> GetAllByInvoiceId(string username, int invoiceId, int page, string search, string orderBy);
-        List<PaymentModel> GetAllByClientId(string username, int clientId);
-        decimal GetPaidAmountByInvoiceId(string username, int invoiceId);
-        PaymentModel Revert(string username, int id);
+        List<PaymentModel> GetAllByInvoiceId(int businessId, int invoiceId, int page, string search, string orderBy);
+        List<PaymentModel> GetAllByClientId(int businessId, int clientId);
+        PaymentModel Revert(int businessId, string username, int id);
     }
 
     public class PaymentProcessor : IPaymentProcessor
@@ -25,9 +24,6 @@ namespace Paybook.BusinessLayer.Payment
         private readonly ILogger _logger;
         private readonly IPaymentRepository _paymentRepo;
         private readonly IBusinessProcessor _business;
-        private readonly ILastSavedNumberProcessor _lastSavedIdProcessor;
-        private readonly IClientProcessor _clientProcessor;
-        private readonly IInvoiceProcessor _invoiceProcessor;
 
         public PaymentProcessor()
         {
@@ -35,11 +31,9 @@ namespace Paybook.BusinessLayer.Payment
             _paymentRepo = new PaymentRepository();
 
             _business = new BusinessProcessor();
-            _lastSavedIdProcessor = new LastSavedNumberProcessor();
-            _clientProcessor = new ClientProcessor();
-            _invoiceProcessor = new InvoiceProcessor();
         }
 
+        [Obsolete]
         public string Payments_SelectMonthsales()
         {
             try
@@ -53,13 +47,11 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public List<PaymentModel> GetAllByInvoiceId(string username, int invoiceId, int page, string search, string orderBy)
+        public List<PaymentModel> GetAllByInvoiceId(int businessId, int invoiceId, int page, string search, string orderBy)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                return _paymentRepo.GetAllByInvoiceId(business.Id, invoiceId, page, search, orderBy);
+                return _paymentRepo.GetAllByInvoiceId(businessId, invoiceId, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -68,13 +60,11 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public List<PaymentModel> GetAllByClientId(string username, int clientId)
+        public List<PaymentModel> GetAllByClientId(int businessId, int clientId)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                return _paymentRepo.GetAllByClientId(business.Id, clientId);
+                return _paymentRepo.GetAllByClientId(businessId, clientId);
             }
             catch (Exception ex)
             {
@@ -83,29 +73,12 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public decimal GetPaidAmountByInvoiceId(string username, int invoiceId)
+        public PaymentModel Revert(int businessId, string username, int id)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                return _paymentRepo.GetPaidAmountByInvoiceId(business.Id, invoiceId);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-
-                throw;
-            }
-        }
-        public PaymentModel Revert(string username, int id)
-        {
-            try
-            {
-                var business = _business.GetSelectedByUsername(username);
-
                 var output = new PaymentModel();
-                var result = _paymentRepo.Revert(business.Id, id);
+                var result = _paymentRepo.Revert(businessId, username, id);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
@@ -124,13 +97,11 @@ namespace Paybook.BusinessLayer.Payment
             }
         }
 
-        public List<PaymentModel> GetAllByPage(string username, int page, string search, string orderBy)
+        public List<PaymentModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                return _paymentRepo.GetAllByPage(business.Id, page, search, orderBy);
+                return _paymentRepo.GetAllByPage(businessId, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -139,13 +110,11 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public PaymentModel GetById(string username, int id)
+        public PaymentModel GetById(int businessId, int id)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                return _paymentRepo.GetById(business.Id, id);
+                return _paymentRepo.GetById(businessId, id);
             }
             catch (Exception ex)
             {
@@ -236,14 +205,12 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public PaymentModel Activate(string username, int id, bool active)
+        public PaymentModel Activate(int businessId, string username, int id, bool active)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
                 var output = new PaymentModel();
-                int result = _paymentRepo.Activate(business.Id, id, active);
+                int result = _paymentRepo.Activate(businessId, username, id, active);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
@@ -267,14 +234,12 @@ namespace Paybook.BusinessLayer.Payment
                 throw;
             }
         }
-        public PaymentModel Delete(string username, int id)
+        public PaymentModel Delete(int businessId, string username, int id)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
                 var output = new PaymentModel();
-                int result = _paymentRepo.Delete(business.Id, id);
+                int result = _paymentRepo.Delete(businessId, username, id);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;

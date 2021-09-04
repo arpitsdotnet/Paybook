@@ -10,14 +10,8 @@ using System.Text;
 
 namespace Paybook.BusinessLayer.Note
 {
-    public interface INoteProcessor
+    public interface INoteProcessor : IBaseProcessor<NoteModel>
     {
-        List<NoteModel> GetAllByPage(int businessId, int page, string search, string orderBy);
-        NoteModel GetById(int businessId, int id);
-        NoteModel Create(NoteModel model);
-        NoteModel Update(NoteModel model);
-        NoteModel Activate(int businessId, int id, bool active);
-        NoteModel Delete(int businessId, int id);
     }
     public class NoteProcessor : INoteProcessor
     {
@@ -104,12 +98,12 @@ namespace Paybook.BusinessLayer.Note
                 throw;
             }
         }
-        public NoteModel Activate(int businessId, int id, bool active)
+        public NoteModel Activate(int businessId, string username, int id, bool active)
         {
             try
             {
                 NoteModel output = new NoteModel { IsSucceeded = false };
-                int result = _noteRepo.Activate(businessId, id, active);
+                int result = _noteRepo.Activate(businessId, username, id, active);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
@@ -134,12 +128,12 @@ namespace Paybook.BusinessLayer.Note
                 throw;
             }
         }
-        public NoteModel Delete(int businessId, int id)
+        public NoteModel Delete(int businessId, string username, int id)
         {
             try
             {
                 NoteModel output = new NoteModel { IsSucceeded = false };
-                int result = _noteRepo.Delete(businessId, id);
+                int result = _noteRepo.Delete(businessId, username, id);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;

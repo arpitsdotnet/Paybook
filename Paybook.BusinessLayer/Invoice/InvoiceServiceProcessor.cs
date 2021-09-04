@@ -92,11 +92,11 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-        public int Activate(int businessId, int id, bool active)
+        public int Activate(int businessId, string username, int id, bool active)
         {
             try
             {
-                return _serviceRepo.Activate(businessId, id, active);
+                return _serviceRepo.Activate(businessId, username, id, active);
             }
             catch (Exception ex)
             {
@@ -104,11 +104,11 @@ namespace Paybook.BusinessLayer.Invoice
                 throw;
             }
         }
-        public int Delete(int businessId, int id)
+        public int Delete(int businessId, string username, int id)
         {
             try
             {
-                return _serviceRepo.Delete(businessId, id);
+                return _serviceRepo.Delete(businessId,username, id);
             }
             catch (Exception ex)
             {

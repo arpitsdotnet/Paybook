@@ -59,6 +59,7 @@
     <Compile Include="IBaseProcessor.cs" />
     <Compile Include="Identity\LoginProcessor.cs" />
     <Compile Include="Identity\UserProcessor.cs" />
+    <Compile Include="Invoice\InvoicePayProcessor.cs" />
     <Compile Include="Invoice\InvoiceProcessor.cs" />
     <Compile Include="Note\NoteProcessor.cs" />
     <Compile Include="Payment\PaymentProcessor.cs" />

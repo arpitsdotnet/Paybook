@@ -8,11 +8,11 @@ namespace Paybook.BusinessLayer
 {
     public interface IBaseProcessor<T> where T : class
     {
-        List<T> GetAllByPage(string username, int page, string search, string orderBy);
-        T GetById(string username, int id);
+        List<T> GetAllByPage(int businessId, int page, string search, string orderBy);
+        T GetById(int businessId, int id);
         T Create(T model);
         T Update(T model);
-        T Activate(string username, int id, bool active);
-        T Delete(string username, int id);
+        T Activate(int businessId, string username, int id, bool active);
+        T Delete(int businessId, string username, int id);
     }
 }

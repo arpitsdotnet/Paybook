@@ -12,22 +12,15 @@ using System.Text;
 
 namespace Paybook.BusinessLayer.Client
 {
-    public interface IClientProcessor
+    public interface IClientProcessor : IBaseProcessor<ClientModel>
     {
         bool IsExist(string createBy, string clientName);
-        int GetCount(string username);
+        int GetCount(int businessId);
+        ClientDetailsCountersModel GetCountersById(int businessId, int Id);
         ClientModel[] GetAllByText(string SearchText);
         ClientModel[] GetAllNamesByAgencyID(string sAgency_ID);
         ClientModel[] Customer_SelectRemainingAmount(string sCustomer_ID);
-        decimal GetRemainingAmountById(string username, int id);
-
-
-        List<ClientModel> GetAllByPage(string username, int page, string search, string orderBy);
-        ClientModel GetById(string username, int id);
-        ClientModel Create(ClientModel customerModel);
-        ClientModel Update(ClientModel customerModel);
-        ClientModel Activate(string username, int id, bool active);
-        ClientModel Delete(string username, int id);
+        decimal GetBalanceTotalById(int businessId, int id);
     }
 
     public class ClientProcessor : IClientProcessor
@@ -56,13 +49,24 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-        public int GetCount(string username)
+        public int GetCount(int businessId)
         {
             try
             {
-                var business = _businessRepo.GetSelectedByUsername(username);
+                return _clientRepo.GetCount(businessId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_logger.GetMethodName(), ex);
 
-                return _clientRepo.GetCount(business.Id);
+                throw;
+            }
+        }
+        public ClientDetailsCountersModel GetCountersById(int businessId, int Id)
+        {
+            try
+            {
+                return _clientRepo.GetCountersById(businessId, Id);
             }
             catch (Exception ex)
             {
@@ -111,13 +115,11 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public decimal GetRemainingAmountById(string username, int id)
+        public decimal GetBalanceTotalById(int businessId, int id)
         {
             try
             {
-                var business = _businessRepo.GetSelectedByUsername(username);
-
-                return _clientRepo.GetRemainingAmountById(business.Id, id);
+                return _clientRepo.GetBalanceTotalById(businessId, id);
             }
             catch (Exception ex)
             {
@@ -127,13 +129,11 @@ namespace Paybook.BusinessLayer.Client
             }
         }
 
-        public List<ClientModel> GetAllByPage(string username, int page, string search, string orderBy)
+        public List<ClientModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-                var business = _businessRepo.GetSelectedByUsername(username);
-
-                return _clientRepo.GetAllByPage(business.Id, page, search, orderBy);
+                return _clientRepo.GetAllByPage(businessId, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -142,13 +142,11 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-        public ClientModel GetById(string username, int id)
+        public ClientModel GetById(int businessId, int id)
         {
             try
             {
-                var business = _businessRepo.GetSelectedByUsername(username);
-
-                return _clientRepo.GetById(business.Id, id);
+                return _clientRepo.GetById(businessId, id);
             }
             catch (Exception ex)
             {
@@ -170,9 +168,6 @@ namespace Paybook.BusinessLayer.Client
                     output.ReturnMessage = Messages.Get(MTypes.Client, MStatus.IsExists);
                     return output;
                 }
-                var business = _businessRepo.GetSelectedByUsername(model.CreateBy);
-
-                model.BusinessId = business.Id;
 
                 int result = _clientRepo.Create(model);
                 if (result > 0)
@@ -198,10 +193,6 @@ namespace Paybook.BusinessLayer.Client
             {
                 var output = new ClientModel { IsSucceeded = false };
 
-                var business = _businessRepo.GetSelectedByUsername(model.ModifyBy);
-
-                model.BusinessId = business.Id;
-
                 int result = _clientRepo.Update(model);
                 if (result > 0)
                 {
@@ -220,15 +211,13 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-        public ClientModel Activate(string username, int id, bool active)
+        public ClientModel Activate(int businessId, string username, int id, bool active)
         {
             try
             {
                 var output = new ClientModel { IsSucceeded = false };
 
-                var business = _businessRepo.GetSelectedByUsername(username);
-
-                int result = _clientRepo.Activate(business.Id, id, active);
+                int result = _clientRepo.Activate(businessId, username, id, active);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
@@ -252,15 +241,13 @@ namespace Paybook.BusinessLayer.Client
                 throw;
             }
         }
-        public ClientModel Delete(string username, int id)
+        public ClientModel Delete(int businessId, string username, int id)
         {
             try
             {
                 var output = new ClientModel { IsSucceeded = false };
 
-                var business = _businessRepo.GetSelectedByUsername(username);
-
-                int result = _clientRepo.Delete(business.Id, id);
+                int result = _clientRepo.Delete(businessId, username, id);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;

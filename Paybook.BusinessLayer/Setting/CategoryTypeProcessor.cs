@@ -12,14 +12,8 @@ using System.Text;
 
 namespace Paybook.BusinessLayer.Setting
 {
-    public interface ICategoryTypeProcessor
+    public interface ICategoryTypeProcessor : IBaseProcessor<CategoryTypeMasterModel>
     {
-        List<CategoryTypeMasterModel> GetAllByPage(string username, int page, string search, string orderBy);
-        CategoryTypeMasterModel GetById(string username, int id);
-        CategoryTypeMasterModel Create(CategoryTypeMasterModel model);
-        CategoryTypeMasterModel Update(CategoryTypeMasterModel model);
-        CategoryTypeMasterModel Activate(string username, int id, bool active);
-        CategoryTypeMasterModel Delete(string username, int id);
     }
 
     public class CategoryTypeProcessor : ICategoryTypeProcessor
@@ -35,14 +29,11 @@ namespace Paybook.BusinessLayer.Setting
             _business = new BusinessProcessor();
         }
 
-        public List<CategoryTypeMasterModel> GetAllByPage(string username, int page, string search, string orderBy)
+        public List<CategoryTypeMasterModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
             try
             {
-
-                var business = _business.GetSelectedByUsername(username);
-
-                return _type.GetAllByPage(business.Id, page, search, orderBy);
+                return _type.GetAllByPage(businessId, page, search, orderBy);
             }
             catch (Exception ex)
             {
@@ -51,14 +42,11 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public CategoryTypeMasterModel GetById(string username, int id)
+        public CategoryTypeMasterModel GetById(int businessId, int id)
         {
             try
             {
-
-                var business = _business.GetSelectedByUsername(username);
-
-                return _type.GetById(business.Id, id);
+                return _type.GetById(businessId, id);
             }
             catch (Exception ex)
             {
@@ -72,10 +60,6 @@ namespace Paybook.BusinessLayer.Setting
             try
             {
                 CategoryTypeMasterModel output = new CategoryTypeMasterModel();
-
-                var business = _business.GetSelectedByUsername(model.CreateBy);
-
-                model.BusinessId = business.Id;
 
                 int result = _type.Create(model);
                 if (result > 0)
@@ -120,15 +104,13 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public CategoryTypeMasterModel Activate(string username, int id, bool active)
+        public CategoryTypeMasterModel Activate(int businessId, string username, int id, bool active)
         {
             try
             {
                 CategoryTypeMasterModel output = new CategoryTypeMasterModel { IsSucceeded = false };
 
-                var business = _business.GetSelectedByUsername(username);
-
-                int result = _type.Activate(business.Id, id, active);
+                int result = _type.Activate(businessId, username, id, active);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
@@ -154,15 +136,13 @@ namespace Paybook.BusinessLayer.Setting
                 throw;
             }
         }
-        public CategoryTypeMasterModel Delete(string username, int id)
+        public CategoryTypeMasterModel Delete(int businessId, string username, int id)
         {
             try
             {
                 CategoryTypeMasterModel output = new CategoryTypeMasterModel { IsSucceeded = false };
 
-                var business = _business.GetSelectedByUsername(username);
-
-                int result = _type.Delete(business.Id, id);
+                int result = _type.Delete(businessId, username, id);
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
