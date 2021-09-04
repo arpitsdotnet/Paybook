@@ -5,7 +5,6 @@ AS
 BEGIN
 	SELECT COUNT(pay.Id) AS [Count] 
 	FROM Payments pay
-		INNER JOIN InvoicePayments ipay ON pay.Id = ipay.PaymentId
-		INNER JOIN Invoices inv ON ipay.InvoiceId = inv.Id
-	WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND inv.IsActive = 1
+	WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND
+		(PaymentDate BETWEEN DATEADD(DAY, -(@Days), GETDATE()) AND GETDATE())
 END

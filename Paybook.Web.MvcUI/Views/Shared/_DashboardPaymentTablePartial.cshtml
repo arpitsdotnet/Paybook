@@ -11,10 +11,10 @@ else
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.PaymentDate)
+                    @Html.DisplayNameFor(model => model.ClientId)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.IsRefund)
+                    @Html.DisplayNameFor(model => model.PaymentDate)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Method)
@@ -24,24 +24,24 @@ else
                 </th>
             </tr>
         </thead>
-
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PaymentDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsRefund)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Method)
-                </td>
-                <td>
-                    ₹&nbsp;@Html.DisplayFor(modelItem => item.Amount)
-                </td>
-            </tr>
-        }
-
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Client.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PaymentDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Method)
+                    </td>
+                    <td>
+                        ₹&nbsp;@Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
 }

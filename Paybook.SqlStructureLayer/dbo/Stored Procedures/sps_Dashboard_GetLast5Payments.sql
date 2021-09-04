@@ -2,8 +2,9 @@
 	@BusinessId INT
 AS
 BEGIN
-	SELECT TOP 5 [Id],[PaymentDate],[IsSuccess],[Method],[Amount]
-	FROM [dbo].[Payments]
-	WHERE [BusinessId] = @BusinessId AND [IsActive] = 1
-	ORDER BY [PaymentDate] DESC
+	SELECT TOP 5 pay.[Id],clpay.[ClientId],pay.[PaymentDate],pay.[IsSuccess],pay.[Method],pay.[Amount]
+	FROM [dbo].[Payments] pay
+		INNER JOIN [dbo].[ClientPayments] clpay ON pay.Id = clpay.PaymentId
+	WHERE pay.[BusinessId] = @BusinessId AND pay.[IsActive] = 1
+	ORDER BY pay.[PaymentDate] DESC
 END

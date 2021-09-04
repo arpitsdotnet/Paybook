@@ -3,21 +3,12 @@
 AS
 BEGIN
 	--Open | Sent | PaidPartial | Paid | Void | WriteOff
-
-	DECLARE @InvoiceOpenId INT;
-	SELECT @InvoiceOpenId = [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','Open');
-	
-	DECLARE @InvoicePartialPaidId INT;
-	SELECT @InvoicePartialPaidId = [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','PaidPartial');
-
-	DECLARE @InvoicePaidId INT;
-	SELECT @InvoicePaidId = [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','Paid');
-
-	DECLARE @InvoiceVoidId INT;
-	SELECT @InvoiceVoidId = [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','Void');
-
-	DECLARE @InvoiceWriteOffId INT;
-	SELECT @InvoiceWriteOffId = [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','WriteOff');
+		
+	DECLARE @InvoiceOpenId INT = (SELECT [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','Open'));
+	DECLARE @InvoicePartialPaidId INT = (SELECT [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','PaidPartial'));
+	DECLARE @InvoicePaidId INT = (SELECT [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','Paid'));
+	DECLARE @InvoiceVoidId INT = (SELECT [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','Void'));
+	DECLARE @InvoiceWriteOffId INT = (SELECT [Id] FROM fns_Category_GetByCore(@BusinessId,'InvoiceStatus','WriteOff'));
 
 	SELECT (SELECT COUNT(Id) FROM Invoices 
 				WHERE BusinessId = @BusinessId AND IsActive = 1 AND 
@@ -47,44 +38,28 @@ BEGIN
 			AS SumOfOverdue,
 
 			(SELECT Count(pay.Id) FROM Payments AS pay 
-				INNER JOIN InvoicePayments AS invpay ON pay.Id = invpay.PaymentId
-				INNER JOIN Invoices AS inv ON invpay.InvoiceId = inv.Id
 				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND 
-				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()) AND
-				inv.StatusId = @InvoicePartialPaidId)
+				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()))
 			AS CountOfPaidPartial,
 			(SELECT SUM(ISNULL(pay.Amount,0)) FROM Payments AS pay 
-				INNER JOIN InvoicePayments AS invpay ON pay.Id = invpay.PaymentId
-				INNER JOIN Invoices AS inv ON invpay.InvoiceId = inv.Id
 				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND 
-				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()) AND
-				inv.StatusId = @InvoicePartialPaidId)
+				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()))
 			AS SumOfPaidPartialAmount,
 
 			(SELECT Count(pay.Id) FROM Payments AS pay 
-				INNER JOIN InvoicePayments AS invpay ON pay.Id = invpay.PaymentId
-				INNER JOIN Invoices AS inv ON invpay.InvoiceId = inv.Id 
 				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND 
-				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()) AND		
-				inv.StatusId = @InvoicePaidId) 
+				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE())) 
 			AS CountOfPaidAmount,
 			(SELECT SUM(ISNULL(pay.Amount,0)) FROM Payments AS pay 
-				INNER JOIN InvoicePayments AS invpay ON pay.Id = invpay.PaymentId
-				INNER JOIN Invoices AS inv ON invpay.InvoiceId = inv.Id
 				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND 
-				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()) AND		
-				inv.StatusId = @InvoicePaidId) 
+				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()) ) 
 			AS SumOfPaidAmount,
 
-			(SELECT Count(inv.Id) FROM Invoices AS inv
-				WHERE inv.BusinessId = @BusinessId AND inv.IsActive = 1 AND 	
-				inv.StatusId = @InvoicePaidId OR inv.StatusId = @InvoicePartialPaidId) 
+			(SELECT Count(pay.Id) FROM Payments AS pay 
+				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1) 
 			AS CountOfPaymentTotal,
-			(SELECT ISNULL(SUM(pay.Amount),0) FROM Invoices AS inv
-				LEFT JOIN InvoicePayments AS ipay ON inv.Id = ipay.InvoiceId
-				LEFT JOIN Payments AS pay ON ipay.PaymentId = pay.Id 
-				WHERE inv.BusinessId = @BusinessId AND inv.IsActive = 1 AND 	
-				inv.StatusId = @InvoicePaidId OR inv.StatusId = @InvoicePartialPaidId) 
+			(SELECT SUM(ISNULL(pay.Amount,0)) FROM Payments AS pay 
+				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1) 
 			AS SumOfPaymentTotal,
 
 			(SELECT Count(Id) FROM Clients 
