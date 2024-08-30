@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Paybook.BusinessLayer.Abstracts.Utilities;
-using Paybook.DatabaseLayer.Note;
+using Paybook.DatabaseLayer.Features.Utilities;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Xml;

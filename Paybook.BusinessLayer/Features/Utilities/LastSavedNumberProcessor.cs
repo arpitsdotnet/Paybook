@@ -1,7 +1,8 @@
 ﻿using System;
 using Paybook.BusinessLayer.Abstracts.Admins;
 using Paybook.BusinessLayer.Abstracts.Utilities;
-using Paybook.DatabaseLayer.Common;
+using Paybook.DatabaseLayer.Abstracts.Utilities;
+using Paybook.DatabaseLayer.Features.Utilities;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 

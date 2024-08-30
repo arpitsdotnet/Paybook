@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Paybook.BusinessLayer.Abstracts.Outbox;
-using Paybook.DatabaseLayer.Common;
+using Paybook.DatabaseLayer.Abstracts.Outbox;
+using Paybook.DatabaseLayer.Features.Outbox;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models.Activities;
 using Paybook.ServiceLayer.Services;

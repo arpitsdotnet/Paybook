@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using Paybook.BusinessLayer.Abstracts.Admins;
 using Paybook.BusinessLayer.Abstracts.Payments;
-using Paybook.DatabaseLayer.Payment;
+using Paybook.DatabaseLayer.Abstracts.Payments;
+using Paybook.DatabaseLayer.Features.Payments;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Xml;

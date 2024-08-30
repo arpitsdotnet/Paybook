@@ -1,11 +1,9 @@
-﻿using Paybook.ServiceLayer.Logger;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Web;
 using Dapper;
 
@@ -18,13 +16,9 @@ namespace Paybook.DatabaseLayer
     /// </summary>
     public class SQLDataAccess : IDbContext
     {
-        private readonly ILogger _logger;
-
         public SQLDataAccess()
         {
-            _logger = LoggerFactory.Instance;
         }
-
 
         private string GetConnectionString()
         {
@@ -38,19 +32,11 @@ namespace Paybook.DatabaseLayer
         {
             string sConnectionString = GetConnectionString();
 
-            try
+            using (SqlConnection con = new SqlConnection(sConnectionString))
             {
-                using (SqlConnection con = new SqlConnection(sConnectionString))
-                {
-                    List<T> rows = con.Query<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure).ToList();
+                List<T> rows = con.Query<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure).ToList();
 
-                    return rows;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
+                return rows;
             }
         }
 
@@ -58,18 +44,10 @@ namespace Paybook.DatabaseLayer
         {
             string sConnectionString = GetConnectionString();
 
-            try
+            using (SqlConnection con = new SqlConnection(sConnectionString))
             {
-                using (SqlConnection con = new SqlConnection(sConnectionString))
-                {
-                    int i = con.Execute(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-                    return i;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
+                int i = con.Execute(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
+                return i;
             }
         }
 
@@ -77,29 +55,21 @@ namespace Paybook.DatabaseLayer
         {
             string sConnectionString = GetConnectionString();
 
-            try
+            var dynamicp = new Dapper.DynamicParameters();
+            dynamicp.AddDynamicParams(parameters);
+
+            if (size == null)
+                dynamicp.Add(outputVarName, null, dbType: outputDbType, direction: ParameterDirection.Output);
+            else
+                dynamicp.Add(outputVarName, null, dbType: outputDbType, direction: ParameterDirection.Output, size);
+
+            using (SqlConnection con = new SqlConnection(sConnectionString))
             {
-                var dynamicp = new Dapper.DynamicParameters();
-                dynamicp.AddDynamicParams(parameters);
+                int i = con.Execute(storedProcedure, dynamicp, commandType: CommandType.StoredProcedure);
 
-                if (size == null)
-                    dynamicp.Add(outputVarName, null, dbType: outputDbType, direction: ParameterDirection.Output);
-                else
-                    dynamicp.Add(outputVarName, null, dbType: outputDbType, direction: ParameterDirection.Output, size);
+                returnVar = dynamicp.Get<U>(outputVarName);
 
-                using (SqlConnection con = new SqlConnection(sConnectionString))
-                {
-                    int i = con.Execute(storedProcedure, dynamicp, commandType: CommandType.StoredProcedure);
-
-                    returnVar = dynamicp.Get<U>(outputVarName);
-
-                    return i;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
+                return i;
             }
         }
 
@@ -144,16 +114,7 @@ namespace Paybook.DatabaseLayer
             }
             catch (Exception ex)
             {
-                _logger.Error(_logger.GetMethodName(), ex);
-                try
-                {
-                    transaction.Rollback();
-                }
-                catch (Exception ex2)
-                {
-                    _logger.Error(_logger.GetMethodName(), ex2);
-                    throw;
-                }
+                transaction.Rollback();
                 throw;
             }
         }
@@ -185,7 +146,6 @@ namespace Paybook.DatabaseLayer
             catch (Exception ex)
             {
                 transaction.Rollback();
-                _logger.Error(_logger.GetMethodName(), ex);
                 throw;
             }
         }

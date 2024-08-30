@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Paybook.BusinessLayer.Abstracts.Customers;
 using Paybook.BusinessLayer.Abstracts.Invoices;
-using Paybook.DatabaseLayer.Invoice;
+using Paybook.DatabaseLayer.Abstracts.Invoices;
+using Paybook.DatabaseLayer.Features.Invoices;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models.Invoices;
 using Paybook.ServiceLayer.Xml;
