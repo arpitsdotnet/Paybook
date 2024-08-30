@@ -1,4 +1,4 @@
-﻿@model Paybook.Web.MvcUI.Models.ViewModels.InvoiceViewModel
+﻿@model Paybook.ServiceLayer.Models.ViewModels.InvoiceViewModel
 
 @using Paybook.ServiceLayer.Constants;
 
@@ -12,7 +12,14 @@
 
     <div class="row bg-default container-fluid">
         <div class="col-lg-4 col-sm-12">
-            <h4 class="bold"><i class="glyphicon glyphicon-time"></i>&nbsp; INVOICE UPDATE <small>@Model.Invoice.InvoiceNumber</small></h4>
+            <h4 class="bold">
+                <i class="glyphicon glyphicon-time"></i>&nbsp; INVOICE UPDATE
+                <small>@Model.Invoice.InvoiceNumber</small>
+                @if (Model.Invoice.DueDate < DateTime.Now)
+                {
+                    <span class="label label-danger">Overdue</span>
+                }
+            </h4>
         </div>
         <div class="col-lg-offset-4 col-lg-4 col-sm-12 text-right">
             <div class="btn-group pt-3">
@@ -270,15 +277,11 @@
 
         $(document).ready(function () {
 
-
-
             GetClientById('@Model.Invoice.ClientId');
 
             $("#txtInvoiceDate, .input-group.date").datepicker({
                 format: "mm/dd/yyyy", startDate: "new Date()", todayBtn: "linked", orientation: "auto bottom", autoclose: true, todayHighlight: true
             }).datepicker('setDate', 'new Date()');
-
-            CalculateDueDate();
 
             $("#txtInvoiceDate").change(function () {
                 CalculateDueDate();

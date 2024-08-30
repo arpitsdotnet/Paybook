@@ -1,144 +1,78 @@
-﻿using Paybook.ServiceLayer.Logger;
-using Paybook.ServiceLayer.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
+using Paybook.ServiceLayer.Models.Agencies;
 
 namespace Paybook.DatabaseLayer.Agency
 {
-    public interface IAgencyRepository : IBaseRepository<AgencyModel>
-    {
-        List<AgencyModel> GetAllName(int businessId);
-    }
-
     public class AgencyRepository : IAgencyRepository
     {
         private readonly IDbContext _dbContext;
-        private readonly ILogger _logger;
 
         public AgencyRepository()
         {
             _dbContext = DbContextFactory.Instance;
-            _logger = LoggerFactory.Instance;
         }
 
         public List<AgencyModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
+            var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
 
-                var result = _dbContext.LoadData<AgencyModel, dynamic>("sps_Agencies_GetAllByPage", p);
-                //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
+            var result = _dbContext.LoadData<AgencyModel, dynamic>("sps_Agencies_GetAllByPage", p);
+            //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public List<AgencyModel> GetAllName(int businessId)
         {
-            try
-            {
-                var p = new { BusinessId = businessId };
+            var p = new { BusinessId = businessId };
 
-                var result = _dbContext.LoadData<AgencyModel, dynamic>("sps_Agencies_GetAllName", p);
-                //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
+            var result = _dbContext.LoadData<AgencyModel, dynamic>("sps_Agencies_GetAllName", p);
+            //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public AgencyModel GetById(int businessId, int id)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Id = id };
+            var p = new { BusinessId = businessId, Id = id };
 
-                var result = _dbContext.LoadData<AgencyModel, dynamic>("sps_Agencies_GetById", p);
+            var result = _dbContext.LoadData<AgencyModel, dynamic>("sps_Agencies_GetById", p);
 
-                return result.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result.FirstOrDefault();
         }
         public int Create(AgencyModel agencyModel)
         {
-            try
-            {
-                var result = _dbContext.SaveDataOutParam("spi_Agencies_Insert", agencyModel, out int agencyId, DbType.Int32, null, "Id");
-                //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
+            var result = _dbContext.SaveDataOutParam("spi_Agencies_Insert", agencyModel, out int agencyId, DbType.Int32, null, "Id");
+            //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
 
-                agencyModel.ID = agencyId;
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
-
+            agencyModel.ID = agencyId;
+            return result;
         }
         public int Update(AgencyModel agencyModel)
         {
-            try
-            {
-                var result = _dbContext.SaveData("spu_Agencies_Update", agencyModel);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+            var result = _dbContext.SaveData("spu_Agencies_Update", agencyModel);
+            //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int Activate(int businessId, string username, int id, bool active)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
+            var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
 
-                var result = _dbContext.SaveData("spu_Agencies_Activate", p);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+            var result = _dbContext.SaveData("spu_Agencies_Activate", p);
+            //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int Delete(int businessId, string username, int id)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Username = username, Id = id };
+            var p = new { BusinessId = businessId, Username = username, Id = id };
 
-                var result = _dbContext.SaveData("spd_Agencies_Delete", p);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+            var result = _dbContext.SaveData("spd_Agencies_Delete", p);
+            //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
     }
 }

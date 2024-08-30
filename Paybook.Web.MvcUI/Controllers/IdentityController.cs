@@ -1,17 +1,13 @@
-﻿using Paybook.BusinessLayer.Business;
-using Paybook.BusinessLayer.Identity;
-using Paybook.ServiceLayer.Constants;
-using Paybook.ServiceLayer.Logger;
-using Paybook.ServiceLayer.Models;
-using Paybook.Web.MvcUI.Models.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
+﻿using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Identity;
+using Paybook.ServiceLayer.Constants;
+using Paybook.ServiceLayer.Logger;
+using Paybook.ServiceLayer.Models;
+using Paybook.ServiceLayer.Models.ViewModels;
 
 namespace Paybook.Web.MvcUI.Controllers
 {
@@ -22,7 +18,11 @@ namespace Paybook.Web.MvcUI.Controllers
         private readonly IUserProcessor _user;
         private readonly IBusinessProcessor _business;
 
-        public IdentityController(ILogger logger, ILoginProcessor login, IUserProcessor user, IBusinessProcessor business)
+        public IdentityController(
+            ILogger logger,
+            ILoginProcessor login,
+            IUserProcessor user,
+            IBusinessProcessor business)
         {
             _logger = logger;
             _login = login;
@@ -46,30 +46,37 @@ namespace Paybook.Web.MvcUI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(IdentityUserViewModel model, string returnUrl)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                IdentityUserModel identityUser = new IdentityUserModel { Username = model.Username, PasswordHash = model.Password };
-                string result = _login.IsValid(identityUser);
-                if (result == LoginResultConst.UserNotFound)
-                    ModelState.AddModelError(string.Empty, "We did not find the associated user you are trying to login.");
-                else if (result == LoginResultConst.UserNotMatch)
-                    ModelState.AddModelError(string.Empty, "Username and Password does not match in our system.");
-                else if (result == LoginResultConst.UserMatch)
-                {
-                    FormsAuthentication.SetAuthCookie(model.Username, model.IsPersistent);
-
-                    SaveUserdataIntoCookies(model.Username);
-
-                    //var claimsIdentity = (ClaimsIdentity)User.Identity;
-                    //claimsIdentity.AddClaim(new Claim("FullName", $"{userData.FirstName} {userData.LastName}"));
-                    //claimsIdentity.AddClaim(new Claim("Image", (string.IsNullOrEmpty(userData.Image) == true ? "Default.png" : userData.Image)));
-
-                    if (!string.IsNullOrEmpty(returnUrl))
-                        return Redirect(returnUrl);
-                    return RedirectToAction("Dashboard", "Business", new { area = "Chief" });
-                }
+                return View(model);
             }
-            return View(model);
+
+            IdentityUserModel identityUser = new IdentityUserModel { Username = model.Username, PasswordHash = model.Password };
+            string result = _login.IsValid(identityUser);
+            if (result == LoginResultConst.UserNotFound)
+            {
+                ModelState.AddModelError(string.Empty, "We did not find the associated user you are trying to login.");
+                return View(model);
+            }
+            if (result == LoginResultConst.UserNotMatch)
+            {
+                ModelState.AddModelError(string.Empty, "Username and Password does not match in our system.");
+                return View(model);
+            }
+
+            FormsAuthentication.SetAuthCookie(model.Username, model.IsPersistent);
+
+            SaveUserdataIntoCookies(model.Username);
+
+            //var claimsIdentity = (ClaimsIdentity)User.Identity;
+            //claimsIdentity.AddClaim(new Claim("FullName", $"{userData.FirstName} {userData.LastName}"));
+            //claimsIdentity.AddClaim(new Claim("Image", (string.IsNullOrEmpty(userData.Image) == true ? "Default.png" : userData.Image)));
+
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+
+            return RedirectToAction("Dashboard", "Business", new { area = "Chief" });
+
         }
 
         public ActionResult Logout()

@@ -55,12 +55,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Agency\IAgencyRepository.cs" />
+    <Compile Include="Business\IBusinessRepository.cs" />
+    <Compile Include="Client\IClientRepository.cs" />
     <Compile Include="Common\ActivityRepository.cs" />
     <Compile Include="Agency\AgencyRepository.cs" />
     <Compile Include="Business\BusinessRepository.cs" />
     <Compile Include="Client\ClientRepository.cs" />
     <Compile Include="clsCommon.cs" />
     <Compile Include="Common\DashboardRepository.cs" />
+    <Compile Include="Common\IDashboardRepository.cs" />
+    <Compile Include="Common\ILastSavedNumberRepository.cs" />
     <Compile Include="Common\LastSavedNumberRepository.cs" />
     <Compile Include="DbContextFactory.cs" />
     <Compile Include="dsInvoicePayment.Designer.cs">
@@ -69,17 +74,29 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="IDbContext.cs" />
+    <Compile Include="Identity\ILoginRepository.cs" />
+    <Compile Include="Identity\IUserRepository.cs" />
     <Compile Include="Identity\LoginRepository.cs" />
     <Compile Include="Identity\UserRepository.cs" />
+    <Compile Include="Invoice\IInvoicePayRepository.cs" />
+    <Compile Include="Invoice\IInvoiceRepository.cs" />
+    <Compile Include="Invoice\IInvoiceServiceRepository.cs" />
     <Compile Include="Invoice\InvoicePayRepository.cs" />
     <Compile Include="Invoice\InvoiceRepository.cs" />
     <Compile Include="IBaseRepository.cs" />
+    <Compile Include="Note\INoteRepository.cs" />
     <Compile Include="Note\NoteRepository.cs" />
     <Compile Include="Parameter.cs" />
+    <Compile Include="Payment\IPaymentRepository.cs" />
     <Compile Include="Payment\PaymentRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report\IReportRepository.cs" />
     <Compile Include="Report\ReportRepository.cs" />
     <Compile Include="Setting\CategoryRepository.cs" />
+    <Compile Include="Setting\ICategoryRepository.cs" />
+    <Compile Include="Setting\ICategoryTypeRepository.cs" />
+    <Compile Include="Setting\ICountryRepository.cs" />
+    <Compile Include="Setting\IStateRepository.cs" />
     <Compile Include="Setting\StateRepository.cs" />
     <Compile Include="Setting\CountryRepository.cs" />
     <Compile Include="Setting\CategoryTypeRepository.cs" />

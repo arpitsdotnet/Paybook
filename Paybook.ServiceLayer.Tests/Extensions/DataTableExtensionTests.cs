@@ -1,16 +1,12 @@
-﻿using NUnit.Framework;
-using Paybook.ServiceLayer.Extensions;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NUnit.Framework;
+using Paybook.ServiceLayer.Extensions;
 
 namespace Paybook.ServiceLayer.Tests.Extensions
 {
     [TestFixture]
-  public  class DataTableExtensionTests
+    public class DataTableExtensionTests
     {
         public class DataModel
         {

@@ -34,7 +34,7 @@ namespace Paybook.WebUI.Notes
             {
                 _logger.Error(_logger.GetMethodName(), ex);
 
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("OTW901") + "');});", true);
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("OTW901") + "');});", true);
             }
         }
     }

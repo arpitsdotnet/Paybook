@@ -1,7 +1,7 @@
 ﻿using Paybook.BusinessLayer;
-using Paybook.BusinessLayer.Client;
+using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Invoices;
 using Paybook.BusinessLayer.Common;
-using Paybook.BusinessLayer.Invoice;
 using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Logger;
@@ -53,7 +53,7 @@ namespace Paybook.WebUI.Invoice
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("OTW901") + "');});", true);
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("OTW901") + "');});", true);
             }
         }
         protected void btnBack_ServerClick1(object sender, EventArgs e)
@@ -100,7 +100,7 @@ namespace Paybook.WebUI.Invoice
                 }
                 else
                 {
-                    string sMessage = XmlProcessor.ReadXmlFile("PAW601");
+                    string sMessage = XmlMessageHelper.Get("PAW601");
                     ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + sMessage + "');});", true);
 
                     return;

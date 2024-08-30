@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Paybook.ServiceLayer.Models.Clients;
 
 namespace Paybook.ServiceLayer.Models
 {

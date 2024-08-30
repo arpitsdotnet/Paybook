@@ -1,31 +1,22 @@
-﻿using Paybook.DatabaseLayer;
+﻿using System;
+using System.Collections.Generic;
+using Paybook.BusinessLayer.Abstracts.Outbox;
 using Paybook.DatabaseLayer.Common;
 using Paybook.ServiceLayer.Logger;
-using Paybook.ServiceLayer.Models;
+using Paybook.ServiceLayer.Models.Activities;
 using Paybook.ServiceLayer.Services;
 using Paybook.ServiceLayer.Xml;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
 
 namespace Paybook.BusinessLayer.Common
 {
-    public interface IActivityProcessor
-    {
-        List<ActivityModel> GetAllByPage(int businessId, int page, string search, string orderBy);
-        ActivityModel Create(ActivityBuilderModel model);
-    }
-
     public class ActivityProcessor : IActivityProcessor
     {
         private readonly ILogger _logger;
         private readonly IActivityRepository _activity;
 
-        public ActivityProcessor()
+        public ActivityProcessor(ILogger logger)
         {
-            _logger = LoggerFactory.Instance;
+            _logger = logger;
             _activity = new ActivityRepository();
         }
 
@@ -38,7 +29,6 @@ namespace Paybook.BusinessLayer.Common
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-
                 throw;
             }
         }
@@ -46,8 +36,6 @@ namespace Paybook.BusinessLayer.Common
         {
             try
             {
-                var output = new ActivityModel();
-
                 ActivityBuilder activityBuilder = new ActivityBuilder()
                     .AddHeader(model.Title, model.Date, model.TitleCss)
                     .AddBody(model.Type, model.TypeNumber, model.ClientName, model.Title, model.Amount);
@@ -62,21 +50,25 @@ namespace Paybook.BusinessLayer.Common
                 };
 
                 int result = _activity.Create(activityModel);
-                if (result > 0)
+
+                if (result <= 0)
                 {
-                    output.IsSucceeded = true;
-                    output.ReturnMessage = Messages.Get(MTypes.Activity, MStatus.InsertSuccess);
-                    return output;
+                    return new ActivityModel
+                    {
+                        IsSucceeded = false,
+                        ReturnMessage = XmlMessageHelper.Get(MTypes.Activity, MStatus.InsertFailure)
+                    };
                 }
 
-                output.IsSucceeded = false;
-                output.ReturnMessage = Messages.Get(MTypes.Activity, MStatus.InsertFailure);
-                return output;
+                return new ActivityModel
+                {
+                    IsSucceeded = true,
+                    ReturnMessage = XmlMessageHelper.Get(MTypes.Activity, MStatus.InsertSuccess)
+                };
             }
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-
                 throw;
             }
         }

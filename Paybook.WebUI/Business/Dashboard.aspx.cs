@@ -1,8 +1,9 @@
 ﻿using Paybook.BusinessLayer;
+using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Outbox;
+using Paybook.BusinessLayer.Abstracts.Payments;
 using Paybook.BusinessLayer.Business;
-using Paybook.BusinessLayer.Common;
 using Paybook.BusinessLayer.Invoice;
-using Paybook.BusinessLayer.Payment;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Logger;
 using System;

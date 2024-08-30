@@ -1,5 +1,5 @@
 ﻿using Paybook.BusinessLayer;
-using Paybook.BusinessLayer.Setting;
+using Paybook.BusinessLayer.Features.Admins;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Xml;
 using System;
@@ -38,7 +38,7 @@ namespace Paybook.WebUI.Setting
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("") + "');});", true);
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("") + "');});", true);
             }
         }
         protected void Categories_Active_SelectAll()

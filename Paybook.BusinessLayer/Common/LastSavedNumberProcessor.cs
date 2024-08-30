@@ -1,32 +1,25 @@
-﻿using Paybook.BusinessLayer.Business;
+﻿using System;
+using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Utilities;
 using Paybook.DatabaseLayer.Common;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
 
 namespace Paybook.BusinessLayer.Common
 {
-    public interface ILastSavedNumberProcessor
-    {
-        string GetNewNumberByType(string username, string type);
-        //void Update(LastSavedNumberModel model);
-    }
-
     public class LastSavedNumberProcessor : ILastSavedNumberProcessor
     {
         private readonly ILogger _logger;
-        private readonly ILastSavedNumberRepository _lastSavedNumberRepo;
         private readonly IBusinessProcessor _business;
+        private readonly ILastSavedNumberRepository _lastSavedNumberRepo;
 
-        public LastSavedNumberProcessor()
+        public LastSavedNumberProcessor(
+            ILogger logger,
+            IBusinessProcessor business)
         {
-            _logger = LoggerFactory.Instance;
+            _logger = logger;
+            _business = business;
             _lastSavedNumberRepo = new LastSavedNumberRepository();
-            _business = new BusinessProcessor();
         }
 
         public string GetNewNumberByType(string username, string type)

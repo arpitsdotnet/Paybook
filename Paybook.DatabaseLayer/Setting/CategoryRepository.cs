@@ -1,164 +1,86 @@
-﻿using Paybook.ServiceLayer.Models;
-using Paybook.ServiceLayer.Constants;
-using Paybook.ServiceLayer.Extensions;
-using Paybook.ServiceLayer.Xml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using Paybook.ServiceLayer.Logger;
+using Paybook.ServiceLayer.Models;
 
 namespace Paybook.DatabaseLayer.Setting
 {
-    public interface ICategoryRepository : IBaseRepository<CategoryMasterModel>
-    {
-        CategoryMasterModel GetByCore(int businessId, string core);
-        List<CategoryMasterModel> GetAllByTypeCore(int businessId, string typeCore);
-    }
-
     public class CategoryRepository : ICategoryRepository
     {
-        private readonly ILogger _logger;
         private readonly IDbContext _dbContext;
 
         public CategoryRepository()
         {
-            _logger = LoggerFactory.Instance;
             _dbContext = DbContextFactory.Instance;
         }
 
         public List<CategoryMasterModel> GetAllByTypeCore(int businessId, string typeCore)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, TypeCore = typeCore };
+            var p = new { BusinessId = businessId, TypeCore = typeCore };
 
-                var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetAllByTypeCore", p);
+            var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetAllByTypeCore", p);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public CategoryMasterModel GetByCore(int businessId, string core)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Core = core };
+            var p = new { BusinessId = businessId, Core = core };
 
-                var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetByCore", p);
+            var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetByCore", p);
 
-                return result.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result.FirstOrDefault();
         }
 
         public List<CategoryMasterModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
+            var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
 
-                var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetAllByPage", p);
-                //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
+            var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetAllByPage", p);
+            //return _dbContext.LoadDataByProcedure("sps_Agency_SelectName", null);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public CategoryMasterModel GetById(int businessId, int id)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Id = id };
+            var p = new { BusinessId = businessId, Id = id };
 
-                var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetById", p);
+            var result = _dbContext.LoadData<CategoryMasterModel, dynamic>("sps_CategoryMaster_GetById", p);
 
-                return result.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result.FirstOrDefault();
         }
         public int Create(CategoryMasterModel model)
         {
-            try
-            {
-                var result = _dbContext.SaveDataOutParam("spi_CategoryMaster_Insert", model, out int categoryId, DbType.Int32, null, "Id");
-                //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
+            var result = _dbContext.SaveDataOutParam("spi_CategoryMaster_Insert", model, out int categoryId, DbType.Int32, null, "Id");
+            //_dbContext.LoadDataByProcedure("sps_Agency_Insert", oParams);
 
-                model.Id = categoryId;
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
-
+            model.Id = categoryId;
+            return result;
         }
         public int Update(CategoryMasterModel model)
         {
-            try
-            {
-                var result = _dbContext.SaveData("spu_CategoryMaster_Update", model);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+            var result = _dbContext.SaveData("spu_CategoryMaster_Update", model);
+            //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int Activate(int businessId, string username, int id, bool active)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
+            var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
 
-                var result = _dbContext.SaveData("spu_CategoryMaster_Activate", p);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+            var result = _dbContext.SaveData("spu_CategoryMaster_Activate", p);
+            //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int Delete(int businessId, string username, int id)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Username = username, Id = id };
+            var p = new { BusinessId = businessId, Username = username, Id = id };
 
-                var result = _dbContext.SaveData("spd_CategoryMaster_Delete", p);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+            var result = _dbContext.SaveData("spd_CategoryMaster_Delete", p);
+            //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
     }
 }

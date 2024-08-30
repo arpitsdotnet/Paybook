@@ -1,9 +1,11 @@
-﻿using Paybook.BusinessLayer.Client;
-using Paybook.BusinessLayer.Common;
-using Paybook.BusinessLayer.Invoice;
+﻿using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Invoices;
+using Paybook.BusinessLayer.Abstracts.Outbox;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Models;
-using Paybook.Web.MvcUI.Models.ViewModels;
+using Paybook.ServiceLayer.Models.Activities;
+using Paybook.ServiceLayer.Models.Invoices;
+using Paybook.ServiceLayer.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,20 +18,21 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
     [Authorize]
     public class InvoicePayController : Controller
     {
-        private readonly IInvoicePayProcessor _invoicePay;
-        private readonly IInvoiceProcessor _invoice;
-        private readonly IClientProcessor _client;
-        private readonly IActivityProcessor _activity;
+        private readonly IInvoicePayProcessor _invoicePayProcessor;
+        private readonly IInvoiceProcessor _invoiceProcessor;
+        private readonly IClientProcessor _clientProcessor;
+        private readonly IActivityProcessor _activityProcessor;
 
-        public InvoicePayController(IInvoicePayProcessor invoicePay,
+        public InvoicePayController(
+            IInvoicePayProcessor invoicePay,
             IInvoiceProcessor invoice,
             IClientProcessor client,
             IActivityProcessor activity)
         {
-            _invoicePay = invoicePay;
-            _invoice = invoice;
-            _client = client;
-            _activity = activity;
+            _invoicePayProcessor = invoicePay;
+            _invoiceProcessor = invoice;
+            _clientProcessor = client;
+            _activityProcessor = activity;
         }
 
         private int BusinessId { get { return Convert.ToInt32(Request.Cookies[CookieNames.SelectedBusinessId].Value); } }
@@ -41,10 +44,10 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             var invoicePay = new InvoicePayModel();
             invoicePay.InvoiceId = id;
 
-            var invoice = _invoice.GetById(BusinessId, id);
-            var client = _client.GetById(BusinessId, invoice.ClientId);
-            var paidTotal = _invoicePay.GetPaidTotalByInvoiceId(BusinessId, invoice.Id);
-            var clientBalance = _client.GetBalanceTotalById(BusinessId, invoice.ClientId);
+            var invoice = _invoiceProcessor.GetById(BusinessId, id);
+            var client = _clientProcessor.GetById(BusinessId, invoice.ClientId);
+            var paidTotal = _invoicePayProcessor.GetPaidTotalByInvoiceId(BusinessId, invoice.Id);
+            var clientBalance = _clientProcessor.GetBalanceTotalById(BusinessId, invoice.ClientId);
 
             var invpayVM = new InvoicePayViewModel
             {
@@ -85,11 +88,11 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 modelVM.InvoicePay.CreateBy = User.Identity.Name;
 
                 var output = new InvoicePayModel();
-                output = _invoicePay.Create(modelVM.InvoicePay);
+                output = _invoicePayProcessor.Create(modelVM.InvoicePay);
 
                 if (output.IsSucceeded == true)
                 {
-                    _activity.Create(new ActivityBuilderModel
+                    _activityProcessor.Create(new ActivityBuilderModel
                     {
                         BusinessId = BusinessId,
                         CreateBy = User.Identity.Name,

@@ -1,12 +1,21 @@
-using Paybook.BusinessLayer.Business;
-using Paybook.BusinessLayer.Client;
+using Paybook.BusinessLayer.Abstracts.Admins;
+using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Identity;
+using Paybook.BusinessLayer.Abstracts.Invoices;
+using Paybook.BusinessLayer.Abstracts.Outbox;
+using Paybook.BusinessLayer.Abstracts.Payments;
+using Paybook.BusinessLayer.Abstracts.Utilities;
 using Paybook.BusinessLayer.Common;
-using Paybook.BusinessLayer.Identity;
+using Paybook.BusinessLayer.Features.Admins;
+using Paybook.BusinessLayer.Features.Customers;
+using Paybook.BusinessLayer.Features.Identity;
+using Paybook.BusinessLayer.Features.Utilities;
 using Paybook.BusinessLayer.Invoice;
-using Paybook.BusinessLayer.Note;
 using Paybook.BusinessLayer.Payment;
-using Paybook.BusinessLayer.Setting;
+using Paybook.ServiceLayer.Abstracts;
 using Paybook.ServiceLayer.Logger;
+using Paybook.ServiceLayer.Services;
+using Paybook.ServiceLayer.Xml;
 using System.Web.Mvc;
 using Unity;
 using Unity.Mvc5;
@@ -17,13 +26,15 @@ namespace Paybook.Web.MvcUI
     {
         public static void RegisterComponents()
         {
-			var container = new UnityContainer();
+            var container = new UnityContainer();
 
             // register all your components with the container here
             // it is NOT necessary to register your controllers
 
+            container.RegisterType<IMessageProvider, XmlMessageHelperWrapper>();
             container.RegisterInstance<ILogger>(LoggerFactory.Instance);
 
+            container.RegisterType<IDateTimeProvider, DateTimeHelper>();
             container.RegisterType<IActivityProcessor, ActivityProcessor>();
             container.RegisterType<IDashboardProcessor, DashboardProcessor>();
             container.RegisterType<ILastSavedNumberProcessor, LastSavedNumberProcessor>();
@@ -44,6 +55,9 @@ namespace Paybook.Web.MvcUI
             container.RegisterType<IPaymentProcessor, PaymentProcessor>();
             container.RegisterType<INoteProcessor, NoteProcessor>();
             //container.RegisterType<IReportProcessor, ReportProcessor>();
+
+            
+            //container.RegisterType<>(new InjectionConstructor());
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

@@ -1,4 +1,4 @@
-﻿@model Paybook.Web.MvcUI.Models.ViewModels.DashboardViewModel
+﻿@model Paybook.ServiceLayer.Models.ViewModels.DashboardViewModel
 @using Paybook.ServiceLayer.Constants;
 
 @{
@@ -28,10 +28,8 @@
         <div class="container-fluid">
             <div class="row mt-5" style="color: #1b76be">
                 @Html.Partial("_DashboardCounterWidgetPartial", Model.CounterInvoicesOpen)
-                @Html.Partial("_DashboardCounterWidgetPartial", Model.CounterInvoicesOpenLastWeek)
                 @Html.Partial("_DashboardCounterWidgetPartial", Model.CounterInvoicesOverdue)
                 @Html.Partial("_DashboardCounterWidgetPartial", Model.CounterPaymentPaidPartial)
-                @Html.Partial("_DashboardCounterWidgetPartial", Model.CounterPaymentPaidLastMonth)
                 @Html.Partial("_DashboardCounterWidgetPartial", Model.CounterPaymentTotal)
             </div>
         </div>
@@ -39,7 +37,7 @@
             <div class="col-lg-4 col-md-12 pt-5">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Invoice count vs payment count
+                        Invoice count vs deposit count of last 7 days
                     </div>
                     <div class="panel-body">
                         <div id="idInvoicePaymentCount_Chart"></div>
@@ -49,7 +47,7 @@
             <div class="col-lg-8 col-md-12 pt-5">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Invoice total vs payment total of last 7 days
+                        Invoice total vs deposit total of last 7 days
                     </div>
                     <div class="panel-body">
                         <div id="idIPaymentAgainstInvoice_Chart"></div>
@@ -83,7 +81,7 @@
             <div class="col-lg-6 col-md-12 pt-5">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Latest 5 payments
+                        Latest 5 deposits
                     </div>
                     <div class="panel-body">
                         <div id="divLast5Payments"></div>
@@ -190,7 +188,7 @@
                             function drawChart() {
                                 var sData = new Array($Data.length + 1);
 
-                                sData[0] = ["Date", "InvoiceAmount", "PaymentAmount"];
+                                sData[0] = ["Date", "Invoice", "Deposit"];
                                 for (var i = 0; i < $Data.length; i++) {
                                     var sDate = new Date($Data[i].Date);
                                     sData[i + 1] = [$Data[i].Date, parseInt($Data[i].InvoiceAmount), parseInt($Data[i].PaymentAmount)];

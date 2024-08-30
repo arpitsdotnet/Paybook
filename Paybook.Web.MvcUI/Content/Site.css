@@ -139,3 +139,13 @@ blockquote { padding: 5px 5px; }
         .activity-timeline .header .title { padding-left: 30px; font-size: 22px; text-transform: capitalize; }
     .activity-timeline .body { padding-left: 30px; }
         .activity-timeline .body .nowrap { white-space: nowrap; }
+
+.report-list { padding: 30px; background-color: #FFF; position: relative; min-height: 200px; }
+    .report-list ul { list-style: none; }
+        .report-list ul li { border-bottom: solid 2px #EEE; margin-bottom: 15px; padding: 8px; }
+            .report-list ul li a { text-decoration: none; font-size: 16px; color: #666; }
+                .report-list ul li a:hover { color: #333; }
+
+    .report-list #standard { background: url('ICON/business-report.png') right bottom no-repeat; }
+    .report-list #management { background: url('ICON/report (1).png') right bottom no-repeat; }
+    .report-list #accountant { background: url('ICON/analytics.png') right bottom no-repeat; }

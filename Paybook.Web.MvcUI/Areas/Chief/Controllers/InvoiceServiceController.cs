@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
-using Paybook.BusinessLayer.Invoice;
-using Paybook.BusinessLayer.Setting;
+using Paybook.BusinessLayer.Abstracts.Admins;
+using Paybook.BusinessLayer.Abstracts.Invoices;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Models;
-using Paybook.Web.MvcUI.Models.ViewModels;
+using Paybook.ServiceLayer.Models.Invoices;
+using Paybook.ServiceLayer.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +17,15 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
     [Authorize]
     public class InvoiceServiceController : Controller
     {
-        private readonly IInvoiceServiceProcessor _service;
-        private readonly ICategoryProcessor _category;
+        private readonly IInvoiceServiceProcessor _serviceProcessor;
+        private readonly ICategoryProcessor _categoryProcessor;
 
-        public InvoiceServiceController(IInvoiceServiceProcessor service, ICategoryProcessor category)
+        public InvoiceServiceController(
+            IInvoiceServiceProcessor service,
+            ICategoryProcessor category)
         {
-            _service = service;
-            _category = category;
+            _serviceProcessor = service;
+            _categoryProcessor = category;
         }
 
         private int BusinessId { get { return Convert.ToInt32(Request.Cookies[CookieNames.SelectedBusinessId].Value); } }
@@ -43,7 +46,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 // ADD WORK TYPE FOR EACH ITEM
                 foreach (var item in servicesData)
                 {
-                    item.WorkTypeCategoryMaster = _category.GetById(BusinessId, item.WorkTypeId);
+                    item.WorkTypeCategoryMaster = _categoryProcessor.GetById(BusinessId, item.WorkTypeId);
                 }
             }
 
@@ -53,8 +56,8 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Create(int? invoiceId)
         {
-            var workTypes = _category.GetAllByTypeCore(BusinessId, "WorkTypes");
-            var taxTypes = _category.GetAllByTypeCore(BusinessId, "TaxTypes");
+            var workTypes = _categoryProcessor.GetAllByTypeCore(BusinessId, "WorkTypes");
+            var taxTypes = _categoryProcessor.GetAllByTypeCore(BusinessId, "TaxTypes");
 
             var serviceVM = new InvoiceServiceViewModel
             {
@@ -78,8 +81,8 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreatePost(InvoiceServiceViewModel modelVM)
         {
-            var workTypes = _category.GetAllByTypeCore(BusinessId, "WorkTypes");
-            var taxTypes = _category.GetAllByTypeCore(BusinessId, "TaxTypes");
+            var workTypes = _categoryProcessor.GetAllByTypeCore(BusinessId, "WorkTypes");
+            var taxTypes = _categoryProcessor.GetAllByTypeCore(BusinessId, "TaxTypes");
 
             InvoiceServiceViewModel output = new InvoiceServiceViewModel
             {

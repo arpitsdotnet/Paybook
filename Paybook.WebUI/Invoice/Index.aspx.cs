@@ -1,10 +1,10 @@
 ﻿using Paybook.BusinessLayer;
+using Paybook.BusinessLayer.Abstracts.Admins;
+using Paybook.BusinessLayer.Abstracts.Customers;
 using Paybook.BusinessLayer.Agency;
-using Paybook.BusinessLayer.Client;
-using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer;
 using Paybook.ServiceLayer.Logger;
-using Paybook.ServiceLayer.Models;
+using Paybook.ServiceLayer.Models.Clients;
 using System;
 using System.Data;
 using System.Web.UI.WebControls;

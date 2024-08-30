@@ -1,36 +1,27 @@
-﻿using Paybook.BusinessLayer.Business;
-using Paybook.BusinessLayer.Client;
-using Paybook.BusinessLayer.Common;
-using Paybook.BusinessLayer.Invoice;
+﻿using System;
+using System.Collections.Generic;
+using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Payments;
 using Paybook.DatabaseLayer.Payment;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Xml;
-using System;
-using System.Collections.Generic;
 
 namespace Paybook.BusinessLayer.Payment
 {
-    public interface IPaymentProcessor : IBaseProcessor<PaymentModel>
-    {
-        string Payments_SelectMonthsales();
-        List<PaymentModel> GetAllByInvoiceId(int businessId, int invoiceId, int page, string search, string orderBy);
-        List<PaymentModel> GetAllByClientId(int businessId, int clientId);
-        PaymentModel Revert(int businessId, string username, int id);
-    }
-
     public class PaymentProcessor : IPaymentProcessor
     {
         private readonly ILogger _logger;
         private readonly IPaymentRepository _paymentRepo;
         private readonly IBusinessProcessor _business;
 
-        public PaymentProcessor()
+        public PaymentProcessor(
+            ILogger logger,
+            IBusinessProcessor business)
         {
-            _logger = LoggerFactory.Instance;
+            _logger = logger;
+            _business = business;
             _paymentRepo = new PaymentRepository();
-
-            _business = new BusinessProcessor();
         }
 
         [Obsolete]
@@ -82,11 +73,11 @@ namespace Paybook.BusinessLayer.Payment
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatusPayment.RevertSuccess);
+                    output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatusPayment.RevertSuccess);
                     return output;
                 }
                 output.IsSucceeded = false;
-                output.ReturnMessage = Messages.Get(MTypes.Payment, MStatusPayment.RevertFailure);
+                output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatusPayment.RevertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -167,12 +158,12 @@ namespace Paybook.BusinessLayer.Payment
                     //    InvoiceStatus_Core = sPaymentStatus_Core
                     //});
                     output.IsSucceeded = true;
-                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.InsertSuccess);
+                    output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatus.InsertSuccess);
                     return output;
                 }
 
                 output.IsSucceeded = false;
-                output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.InsertFailure);
+                output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatus.InsertFailure);
                 return output;
             }
             catch (Exception ex)
@@ -191,11 +182,11 @@ namespace Paybook.BusinessLayer.Payment
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.UpdateSuccess);
+                    output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatus.UpdateSuccess);
                     return output;
                 }
                 output.IsSucceeded = false;
-                output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.UpdateFailure);
+                output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatus.UpdateFailure);
                 return output;
             }
             catch (Exception ex)
@@ -215,16 +206,16 @@ namespace Paybook.BusinessLayer.Payment
                 {
                     output.IsSucceeded = true;
                     if (active == true)
-                        output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.ActivateSuccess);
+                        output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatus.ActivateSuccess);
                     else
-                        output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.DeactivateSuccess);
+                        output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatus.DeactivateSuccess);
                     return output;
                 }
                 output.IsSucceeded = false;
                 if (active == true)
-                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.ActivateFailure);
+                    output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatus.ActivateFailure);
                 else
-                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.DeactivateFailure);
+                    output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatus.DeactivateFailure);
                 return output;
 
             }
@@ -243,11 +234,11 @@ namespace Paybook.BusinessLayer.Payment
                 if (result > 0)
                 {
                     output.IsSucceeded = true;
-                    output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.DeleteSuccess);
+                    output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatus.DeleteSuccess);
                     return output;
                 }
                 output.IsSucceeded = false;
-                output.ReturnMessage = Messages.Get(MTypes.Payment, MStatus.DeleteFailure);
+                output.ReturnMessage = XmlMessageHelper.Get(MTypes.Payment, MStatus.DeleteFailure);
                 return output;
 
             }

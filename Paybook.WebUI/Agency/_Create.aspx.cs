@@ -1,7 +1,7 @@
 ﻿using Paybook.BusinessLayer;
+using Paybook.BusinessLayer.Abstracts.Admins;
+using Paybook.BusinessLayer.Abstracts.Utilities;
 using Paybook.BusinessLayer.Agency;
-using Paybook.BusinessLayer.Common;
-using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
@@ -64,7 +64,7 @@ namespace Paybook.WebUI.Agency
             {
                 _logger.Error(_logger.GetMethodName(), ex);
 
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("OTW901") + "');});", true);
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("OTW901") + "');});", true);
 
             }
         }
@@ -99,13 +99,13 @@ namespace Paybook.WebUI.Agency
             {
                 if (txtAgencyPhoneNumber1.Text == "" || txtAgencyPhoneNumber1.Text.Length > 10)
                 {
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("BSW010") + "');});", true);
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("BSW010") + "');});", true);
                     return false;
                 }
 
                 else if (txtAgencyName.Text == "")
                 {
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("AGE101") + "');});", true);
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("AGE101") + "');});", true);
                     return false;
                 }
                 return true;

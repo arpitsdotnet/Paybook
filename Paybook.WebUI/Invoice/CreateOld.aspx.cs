@@ -1,6 +1,6 @@
 ﻿using Paybook.BusinessLayer;
+using Paybook.BusinessLayer.Abstracts.Admins;
 using Paybook.BusinessLayer.Agency;
-using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;

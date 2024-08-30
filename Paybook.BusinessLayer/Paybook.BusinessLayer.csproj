@@ -51,24 +51,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Business\BusinessProcessor.cs" />
-    <Compile Include="Client\ClientProcessor.cs" />
+    <Compile Include="Features\Customers\BusinessProcessor.cs" />
+    <Compile Include="Abstracts\Customers\IBusinessProcessor.cs" />
+    <Compile Include="Features\Customers\ClientProcessor.cs" />
     <Compile Include="Common\ActivityProcessor.cs" />
     <Compile Include="Common\DashboardProcessor.cs" />
+    <Compile Include="Abstracts\Outbox\IActivityProcessor.cs" />
+    <Compile Include="Abstracts\Customers\IDashboardProcessor.cs" />
+    <Compile Include="Abstracts\Utilities\ILastSavedNumberProcessor.cs" />
     <Compile Include="Common\LastSavedNumberProcessor.cs" />
+    <Compile Include="Abstracts\Customers\IClientProcessor.cs" />
     <Compile Include="IBaseProcessor.cs" />
-    <Compile Include="Identity\LoginProcessor.cs" />
-    <Compile Include="Identity\UserProcessor.cs" />
-    <Compile Include="Invoice\InvoicePayProcessor.cs" />
-    <Compile Include="Invoice\InvoiceProcessor.cs" />
-    <Compile Include="Note\NoteProcessor.cs" />
+    <Compile Include="Abstracts\Identity\ILoginProcessor.cs" />
+    <Compile Include="Abstracts\Identity\IUserProcessor.cs" />
+    <Compile Include="Features\Identity\LoginProcessor.cs" />
+    <Compile Include="Features\Identity\UserProcessor.cs" />
+    <Compile Include="Abstracts\Invoices\IInvoiceProcessor.cs" />
+    <Compile Include="Abstracts\Invoices\IInvoiceServiceProcessor.cs" />
+    <Compile Include="Abstracts\Invoices\IInvoicePayProcessor.cs" />
+    <Compile Include="Features\Invoices\InvoicePayProcessor.cs" />
+    <Compile Include="Features\Invoices\InvoiceProcessor.cs" />
+    <Compile Include="Abstracts\Utilities\INoteProcessor.cs" />
+    <Compile Include="Features\Utilities\NoteProcessor.cs" />
+    <Compile Include="Abstracts\Payments\IPaymentProcessor.cs" />
     <Compile Include="Payment\PaymentProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Setting\StateProcessor.cs" />
-    <Compile Include="Setting\CountryProcessor.cs" />
-    <Compile Include="Setting\CategoryTypeProcessor.cs" />
-    <Compile Include="Setting\CategoryProcessor.cs" />
-    <Compile Include="Invoice\InvoiceServiceProcessor.cs" />
+    <Compile Include="Abstracts\Admins\ICategoryProcessor.cs" />
+    <Compile Include="Abstracts\Admins\ICategoryTypeProcessor.cs" />
+    <Compile Include="Abstracts\Admins\ICountryProcessor.cs" />
+    <Compile Include="Abstracts\Admins\IStateProcessor.cs" />
+    <Compile Include="Features\Admins\StateProcessor.cs" />
+    <Compile Include="Features\Admins\CountryProcessor.cs" />
+    <Compile Include="Features\Admins\CategoryTypeProcessor.cs" />
+    <Compile Include="Features\Admins\CategoryProcessor.cs" />
+    <Compile Include="Features\Invoices\InvoiceServiceProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -84,6 +100,11 @@
       <Name>Paybook.ServiceLayer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Features\Outbox\" />
+    <Folder Include="Features\Payments\" />
+    <Folder Include="Note\" />
+    <Folder Include="Setting\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

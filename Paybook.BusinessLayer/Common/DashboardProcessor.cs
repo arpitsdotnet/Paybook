@@ -1,51 +1,131 @@
-﻿using Paybook.BusinessLayer.Business;
-using Paybook.BusinessLayer.Invoice;
-using Paybook.BusinessLayer.Payment;
-using Paybook.DatabaseLayer.Common;
-using Paybook.DatabaseLayer.Invoice;
-using Paybook.ServiceLayer.Logger;
-using Paybook.ServiceLayer.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
+using Paybook.BusinessLayer.Abstracts.Admins;
+using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Identity;
+using Paybook.BusinessLayer.Abstracts.Invoices;
+using Paybook.BusinessLayer.Abstracts.Outbox;
+using Paybook.DatabaseLayer.Common;
+using Paybook.ServiceLayer.Logger;
+using Paybook.ServiceLayer.Models;
+using Paybook.ServiceLayer.Models.Dashboards;
+using Paybook.ServiceLayer.Models.Invoices;
+using Paybook.ServiceLayer.Models.ViewModels;
 
 namespace Paybook.BusinessLayer.Common
 {
-    public interface IDashboardProcessor
-    {
-        DashboardCountersModel GetAllCounters(string username);
-        List<DashboardClientChartModel> GetClientCountByDays(string username, int days = 7);
-        List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(string username, int days = 7);
-        List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(string username);
-        List<DashboardInvoiceChartModel> GetPaymentsLast10(string username);
-        List<InvoiceModel> GetLast5Invoices(string username);
-        List<PaymentModel> GetLast5Payments(string username);
-    }
-
     public class DashboardProcessor : IDashboardProcessor
     {
         private readonly ILogger _logger;
-        private readonly IDashboardRepository _dashboardRepo;
         private readonly IBusinessProcessor _business;
         private readonly IInvoiceProcessor _invoice;
+        private readonly IUserProcessor _user;
+        private readonly IClientProcessor _client;
+        private readonly ICategoryProcessor _category;
+        private readonly ICountryProcessor _country;
+        private readonly IStateProcessor _state;
+        private readonly IActivityProcessor _activity;
+        private readonly IDashboardRepository _dashboardRepo;
 
-        public DashboardProcessor()
+        public DashboardProcessor(
+            ILogger logger,
+            IBusinessProcessor business,
+            IInvoiceProcessor invoice,
+            IUserProcessor user,
+            IClientProcessor client,
+            ICategoryProcessor category,
+            ICountryProcessor country,
+            IStateProcessor state,
+            IActivityProcessor activity)
         {
-            _logger = LoggerFactory.Instance;
+            _logger = logger;
+            _business = business;
+            _invoice = invoice;
+            _user = user;
+            _client = client;
+            _category = category;
+            _country = country;
+            _state = state;
+            _activity = activity;
             _dashboardRepo = new DashboardRepository();
-            _business = new BusinessProcessor();
-            _invoice = new InvoiceProcessor();
         }
 
-        public DashboardCountersModel GetAllCounters(string username)
+        public DashboardViewModel GetAllCounters(string username)
         {
             try
             {
                 var business = _business.GetSelectedByUsername(username);
 
-                return _dashboardRepo.GetAllCounters(business.Id);
+                DashboardCountersModel model = _dashboardRepo.GetAllCounters(business.Id);
+
+                DashboardViewModel dashboardVM = new DashboardViewModel
+                {
+                    Business = business,
+
+                    CounterInvoicesOpen = new DashboardCounterWidgetModel
+                    {
+                        BgColorClass = "fwt-blue",
+                        BgColorHoverClass = "fwt-hover-black",
+                        RsSymbolColor = "color: #4d5f68;",
+                        CountText = "Invoices",
+                        Count = model.CountTotalOpenInvoice,
+                        Total = model.SumofTotalOpenInvoice
+                    },
+                    //CounterInvoicesOpenLastWeek = new DashboardCounterWidgetModel
+                    //{
+                    //    BgColorClass = "fwt-deep-purple",
+                    //    BgColorHoverClass = "fwt-hover-black",
+                    //    RsSymbolColor = "color: #562f9A;",
+                    //    CountText = "Open Invoices (Week)",
+                    //    Count = model.CountLastWeekOpenInvoice,
+                    //    Total = model.SumLastWeekOpenInvoice
+                    //},
+                    CounterInvoicesOverdue = new DashboardCounterWidgetModel
+                    {
+                        BgColorClass = "fwt-deep-orange",
+                        BgColorHoverClass = "fwt-hover-black",
+                        RsSymbolColor = "color: #bd4339;",
+                        CountText = "Overdues",
+                        Count = model.CountOfOverdue,
+                        Total = model.SumOfOverdue
+                    },
+                    CounterPaymentPaidPartial = new DashboardCounterWidgetModel
+                    {
+                        BgColorClass = "fwt-blue-grey",
+                        BgColorHoverClass = "fwt-hover-black",
+                        RsSymbolColor = "color: #007469;",
+                        CountText = "Invoice Paid",
+                        Count = model.CountOfPaidPartial,
+                        Total = model.SumOfPaidPartialAmount
+                    },
+                    //CounterPaymentPaidLastMonth = new DashboardCounterWidgetModel
+                    //{
+                    //    BgColorClass = "fwt-blue",
+                    //    BgColorHoverClass = "fwt-hover-black",
+                    //    RsSymbolColor = "color: #1b76be;",
+                    //    CountText = "Paid Invoice (Month)",
+                    //    Count = model.CountOfPaidAmount,
+                    //    Total = model.SumOfPaidAmount
+                    //},
+                    CounterPaymentTotal = new DashboardCounterWidgetModel
+                    {
+                        BgColorClass = "fwt-green",
+                        BgColorHoverClass = "fwt-hover-black",
+                        RsSymbolColor = "color: #2d8630;",
+                        CountText = "Deposits",
+                        Count = model.CountOfPaymentTotal,
+                        Total = model.SumOfPaymentTotal
+                    },
+
+                    ClientCounter = new DashboardCounterWidgetModel
+                    {
+                        Count = model.CountofCustomers,
+                        Total = model.SumOfPaymentTotal
+                    }
+                };
+
+                return dashboardVM;
             }
             catch (Exception ex)
             {
@@ -53,6 +133,18 @@ namespace Paybook.BusinessLayer.Common
 
                 throw;
             }
+        }
+
+        public List<BusinessModel> GetAllBusinesses(string username)
+        {
+            List<BusinessModel> businesses = _business.GetAllByUsername(username);
+            foreach (var business in businesses)
+            {
+                business.CountryMaster = _country.GetById(business.CountryId);
+                business.StateMaster = _state.GetById(business.StateId);
+            }
+
+            return businesses;
         }
 
         public List<DashboardClientChartModel> GetClientCountByDays(string username, int days = 7)
@@ -206,7 +298,7 @@ namespace Paybook.BusinessLayer.Common
                 charts.Add(chart);
                 chart = new DashboardInvoiceChartModel
                 {
-                    Entity = "Payments",
+                    Entity = "Deposits",
                     Count = paymentCount.ToString()
                 };
                 charts.Add(chart);
@@ -257,7 +349,7 @@ namespace Paybook.BusinessLayer.Common
             {
                 var business = _business.GetSelectedByUsername(username);
 
-                return _dashboardRepo.GetLast5Invoices(business.Id);               
+                return _dashboardRepo.GetLast5Invoices(business.Id);
             }
             catch (Exception ex)
             {

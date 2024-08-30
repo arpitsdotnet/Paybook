@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row bg-default container-fluid">
+    <div class="col-lg-3 col-xs-6">
+        <h4 class="bold"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; REPORT LIST</h4>
+    </div>
+    <div class="col-lg-offset-6 col-lg-3 col-xs-6 text-right">
+        <div class="btn-group pt-3">
+            @*<button type="button" class="btn btn-success" onclick="window.location.reload(true);" title="Refresh Page"><i class="glyphicon glyphicon-refresh"></i></button>
+                <a href='@Url.Action("Create")' class="btn btn-primary" title="Create"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create</a>*@
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+
+    <div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#standard" aria-controls="standard" role="tab" data-toggle="tab">Standard (7)</a></li>
+            <li role="presentation" class=""><a href="#management" aria-controls="management" role="tab" data-toggle="tab">Management (3)</a></li>
+            <li role="presentation" class=""><a href="#accountant" aria-controls="accountant" role="tab" data-toggle="tab">Accountant</a></li>
+        </ul>
+        <div class="tab-content report-list">
+            <div role="tabpanel" class="tab-pane fade in active" id="standard">
+                <div id="divStandard" class="row">
+                    <ul class="col-md-4">
+                        <li>@Html.ActionLink("Agency list", "AgencyList", "ReportStandard")</li>
+                        <li>@Html.ActionLink("Client contact list", "ClientContactList", "ReportStandard")</li>
+                        <li>@Html.ActionLink("Deposit details", "DepositDetails", "ReportStandard")</li>
+                    </ul>
+                    <ul class="col-md-4">
+                        <li>@Html.ActionLink("Sales by customer", "SalesByCustomer", "ReportStandard")</li>
+                        <li>@Html.ActionLink("Sales by city", "SalesByCity", "ReportStandard")</li>
+                        <li>@Html.ActionLink("Sales by work type", "SalesByWorkType", "ReportStandard")</li>
+                        <li>@Html.ActionLink("Sales by product/service", "SalesByService", "ReportStandard")</li>
+                    </ul>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="management">
+                <div id="divManagement" class="row">
+                    <ul class="col-md-4">
+                        <li>@Html.ActionLink("Company Overview", "CompanyOverview", "ReportManagement")</li>
+                        <li>@Html.ActionLink("Sales Performance", "SalesPerformance", "ReportManagement")</li>
+                        <li>@Html.ActionLink("Expenses Performance", "ExpensesPerformance", "ReportManagement")</li>
+                    </ul>
+                    <ul class="col-md-4">
+                    </ul>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="accountant">
+                <div id="divAccountant" class="row">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -40,11 +40,32 @@
     <Reference Include="Dapper.Contrib, Version=1.60.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.Contrib.1.60.1\lib\net451\Dapper.Contrib.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,32 +85,44 @@
     <Compile Include="Enums\ExceptionType.cs" />
     <Compile Include="Enums\_FileExtension.cs" />
     <Compile Include="Extensions\DataTableExtension.cs" />
+    <Compile Include="Models\Dashboards\DashboardCounterWidgetModel.cs" />
+    <Compile Include="Models\ViewModels\BusinessViewModel.cs" />
+    <Compile Include="Models\ViewModels\ClientViewModel.cs" />
+    <Compile Include="Models\ViewModels\DashboardViewModel.cs" />
+    <Compile Include="Models\ViewModels\IdentityUserViewModel.cs" />
+    <Compile Include="Models\ViewModels\InvoicePagingViewModel.cs" />
+    <Compile Include="Models\ViewModels\InvoicePayViewModel.cs" />
+    <Compile Include="Models\ViewModels\InvoiceServiceViewModel.cs" />
+    <Compile Include="Models\ViewModels\InvoiceViewModel.cs" />
+    <Compile Include="Models\ViewModels\PaymentViewModel.cs" />
+    <Compile Include="Services\DateTimeHelper.cs" />
+    <Compile Include="Services\IDateTimeProvider.cs" />
     <Compile Include="Logger\LoggerFactory.cs" />
     <Compile Include="Logger\FileLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />
-    <Compile Include="Models\ActivityBuilderModel.cs" />
-    <Compile Include="Models\ActivityModel.cs" />
-    <Compile Include="Models\AgencyModel.cs" />
+    <Compile Include="Models\Activities\ActivityBuilderModel.cs" />
+    <Compile Include="Models\Activities\ActivityModel.cs" />
+    <Compile Include="Models\Agencies\AgencyModel.cs" />
     <Compile Include="Models\BaseResultStatusModel.cs" />
     <Compile Include="Models\BusinessModel.cs" />
     <Compile Include="Models\CategoryMasterModel.cs" />
     <Compile Include="Models\CategoryTypeMasterModel.cs" />
-    <Compile Include="Models\ClientDetailsCountersModel.cs" />
-    <Compile Include="Models\ClientBalanceModel.cs" />
-    <Compile Include="Models\DashboardClientChartModel.cs" />
-    <Compile Include="Models\DashboardInvoiceChartModel.cs" />
-    <Compile Include="Models\ClientModel.cs" />
+    <Compile Include="Models\Clients\ClientDetailsCountersModel.cs" />
+    <Compile Include="Models\Clients\ClientBalanceModel.cs" />
+    <Compile Include="Models\Dashboards\DashboardClientChartModel.cs" />
+    <Compile Include="Models\Dashboards\DashboardInvoiceChartModel.cs" />
+    <Compile Include="Models\Clients\ClientModel.cs" />
     <Compile Include="Models\CountryMasterModel.cs" />
-    <Compile Include="Models\DashboardChartModel.cs" />
-    <Compile Include="Models\DashboardCountersModel.cs" />
-    <Compile Include="Models\InvoiceCountersModel.cs" />
-    <Compile Include="Models\InvoicePayModel.cs" />
-    <Compile Include="Models\InvoiceServiceMiniModel.cs" />
-    <Compile Include="Models\InvoiceModel.cs" />
+    <Compile Include="Models\Dashboards\DashboardChartModel.cs" />
+    <Compile Include="Models\Dashboards\DashboardCountersModel.cs" />
+    <Compile Include="Models\Invoices\InvoiceCountersModel.cs" />
+    <Compile Include="Models\Invoices\InvoicePayModel.cs" />
+    <Compile Include="Models\Invoices\InvoiceServiceMiniModel.cs" />
+    <Compile Include="Models\Invoices\InvoiceModel.cs" />
     <Compile Include="Models\LastSavedNumberModel.cs" />
     <Compile Include="Models\IdentityUserModel.cs" />
     <Compile Include="Models\NoteModel.cs" />
-    <Compile Include="Models\InvoiceServiceModel.cs" />
+    <Compile Include="Models\Invoices\InvoiceServiceModel.cs" />
     <Compile Include="Models\PaymentModel.cs" />
     <Compile Include="Models\RemarkModel.cs" />
     <Compile Include="Models\ReportModel.cs" />
@@ -100,11 +133,14 @@
     <Compile Include="Paging\PagingEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ActivityBuilder.cs" />
-    <Compile Include="Xml\Messages.cs" />
+    <Compile Include="Services\SelectListItemGenerator.cs" />
+    <Compile Include="Abstracts\IMessageProvider.cs" />
+    <Compile Include="Xml\XmlMessageHelper.cs" />
     <Compile Include="Xml\MStatus.cs" />
     <Compile Include="Xml\MTypes.cs" />
     <Compile Include="Xml\MStatusBusiness.cs" />
     <Compile Include="Xml\MStatusPayment.cs" />
+    <Compile Include="Xml\XmlMessageHelperWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

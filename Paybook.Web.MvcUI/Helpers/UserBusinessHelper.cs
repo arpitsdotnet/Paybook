@@ -1,5 +1,5 @@
-﻿using Paybook.BusinessLayer.Business;
-using Paybook.BusinessLayer.Identity;
+﻿using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,35 +1,17 @@
-﻿using Paybook.ServiceLayer;
-using Paybook.ServiceLayer.Constants;
-using Paybook.ServiceLayer.Extensions;
-using Paybook.ServiceLayer.Logger;
-using Paybook.ServiceLayer.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
+using Paybook.ServiceLayer.Models.Clients;
 
 namespace Paybook.DatabaseLayer.Client
 {
-    public interface IClientRepository : IBaseRepository<ClientModel>
-    {
-        bool IsExist(string createBy, string name);
-        int GetCount(int businessId);
-        ClientDetailsCountersModel GetCountersById(int businessId, int Id);
-        decimal GetBalanceTotalById(int businessId, int id);
-
-        [Obsolete]
-        ClientModel[] GetPaymentByClientID(string sCustomer_ID);
-    }
 
     public class ClientRepository : IClientRepository
     {
-        private readonly ILogger _logger;
         private readonly IDbContext _dbContext;
 
         public ClientRepository()
         {
-            _logger = LoggerFactory.Instance;
             _dbContext = DbContextFactory.Instance;
         }
         public ClientModel[] GetPaymentByClientID(string sCustomer_ID)
@@ -119,211 +101,131 @@ namespace Paybook.DatabaseLayer.Client
 
         public int GetCount(int businessId)
         {
-            try
-            {
-                var p = new { BusinessId = businessId };
+            var p = new { BusinessId = businessId };
 
-                var result = _dbContext.SaveDataOutParam("sps_Clients_GetCount", p, out int count, DbType.Int32, null, "Count");
+            var result = _dbContext.SaveDataOutParam("sps_Clients_GetCount", p, out int count, DbType.Int32, null, "Count");
 
-                return count;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return count;
         }
         public ClientDetailsCountersModel GetCountersById(int businessId, int id)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Id = id };
+            var p = new { BusinessId = businessId, Id = id };
 
-                var result = _dbContext.LoadData<ClientDetailsCountersModel, dynamic>("sps_Clients_GetCountersById", p);
+            var result = _dbContext.LoadData<ClientDetailsCountersModel, dynamic>("sps_Clients_GetCountersById", p);
 
-                return result.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result.FirstOrDefault();
         }
         public bool IsExist(string createBy, string name)
         {
-            try
-            {
-                var p = new { createBy, Name = name };
-                var result = _dbContext.SaveDataOutParam("sps_Clients_IsExist", p, out bool isExist, DbType.Boolean, null, "IsExist");
-                //DataTable dt = _dbContext.LoadDataByProcedure("sps_Customer_IsExist", oParams);
-                //if (dt.Rows.Count > 0 && dt != null)
-                //{
-                //    if (Int32.Parse(dt.Rows[0]["CustomerID"].ToString()) != 0)
-                //    {
-                //        return true;
-                //    }
-                //}
+            var p = new { createBy, Name = name };
+            var result = _dbContext.SaveDataOutParam("sps_Clients_IsExist", p, out bool isExist, DbType.Boolean, null, "IsExist");
+            //DataTable dt = _dbContext.LoadDataByProcedure("sps_Customer_IsExist", oParams);
+            //if (dt.Rows.Count > 0 && dt != null)
+            //{
+            //    if (Int32.Parse(dt.Rows[0]["CustomerID"].ToString()) != 0)
+            //    {
+            //        return true;
+            //    }
+            //}
 
-                return isExist;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-
-                throw;
-            }
+            return isExist;
 
         }
         public decimal GetBalanceTotalById(int businessId, int id)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Id = id };
+            var p = new { BusinessId = businessId, Id = id };
 
-                var result = _dbContext.LoadData<decimal, dynamic>("sps_Clients_GetBalanceTotalById", p);
+            var result = _dbContext.LoadData<decimal, dynamic>("sps_Clients_GetBalanceTotalById", p);
 
-                return result.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result.FirstOrDefault();
         }
 
         public List<ClientModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
+            var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
 
-                var result = _dbContext.LoadData<ClientModel, dynamic>("sps_Clients_GetAllByPage", p);
+            var result = _dbContext.LoadData<ClientModel, dynamic>("sps_Clients_GetAllByPage", p);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public ClientModel GetById(int businessId, int id)
         {
-            try
+            var p = new
             {
-                var p = new { BusinessId = businessId, Id = id };
-
-                var result = _dbContext.LoadData<ClientModel, dynamic>("sps_Clients_GetById", p);
-
-                return result.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+                BusinessId = businessId,
+                Id = id
+            };
+            var result = _dbContext.LoadData<ClientModel, dynamic>("sps_Clients_GetById", p);
+            return result.FirstOrDefault();
         }
         public int Create(ClientModel model)
         {
-            try
+            var p = new
             {
-                var p = new
-                {
-                    model.BusinessId,
-                    model.CreateBy,
-                    model.Name,
-                    model.AgencyName,
-                    model.PhoneNumber1,
-                    model.PhoneNumber2,
-                    model.Email,
-                    model.AddressLine1,
-                    model.AddressLine2,
-                    model.City,
-                    model.StateId,
-                    model.CountryId,
-                    model.Pincode,
-                    model.OpeningBalance,
-                };
+                model.BusinessId,
+                model.CreateBy,
+                model.Name,
+                model.AgencyName,
+                model.PhoneNumber1,
+                model.PhoneNumber2,
+                model.Email,
+                model.AddressLine1,
+                model.AddressLine2,
+                model.City,
+                model.StateId,
+                model.CountryId,
+                model.Pincode,
+                model.OpeningBalance,
+            };
 
-                var result = _dbContext.SaveDataOutParam("spi_Clients_Insert", p, out int clientId, DbType.Int32, null, "Id");
-                //_dbContext.LoadDataByProcedure("sps_Customer_Insert", oParams);
+            var result = _dbContext.SaveDataOutParam("spi_Clients_Insert", p, out int clientId, DbType.Int32, null, "Id");
+            //_dbContext.LoadDataByProcedure("sps_Customer_Insert", oParams);
 
-                model.Id = clientId;
+            model.Id = clientId;
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
-
+            return result;
         }
         public int Update(ClientModel model)
         {
-            try
+            var p = new
             {
-                var p = new
-                {
-                    model.Id,
-                    model.BusinessId,
-                    model.ModifyBy,
-                    model.Name,
-                    model.AgencyName,
-                    model.PhoneNumber1,
-                    model.PhoneNumber2,
-                    model.Email,
-                    model.AddressLine1,
-                    model.AddressLine2,
-                    model.City,
-                    model.StateId,
-                    model.CountryId,
-                    model.Pincode
-                };
-                var result = _dbContext.SaveData("spu_Clients_Update", p);
-                //_dbContext.LoadDataByProcedure("sps_Customers_Update", oParams);
+                model.Id,
+                model.BusinessId,
+                model.ModifyBy,
+                model.Name,
+                model.AgencyName,
+                model.PhoneNumber1,
+                model.PhoneNumber2,
+                model.Email,
+                model.AddressLine1,
+                model.AddressLine2,
+                model.City,
+                model.StateId,
+                model.CountryId,
+                model.Pincode
+            };
+            var result = _dbContext.SaveData("spu_Clients_Update", p);
+            //_dbContext.LoadDataByProcedure("sps_Customers_Update", oParams);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int Activate(int businessId, string username, int id, bool active)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
+            var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
 
-                var result = _dbContext.SaveData("spu_Clients_Activate", p);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+            var result = _dbContext.SaveData("spu_Clients_Activate", p);
+            //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int Delete(int businessId, string username, int id)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Username = username, Id = id };
+            var p = new { BusinessId = businessId, Username = username, Id = id };
 
-                var result = _dbContext.SaveData("spd_Clients_Delete", p);
-                //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
+            var result = _dbContext.SaveData("spd_Clients_Delete", p);
+            //_dbContext.LoadDataByProcedure("sps_Agency_Update", oParams);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
     }
 }

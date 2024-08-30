@@ -1,4 +1,4 @@
-﻿using Paybook.BusinessLayer.Note;
+﻿using Paybook.BusinessLayer.Abstracts.Utilities;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Xml;
@@ -45,7 +45,7 @@ namespace Paybook.WebUI.Note
             {
                 _logger.Error(_logger.GetMethodName(), ex);
 
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("OTW901") + "');});", true);
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("OTW901") + "');});", true);
             }
         }
         protected void btnSave_Click(object sender, EventArgs e)
@@ -86,7 +86,7 @@ namespace Paybook.WebUI.Note
                 }
                 else
                 {
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("BSW016") + "');});", true);
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("BSW016") + "');});", true);
                 }
             }
 
@@ -94,7 +94,7 @@ namespace Paybook.WebUI.Note
             {
                 _logger.Error(_logger.GetMethodName(), ex);
 
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("OTW901") + "');});", true);
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("OTW901") + "');});", true);
             }
         }
 

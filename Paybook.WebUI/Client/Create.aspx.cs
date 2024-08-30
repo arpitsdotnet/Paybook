@@ -1,11 +1,11 @@
 ﻿using Paybook.BusinessLayer;
+using Paybook.BusinessLayer.Abstracts.Admins;
+using Paybook.BusinessLayer.Abstracts.Customers;
 using Paybook.BusinessLayer.Agency;
-using Paybook.BusinessLayer.Client;
 using Paybook.BusinessLayer.Common;
-using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer;
 using Paybook.ServiceLayer.Logger;
-using Paybook.ServiceLayer.Models;
+using Paybook.ServiceLayer.Models.Clients;
 using Paybook.ServiceLayer.Xml;
 using System;
 using System.Collections.Generic;
@@ -69,7 +69,7 @@ namespace Paybook.WebUI.Client
             {
                 _logger.Error(_logger.GetMethodName(), ex);
 
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("OTW901") + "');});", true);
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("OTW901") + "');});", true);
             }
         }
         protected void btnSubmit_Click(object sender, EventArgs e)
@@ -300,11 +300,11 @@ namespace Paybook.WebUI.Client
             try
             {
                 if (txtCustomerPhoneNumber1.Text == "" || txtCustomerPhoneNumber1.Text.Length > 10)
-                    return XmlProcessor.ReadXmlFile("BSW010");
+                    return XmlMessageHelper.Get("BSW010");
 
 
                 else if (txtCustomerFirstName.Text == "")
-                    return XmlProcessor.ReadXmlFile("CU101");
+                    return XmlMessageHelper.Get("CU101");
 
                 else
                 {

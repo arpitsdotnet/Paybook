@@ -43,8 +43,8 @@
                             </a>
                             <ul class="dropdown-menu" role="menu">
                                 @*<li><a href="/agencies">Agency List</a></li>
-                                    <li><a onclick="return OpenPartialPagePopup('agency/create','CREATE AGENCY');" href="#">Create Agency</a></li>
-                                    <li class="divider"></li>*@
+                <li><a onclick="return OpenPartialPagePopup('agency/create','CREATE AGENCY');" href="#">Create Agency</a></li>
+                <li class="divider"></li>*@
                                 <li><a href="@Url.Action("Index", "Client", new { area = "Chief" })"><i class="glyphicon glyphicon-list"></i>&nbsp; Client List</a></li>
                                 <li><a href="@Url.Action("Create", "Client", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Client</a></li>
                             </ul>
@@ -63,18 +63,6 @@
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                <i class="glyphicon glyphicon-list-alt"></i>&nbsp; Reports <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="@Url.Action("Agency", "Report", new { area = "Chief" })"><i class="glyphicon glyphicon-list"></i>&nbsp; Agency Reports</a></li>
-                                <li><a href="@Url.Action("Client", "Report", new { area = "Chief" })"><i class="glyphicon glyphicon-list"></i>&nbsp; Client Reports</a></li>
-                                <li><a href="@Url.Action("Invoice", "Report", new { area = "Chief" })"><i class="glyphicon glyphicon-list"></i>&nbsp; Invoice Reports</a></li>
-                                <li><a href="@Url.Action("WorkType", "Report", new { area = "Chief" })"><i class="glyphicon glyphicon-list"></i>&nbsp; Work Type Reports</a></li>
-                                <li><a href="@Url.Action("Accounting", "Report", new { area = "Chief" })"><i class="glyphicon glyphicon-list"></i>&nbsp; Accounting Reports</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <i class="glyphicon glyphicon-edit"></i>&nbsp; Notes <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
@@ -82,6 +70,7 @@
                                 <li><a href="@Url.Action("Create", "Note", new { area = "Chief" })"><i class="glyphicon glyphicon-plus"></i>&nbsp; Create Note</a></li>
                             </ul>
                         </li>
+                        <li><a href="@Url.Action("Index", "Report", new { area = "Chief" })"><i class="glyphicon glyphicon-signal"></i>&nbsp; Reports</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <i class="glyphicon glyphicon-cog"></i>&nbsp; Settings <span class="caret"></span>

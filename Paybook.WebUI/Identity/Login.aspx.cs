@@ -1,5 +1,5 @@
 ﻿using Paybook.BusinessLayer;
-using Paybook.BusinessLayer.Identity;
+using Paybook.BusinessLayer.Abstracts.Identity;
 using Paybook.BusinessLayer.Invoice;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Enums;
@@ -42,7 +42,7 @@ namespace Paybook.WebUI.Identity
             {
                 _logger.Error(_logger.GetMethodName(), ex);
 
-                ExceptionMessage(ExceptionType.ERROR, XmlProcessor.ReadXmlFile("OTW901"));
+                ExceptionMessage(ExceptionType.ERROR, XmlMessageHelper.Get("OTW901"));
             }
         }
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -65,12 +65,12 @@ namespace Paybook.WebUI.Identity
                 string result = _login.IsValid(userModel);
                 if(result == LoginResultConst.UserNotMatch)
                 {
-                    ExceptionMessage(ExceptionType.WARNING, XmlProcessor.ReadXmlFile("UserNotMatch"));
+                    ExceptionMessage(ExceptionType.WARNING, XmlMessageHelper.Get("UserNotMatch"));
                     return;
                 }
                 else if (result == LoginResultConst.UserNotFound)
                 {
-                    ExceptionMessage(ExceptionType.WARNING, XmlProcessor.ReadXmlFile("UserNotFound"));
+                    ExceptionMessage(ExceptionType.WARNING, XmlMessageHelper.Get("UserNotFound"));
                     return;
                 }
                 else if (result == LoginResultConst.UserMatch)
@@ -79,12 +79,12 @@ namespace Paybook.WebUI.Identity
                     Response.Redirect(Application["Path"] + "dashboard", false);
                 }
 
-                ExceptionMessage(ExceptionType.WARNING, XmlProcessor.ReadXmlFile("BSW006"));
+                ExceptionMessage(ExceptionType.WARNING, XmlMessageHelper.Get("BSW006"));
             }
             catch (Exception ex)
             {
                 _logger.Error(_logger.GetMethodName(), ex);
-                ExceptionMessage(ExceptionType.ERROR, XmlProcessor.ReadXmlFile("OTW901"));
+                ExceptionMessage(ExceptionType.ERROR, XmlMessageHelper.Get("OTW901"));
             }
         }
         //private void OverdueInvoicesInsertToActivitiesOnFirstRun()
@@ -147,11 +147,11 @@ namespace Paybook.WebUI.Identity
         {
             if (loginModel.Username == "" || loginModel.PasswordHash == "")
             {
-                return XmlProcessor.ReadXmlFile("BSW007");
+                return XmlMessageHelper.Get("BSW007");
             }
             if (!IsCaptchaValid())
             {
-                return XmlProcessor.ReadXmlFile("BSW015");
+                return XmlMessageHelper.Get("BSW015");
             }
 
             return string.Empty;

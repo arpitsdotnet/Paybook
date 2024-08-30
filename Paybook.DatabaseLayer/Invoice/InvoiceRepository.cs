@@ -1,77 +1,39 @@
-﻿using AutoMapper;
-using Paybook.DatabaseLayer.Common;
-using Paybook.ServiceLayer.Constants;
-using Paybook.ServiceLayer.Extensions;
-using Paybook.ServiceLayer.Logger;
-using Paybook.ServiceLayer.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
+using AutoMapper;
+using Paybook.DatabaseLayer.Common;
+using Paybook.ServiceLayer.Models.Invoices;
 
 namespace Paybook.DatabaseLayer.Invoice
 {
-    public interface IInvoiceRepository : IBaseRepository<InvoiceModel>
-    {
-        InvoiceCountersModel GetAllCounters(int businessId);
-        List<InvoiceModel> GetAllByClientId(int businessId, int clientId);
-        bool Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID);
-        bool Invoices_Update_OverdueStatus(string sInvoice_ID, string sCategory_Core, string sStatus_Core);
-        bool CreateInvoiceActivity(string sCreatedBY, string sStatus_Core);
-        DataTable GetByStatusOverdue();
-        int CreateWithServices(InvoiceModel invoice, List<InvoiceServiceModel> services);
-        int UpdateVoid(int businessId, int invoiceId);
-        int UpdateWriteOff(int businessId, int invoiceId);
-
-        int GetAllPagesCount(int businessId, int page, string search, string orderBy);
-    }
-
     public class InvoiceRepository : IInvoiceRepository
     {
-        private readonly ILogger _logger;
         private readonly IDbContext _dbContext;
         private readonly IActivityRepository _activityRepo;
 
         public InvoiceRepository()
         {
-            _logger = LoggerFactory.Instance;
             _dbContext = DbContextFactory.Instance;
             _activityRepo = new ActivityRepository();
         }
 
         public InvoiceCountersModel GetAllCounters(int businessId)
         {
-            try
-            {
-                var p = new { BusinessId = businessId };
+            var p = new { BusinessId = businessId };
 
-                var result = _dbContext.LoadData<InvoiceCountersModel, dynamic>("sps_Invoices_GetCounters", p);
+            var result = _dbContext.LoadData<InvoiceCountersModel, dynamic>("sps_Invoices_GetCounters", p);
 
-                return result.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result.FirstOrDefault();
         }
 
         public List<InvoiceModel> GetAllByClientId(int businessId, int clientId)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, ClientId = clientId };
+            var p = new { BusinessId = businessId, ClientId = clientId };
 
-                var result = _dbContext.LoadData<InvoiceModel, dynamic>("sps_Invoices_GetAllByClientId", p);
+            var result = _dbContext.LoadData<InvoiceModel, dynamic>("sps_Invoices_GetAllByClientId", p);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
 
         //public static clsInvoices[] Invoice_SelectParticular()
@@ -128,122 +90,75 @@ namespace Paybook.DatabaseLayer.Invoice
         //}
         internal DataTable Invoices_SelectCounts_OpenInvoice()
         {
-            try
-            {
-                return new DataTable();// _dbContext.LoadDataByProcedure("sps_Dashboard_SelectCounts_OpenInvoice", null);
-
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-
-                throw;
-            }
+            return new DataTable();// _dbContext.LoadDataByProcedure("sps_Dashboard_SelectCounts_OpenInvoice", null);
         }
         internal DataTable Invoices_SelectCounts_Overdue()
         {
-            try
-            {
-                return new DataTable();// _dbContext.LoadDataByProcedure("sps_Dashboard_SelectCounts_Overdue", null);
-
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-
-                throw;
-            }
+            return new DataTable();// _dbContext.LoadDataByProcedure("sps_Dashboard_SelectCounts_Overdue", null);
         }
         public bool Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID)
         {
-            try
-            {
-                //Update Invoice Table Status
-                List<Parameter> oParams = new List<Parameter>
+            //Update Invoice Table Status
+            List<Parameter> oParams = new List<Parameter>
                 {
                     new Parameter("sParticular", sParticular),
                     new Parameter("sCategory_Core", sCategory_Core),
                     new Parameter("sInvoiceStatus_Core", sStatus_Core),
                     new Parameter("sReason", sReason)
                 };
-                //_dbContext.LoadDataByProcedure("sps_Invoice_UpdateCloseStatus", oParams);
+            //_dbContext.LoadDataByProcedure("sps_Invoice_UpdateCloseStatus", oParams);
 
-                //Insert Into Activity Table
-                //_activityRepo.Create(new ActivityModel
-                //{
-                //    CreatedBY = sCreatedBY,
-                //    Activity_Date = DateTime.Now.ToString("dd/MM/yyyy"),
-                //    InvoiceStatus_Core = sStatus_Core,
-                //    Customer_ID = sCustomer_ID,
-                //    PaymentAmount = " ",
-                //    Category_Core = sCategory_Core,
-                //    Particular = sParticular
-                //});
+            //Insert Into Activity Table
+            //_activityRepo.Create(new ActivityModel
+            //{
+            //    CreatedBY = sCreatedBY,
+            //    Activity_Date = DateTime.Now.ToString("dd/MM/yyyy"),
+            //    InvoiceStatus_Core = sStatus_Core,
+            //    Customer_ID = sCustomer_ID,
+            //    PaymentAmount = " ",
+            //    Category_Core = sCategory_Core,
+            //    Particular = sParticular
+            //});
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-
-                throw;
-            }
+            return true;
 
         }
         public bool Invoices_Update_OverdueStatus(string sInvoice_ID, string sCategory_Core, string sStatus_Core)
         {
-            try
-            {
-                //Update Invoice Table Status
-                List<Parameter> oParams = new List<Parameter>();
-                oParams.Add(new Parameter("sInvoice_ID", sInvoice_ID));
-                oParams.Add(new Parameter("sCategory_Core", sCategory_Core));
-                oParams.Add(new Parameter("sInvoiceStatus_Core", sStatus_Core));
-                //_dbContext.LoadDataByProcedure("sps_Invoices_UpdateOverdueStatus", oParams);
+            //Update Invoice Table Status
+            List<Parameter> oParams = new List<Parameter>();
+            oParams.Add(new Parameter("sInvoice_ID", sInvoice_ID));
+            oParams.Add(new Parameter("sCategory_Core", sCategory_Core));
+            oParams.Add(new Parameter("sInvoiceStatus_Core", sStatus_Core));
+            //_dbContext.LoadDataByProcedure("sps_Invoices_UpdateOverdueStatus", oParams);
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-
-                throw;
-            }
+            return true;
 
         }
         public bool CreateInvoiceActivity(string sCreatedBY, string sStatus_Core)
         {
-            try
-            {
-                //DataTable dt = GetByStatusOverdue();
-                //if (dt != null && dt.Rows.Count > 0)
-                //{
-                //    foreach (DataRow dr in dt.Rows)
-                //    {
-                //        var model = new ActivityModel
-                //        {
-                //            CreateBy = sCreatedBY,
-                //            UserId = sStatus_Core,
-                //            BusinessID = dr["Agency_ID"].ToString(),
-                //            Status = dr["Customer_ID"].ToString(),
-                //            Text = dr["Amount"].ToString(),
-                //            HtmlText = dr["Category_Core"].ToString()
-                //        };
+            //DataTable dt = GetByStatusOverdue();
+            //if (dt != null && dt.Rows.Count > 0)
+            //{
+            //    foreach (DataRow dr in dt.Rows)
+            //    {
+            //        var model = new ActivityModel
+            //        {
+            //            CreateBy = sCreatedBY,
+            //            UserId = sStatus_Core,
+            //            BusinessID = dr["Agency_ID"].ToString(),
+            //            Status = dr["Customer_ID"].ToString(),
+            //            Text = dr["Amount"].ToString(),
+            //            HtmlText = dr["Category_Core"].ToString()
+            //        };
 
-                //        _activityRepo.Create(model);
+            //        _activityRepo.Create(model);
 
-                //        //Invoices_Update_OverdueStatus(model.Invoice_ID, model.Category_Core, model.InvoiceStatus_Core);
-                //    }
-                //}
+            //        //Invoices_Update_OverdueStatus(model.Invoice_ID, model.Category_Core, model.InvoiceStatus_Core);
+            //    }
+            //}
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-
-                throw;
-            }
+            return true;
         }
         public DataTable GetByStatusOverdue()
         {
@@ -251,195 +166,115 @@ namespace Paybook.DatabaseLayer.Invoice
         }
         public int CreateWithServices(InvoiceModel invoice, List<InvoiceServiceModel> services)
         {
-            try
+            var p = new
             {
-                var p = new
-                {
-                    invoice.BusinessId,
-                    invoice.CreateBy,
-                    invoice.InvoiceNumber,
-                    invoice.Description,
-                    invoice.InvoiceDate,
-                    invoice.StatusId,
-                    invoice.ClientId,
-                    invoice.ClientEmail,
-                    invoice.BillingAddress,
-                    invoice.TermsId,
-                    invoice.DueDate,
-                    IsOverdue = 0,
-                    invoice.Message,
-                    invoice.Subtotal,
-                    invoice.TaxableTotal,
-                    invoice.DiscountTypeId,
-                    invoice.DiscountAmount,
-                    invoice.DiscountTotal,
-                    invoice.Total
-                };
+                invoice.BusinessId,
+                invoice.CreateBy,
+                invoice.InvoiceNumber,
+                invoice.Description,
+                invoice.InvoiceDate,
+                invoice.StatusId,
+                invoice.ClientId,
+                invoice.ClientEmail,
+                invoice.BillingAddress,
+                invoice.TermsId,
+                invoice.DueDate,
+                IsOverdue = 0,
+                invoice.Message,
+                invoice.Subtotal,
+                invoice.TaxableTotal,
+                invoice.DiscountTypeId,
+                invoice.DiscountAmount,
+                invoice.DiscountTotal,
+                invoice.Total
+            };
 
-                var config = new MapperConfiguration(cfg =>
-                    cfg.CreateMap<InvoiceServiceModel, InvoiceServiceMiniModel>()
-                );
+            var config = new MapperConfiguration(cfg =>
+                cfg.CreateMap<InvoiceServiceModel, InvoiceServiceMiniModel>()
+            );
 
-                var mapper = new Mapper(config);
+            var mapper = new Mapper(config);
 
-                var mapperContext = mapper.DefaultContext;
-                var submodel = mapperContext.Mapper.Map<List<InvoiceServiceMiniModel>>(services);
+            var mapperContext = mapper.DefaultContext;
+            var submodel = mapperContext.Mapper.Map<List<InvoiceServiceMiniModel>>(services);
 
-                var result = _dbContext.SaveDataWithSubdata("spi_Invoices_Insert", "spi_InvoiceServices_Insert", p, submodel, "InvoiceId", out int invoiceId, DbType.Int32, null, "Id");
+            var result = _dbContext.SaveDataWithSubdata("spi_Invoices_Insert", "spi_InvoiceServices_Insert", p, submodel, "InvoiceId", out int invoiceId, DbType.Int32, null, "Id");
 
-                invoice.Id = invoiceId;
+            invoice.Id = invoiceId;
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int UpdateVoid(int businessId, int invoiceId)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, InvoiceId = invoiceId };
+            var p = new { BusinessId = businessId, InvoiceId = invoiceId };
 
-                var result = _dbContext.SaveData("spu_Invoices_UpdateVoid", p);
+            var result = _dbContext.SaveData("spu_Invoices_UpdateVoid", p);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int UpdateWriteOff(int businessId, int invoiceId)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, InvoiceId = invoiceId };
+            var p = new { BusinessId = businessId, InvoiceId = invoiceId };
 
-                var result = _dbContext.SaveData("spu_Invoices_UpdateWriteOff", p);
+            var result = _dbContext.SaveData("spu_Invoices_UpdateWriteOff", p);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
 
 
         public int GetAllPagesCount(int businessId, int page, string search, string orderBy)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
+            var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
 
-                var result = _dbContext.LoadData<int, dynamic>("sps_Invoices_GetAllPagesCount", p);
+            var result = _dbContext.LoadData<int, dynamic>("sps_Invoices_GetAllPagesCount", p);
 
-                return result.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result.FirstOrDefault();
         }
         public List<InvoiceModel> GetAllByPage(int businessId, int page, string search, string orderBy)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
+            var p = new { BusinessId = businessId, Page = page, Search = search, OrderBy = orderBy };
 
-                var result = _dbContext.LoadData<InvoiceModel, dynamic>("sps_Invoices_GetAllByPage", p);
+            var result = _dbContext.LoadData<InvoiceModel, dynamic>("sps_Invoices_GetAllByPage", p);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public InvoiceModel GetById(int businessId, int id)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Id = id };
+            var p = new { BusinessId = businessId, Id = id };
 
-                var result = _dbContext.LoadData<InvoiceModel, dynamic>("sps_Invoices_GetById", p);
+            var result = _dbContext.LoadData<InvoiceModel, dynamic>("sps_Invoices_GetById", p);
 
-                return result.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result.FirstOrDefault();
         }
         public int Create(InvoiceModel model)
         {
-            try
-            {
-                var result = _dbContext.SaveDataOutParam("spi_Invoices_Insert", model, out int invoiceId, DbType.Int32, null, "Id");
+            var result = _dbContext.SaveDataOutParam("spi_Invoices_Insert", model, out int invoiceId, DbType.Int32, null, "Id");
 
-                model.Id = invoiceId;
+            model.Id = invoiceId;
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int Update(InvoiceModel model)
         {
-            try
-            {
-                var result = _dbContext.SaveData("spu_Invoices_Update", model);
+            var result = _dbContext.SaveData("spu_Invoices_Update", model);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int Activate(int businessId, string username, int id, bool active)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
+            var p = new { BusinessId = businessId, Username = username, Id = id, IsActive = active };
 
-                var result = _dbContext.SaveData("spu_Invoices_Activate", p);
+            var result = _dbContext.SaveData("spu_Invoices_Activate", p);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
         public int Delete(int businessId, string username, int id)
         {
-            try
-            {
-                var p = new { BusinessId = businessId, Username = username, Id = id };
+            var p = new { BusinessId = businessId, Username = username, Id = id };
 
-                var result = _dbContext.SaveData("spd_Invoices_Delete", p);
+            var result = _dbContext.SaveData("spd_Invoices_Delete", p);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_logger.GetMethodName(), ex);
-                throw;
-            }
+            return result;
         }
     }
 }

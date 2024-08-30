@@ -1,4 +1,4 @@
-﻿@model Paybook.Web.MvcUI.Models.ViewModels.InvoicePagingViewModel
+﻿@model Paybook.ServiceLayer.Models.ViewModels.InvoicePagingViewModel
 @using Paybook.ServiceLayer.Constants;
 
 @{
@@ -108,7 +108,7 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Client.Name)
-                            &nbsp;<a href="@Url.Action("Details","Client",new { area = "Chief"})/@item.ClientId" class="btn btn-default"><i class="glyphicon glyphicon-eye-open"></i></a>
+                            &nbsp;<a href="@Url.Action("Details","Client",new { area = "Chief", id = item.ClientId })" class="btn btn-default"><i class="glyphicon glyphicon-eye-open"></i></a>
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.InvoiceDate)
@@ -126,13 +126,22 @@
                             ₹&nbsp;@Html.DisplayFor(modelItem => item.PaidTotal)
                         </td>
                         <td class="text-center">
-                            @Html.Partial("_CategoryMasterBadgeColorPartial", item.StatusCategoryMaster)
+                            @if (item.DueDate < DateTime.Now)
+                            {
+                                if (item.StatusCategoryMaster.Name != InvoiceStatusConst.Paid)
+                                {
+                                    <span class="label label-danger">Overdue</span>
+                                }
+                            }
+                            <div>
+                                @Html.Partial("_CategoryMasterBadgeColorPartial", item.StatusCategoryMaster)
+                            </div>
                         </td>
                         @*<td>
                                 @Html.DisplayFor(modelItem => item.CreateBy)
                             </td>*@
                         <td class="text-right">
-                            <button type="button" class="btn btn-default btn-sm" title="Add Favorite" onclick="window.location.href='@Url.Action("Favorite", new {id=item.Id })';"><i class="glyphicon glyphicon-star-empty"></i></button>
+                            <button type="button" class="btn btn-default btn-sm" title="Add Favorite" onclick="window.location.href='@Url.Action("Favorite", new { id = item.Id })';"><i class="glyphicon glyphicon-star-empty"></i></button>
 
                             <div class="btn-group">
                                 @if (item.StatusCategoryMaster.Name != InvoiceStatusConst.Paid)

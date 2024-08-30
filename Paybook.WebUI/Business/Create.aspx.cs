@@ -1,6 +1,6 @@
 ﻿using Paybook.BusinessLayer;
-using Paybook.BusinessLayer.Business;
-using Paybook.BusinessLayer.Setting;
+using Paybook.BusinessLayer.Abstracts.Admins;
+using Paybook.BusinessLayer.Abstracts.Customers;
 using Paybook.ServiceLayer;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Logger;
@@ -49,7 +49,7 @@ namespace Paybook.WebUI.Business
             {
                 _logger.Error(_logger.GetMethodName(), ex);
 
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlProcessor.ReadXmlFile("") + "');});", true);
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + XmlMessageHelper.Get("") + "');});", true);
             }
         }
         protected void btnSubmitAndUpdate_Click(object sender, EventArgs e)
@@ -112,7 +112,7 @@ namespace Paybook.WebUI.Business
                 {
                     if (Int32.Parse(dt.Rows[0]["Company_ID"].ToString()) == 0)
                     {
-                        string sMessage = XmlProcessor.ReadXmlFile("CPS403");
+                        string sMessage = XmlMessageHelper.Get("CPS403");
                         ClientScript.RegisterClientScriptBlock(this.GetType(), "Message", "$(document).ready(function () {ShowMessage('" + sMessage + "');});", true);
                     }
                     else
@@ -184,25 +184,25 @@ namespace Paybook.WebUI.Business
         {
             if (txtCompanyPhoneNumber1.Text == "")
             {
-                return XmlProcessor.ReadXmlFile("BSW009");
+                return XmlMessageHelper.Get("BSW009");
             }
             else if (txtCompanyPhoneNumber1.Text.Length < 10)
             {
-                return XmlProcessor.ReadXmlFile("BSW010");
+                return XmlMessageHelper.Get("BSW010");
             }
             else if (txtCompanyEmail.Text == "")
             {
-                return XmlProcessor.ReadXmlFile("BSW011");
+                return XmlMessageHelper.Get("BSW011");
             }
             else if (txtCompanyName.Text == "")
             {
-                return XmlProcessor.ReadXmlFile("BSW008");
+                return XmlMessageHelper.Get("BSW008");
             }
             else if (txtUsername.Text != "" && txtPassword.Text != "")
             {
                 if (txtPassword.Text != txtPasswordConfirm.Text)
                 {
-                    return XmlProcessor.ReadXmlFile("BSW014");
+                    return XmlMessageHelper.Get("BSW014");
                 }
             }
             return string.Empty;

@@ -1,11 +1,13 @@
-﻿using Paybook.BusinessLayer.Client;
-using Paybook.BusinessLayer.Common;
+﻿using Paybook.BusinessLayer.Abstracts.Admins;
+using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Outbox;
+using Paybook.BusinessLayer.Abstracts.Payments;
 using Paybook.BusinessLayer.Invoice;
-using Paybook.BusinessLayer.Payment;
-using Paybook.BusinessLayer.Setting;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Models;
-using Paybook.Web.MvcUI.Models.ViewModels;
+using Paybook.ServiceLayer.Models.Activities;
+using Paybook.ServiceLayer.Models.Clients;
+using Paybook.ServiceLayer.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,23 +21,24 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
     [Authorize]
     public class PaymentController : Controller
     {
-        private readonly IPaymentProcessor _payment;
-        private readonly IClientProcessor _client;
-        private readonly IStateProcessor _stateMaster;
-        private readonly ICountryProcessor _countryMaster;
-        private readonly IActivityProcessor _activity;
+        private readonly IPaymentProcessor _paymentProcessor;
+        private readonly IClientProcessor _clientProcessor;
+        private readonly IStateProcessor _stateProcessor;
+        private readonly ICountryProcessor _countryProcessor;
+        private readonly IActivityProcessor _activityProcessor;
 
-        public PaymentController(IPaymentProcessor payment,
-                                    IClientProcessor client,
-                                    IStateProcessor stateMaster,
-                                    ICountryProcessor countryMaster,
-                                    IActivityProcessor activity)
+        public PaymentController(
+            IPaymentProcessor payment,
+            IClientProcessor client,
+            IStateProcessor stateMaster,
+            ICountryProcessor countryMaster,
+            IActivityProcessor activity)
         {
-            _payment = payment;
-            _client = client;
-            _stateMaster = stateMaster;
-            _countryMaster = countryMaster;
-            _activity = activity;
+            _paymentProcessor = payment;
+            _clientProcessor = client;
+            _stateProcessor = stateMaster;
+            _countryProcessor = countryMaster;
+            _activityProcessor = activity;
         }
 
         private int BusinessId { get { return Convert.ToInt32(Request.Cookies[CookieNames.SelectedBusinessId].Value); } }
@@ -44,11 +47,11 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            List<PaymentModel> model = _payment.GetAllByPage(BusinessId, 0, "", "");
+            List<PaymentModel> model = _paymentProcessor.GetAllByPage(BusinessId, 0, "", "");
 
             foreach (var item in model)
             {
-                item.Client = _client.GetById(BusinessId, item.ClientId);
+                item.Client = _clientProcessor.GetById(BusinessId, item.ClientId);
             }
 
             return View(model);
@@ -64,14 +67,14 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             decimal balanceTotal = 0;
             if (id != null)
             {
-                client = _client.GetById(BusinessId, id.Value);
-                client.StateMaster = _stateMaster.GetById(client.StateId);
-                client.CountryMaster = _countryMaster.GetById(client.CountryId);
+                client = _clientProcessor.GetById(BusinessId, id.Value);
+                client.StateMaster = _stateProcessor.GetById(client.StateId);
+                client.CountryMaster = _countryProcessor.GetById(client.CountryId);
                 payment.ClientId = id.Value;
-                balanceTotal = _client.GetBalanceTotalById(BusinessId, id.Value);
+                balanceTotal = _clientProcessor.GetBalanceTotalById(BusinessId, id.Value);
             }
 
-            var clients = _client.GetAllByPage(BusinessId, 0, "", "");
+            var clients = _clientProcessor.GetAllByPage(BusinessId, 0, "", "");
 
             var paymentVM = new PaymentViewModel
             {
@@ -90,11 +93,11 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpPost, ActionName("Create")]
         public ActionResult CreatePost(PaymentViewModel modelVM)
         {
-            var client = _client.GetById(BusinessId, modelVM.Payment.ClientId);
-            client.StateMaster = _stateMaster.GetById(client.StateId);
-            client.CountryMaster = _countryMaster.GetById(client.CountryId);
+            var client = _clientProcessor.GetById(BusinessId, modelVM.Payment.ClientId);
+            client.StateMaster = _stateProcessor.GetById(client.StateId);
+            client.CountryMaster = _countryProcessor.GetById(client.CountryId);
 
-            var clients = _client.GetAllByPage(BusinessId, 0, "", "");
+            var clients = _clientProcessor.GetAllByPage(BusinessId, 0, "", "");
 
             if (modelVM.Payment.Amount <= 0)
                 ModelState.AddModelError("", "Payment amount cannot be negative or 0.");
@@ -117,11 +120,11 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 modelVM.Payment.Method = "Cash";
 
                 var output = new PaymentModel();
-                output = _payment.Create(modelVM.Payment);
+                output = _paymentProcessor.Create(modelVM.Payment);
 
                 if (output.IsSucceeded == true)
                 {
-                    _activity.Create(new ActivityBuilderModel
+                    _activityProcessor.Create(new ActivityBuilderModel
                     {
                         BusinessId = BusinessId,
                         CreateBy = User.Identity.Name,
