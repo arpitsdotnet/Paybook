@@ -7,7 +7,7 @@ using Paybook.ServiceLayer.Models.Activities;
 using Paybook.ServiceLayer.Services;
 using Paybook.ServiceLayer.Xml;
 
-namespace Paybook.BusinessLayer.Common
+namespace Paybook.BusinessLayer.Features.Outbox
 {
     public class ActivityProcessor : IActivityProcessor
     {

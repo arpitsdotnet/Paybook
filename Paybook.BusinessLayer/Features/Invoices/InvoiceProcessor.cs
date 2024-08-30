@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using Paybook.BusinessLayer.Abstracts.Admins;
-using Paybook.BusinessLayer.Abstracts.Customers;
 using Paybook.BusinessLayer.Abstracts.Invoices;
 using Paybook.DatabaseLayer.Invoice;
 using Paybook.ServiceLayer.Constants;

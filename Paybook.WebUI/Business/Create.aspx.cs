@@ -1,6 +1,5 @@
 ﻿using Paybook.BusinessLayer;
 using Paybook.BusinessLayer.Abstracts.Admins;
-using Paybook.BusinessLayer.Abstracts.Customers;
 using Paybook.ServiceLayer;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Logger;

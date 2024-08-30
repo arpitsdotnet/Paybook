@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Admins;
 using Paybook.DatabaseLayer.Business;
 using Paybook.ServiceLayer.Abstracts;
 using Paybook.ServiceLayer.Logger;
@@ -8,7 +8,7 @@ using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Services;
 using Paybook.ServiceLayer.Xml;
 
-namespace Paybook.BusinessLayer.Features.Customers
+namespace Paybook.BusinessLayer.Features.Admins
 {
     public class BusinessProcessor : IBusinessProcessor
     {

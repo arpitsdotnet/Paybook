@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Admins;
 using Paybook.BusinessLayer.Abstracts.Payments;
 using Paybook.DatabaseLayer.Payment;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Xml;
 
-namespace Paybook.BusinessLayer.Payment
+namespace Paybook.BusinessLayer.Features.Payments
 {
     public class PaymentProcessor : IPaymentProcessor
     {

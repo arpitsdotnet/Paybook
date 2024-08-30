@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using Paybook.BusinessLayer.Abstracts.Admins;
 using Paybook.BusinessLayer.Abstracts.Customers;
-using Paybook.BusinessLayer.Abstracts.Identity;
-using Paybook.BusinessLayer.Abstracts.Invoices;
-using Paybook.BusinessLayer.Abstracts.Outbox;
 using Paybook.DatabaseLayer.Common;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
@@ -13,7 +10,7 @@ using Paybook.ServiceLayer.Models.Dashboards;
 using Paybook.ServiceLayer.Models.Invoices;
 using Paybook.ServiceLayer.Models.ViewModels;
 
-namespace Paybook.BusinessLayer.Common
+namespace Paybook.BusinessLayer.Features.Customers
 {
     public class DashboardProcessor : IDashboardProcessor
     {
@@ -142,7 +139,7 @@ namespace Paybook.BusinessLayer.Common
 
                 var charts = new List<DashboardClientChartModel>();
 
-                DateTime dTodayDate = Convert.ToDateTime(System.DateTime.Today.ToShortDateString());
+                DateTime dTodayDate = Convert.ToDateTime(DateTime.Today.ToShortDateString());
                 int i = 0, iTotalDays = 6;
                 for (i = iTotalDays; i >= 0; i--)
                 {

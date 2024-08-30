@@ -1,11 +1,11 @@
 ﻿using System;
-using Paybook.BusinessLayer.Abstracts.Customers;
+using Paybook.BusinessLayer.Abstracts.Admins;
 using Paybook.BusinessLayer.Abstracts.Utilities;
 using Paybook.DatabaseLayer.Common;
 using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 
-namespace Paybook.BusinessLayer.Common
+namespace Paybook.BusinessLayer.Features.Utilities
 {
     public class LastSavedNumberProcessor : ILastSavedNumberProcessor
     {
