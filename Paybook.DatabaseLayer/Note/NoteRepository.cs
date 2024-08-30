@@ -17,8 +17,7 @@ namespace Paybook.DatabaseLayer.Note
         public int GetTotalCount(int businessId)
         {
             var p = new { BusinessId = businessId };
-
-            var result = _dbContext.SaveDataOutParam("sps_Notes_GetTotalCount", p, out int count, DbType.Int32, null, "Count");
+            _ = _dbContext.SaveDataOutParam("sps_Notes_GetTotalCount", p, out int count, DbType.Int32, null, "Count");
 
             return count;
         }

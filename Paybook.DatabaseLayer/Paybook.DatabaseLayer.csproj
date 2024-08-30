@@ -62,7 +62,6 @@
     <Compile Include="Agency\AgencyRepository.cs" />
     <Compile Include="Business\BusinessRepository.cs" />
     <Compile Include="Client\ClientRepository.cs" />
-    <Compile Include="clsCommon.cs" />
     <Compile Include="Common\DashboardRepository.cs" />
     <Compile Include="Common\IDashboardRepository.cs" />
     <Compile Include="Common\ILastSavedNumberRepository.cs" />

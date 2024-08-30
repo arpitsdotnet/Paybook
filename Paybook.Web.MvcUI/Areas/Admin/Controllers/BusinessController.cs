@@ -1,4 +1,7 @@
-﻿using Paybook.BusinessLayer.Abstracts.Admins;
+﻿using System;
+using System.Collections.Generic;
+using System.Web.Mvc;
+using Paybook.BusinessLayer.Abstracts.Admins;
 using Paybook.BusinessLayer.Abstracts.Customers;
 using Paybook.BusinessLayer.Abstracts.Identity;
 using Paybook.BusinessLayer.Abstracts.Outbox;
@@ -10,19 +13,14 @@ using Paybook.ServiceLayer.Models.Dashboards;
 using Paybook.ServiceLayer.Models.Invoices;
 using Paybook.ServiceLayer.Models.ViewModels;
 using Paybook.ServiceLayer.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Security;
 
-namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
+namespace Paybook.Web.MvcUI.Areas.Admin.Controllers
 {
-    [RouteArea("Chief")]
+    [RouteArea("Admin")]
     [Authorize]
     public class BusinessController : Controller
     {
+        private readonly ILogger _logger;
         private readonly IDashboardProcessor _dashboard;
         private readonly IBusinessProcessor _business;
         private readonly IUserProcessor _user;
@@ -33,6 +31,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         private readonly IActivityProcessor _activity;
 
         public BusinessController(
+            ILogger logger,
             IDashboardProcessor dashboard,
             IBusinessProcessor business,
             IUserProcessor user,
@@ -42,6 +41,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             IStateProcessor state,
             IActivityProcessor activity)
         {
+            _logger = logger;
             _dashboard = dashboard;
             _business = business;
             _user = user;
@@ -67,7 +67,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         public ActionResult Index()
         {
             List<BusinessModel> businesses = _dashboard.GetAllBusinesses(User.Identity.Name);
-            
+
             return View(businesses);
         }
 
@@ -225,7 +225,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             var business = _business.GetSelectedByUsername(username);
 
             List<ActivityModel> model = _activity.GetAllByPage(business.Id, 0, "", "");
-            
+
             return PartialView("_DashboardActivityTablePartial", model);
         }
 

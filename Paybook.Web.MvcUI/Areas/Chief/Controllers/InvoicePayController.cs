@@ -41,13 +41,15 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Create(int id)
         {
-            var invoicePay = new InvoicePayModel();
-            invoicePay.InvoiceId = id;
-
             var invoice = _invoiceProcessor.GetById(BusinessId, id);
             var client = _clientProcessor.GetById(BusinessId, invoice.ClientId);
             var paidTotal = _invoicePayProcessor.GetPaidTotalByInvoiceId(BusinessId, invoice.Id);
             var clientBalance = _clientProcessor.GetBalanceTotalById(BusinessId, invoice.ClientId);
+
+            var invoicePay = new InvoicePayModel
+            {
+                InvoiceId = id
+            };
 
             var invpayVM = new InvoicePayViewModel
             {
@@ -87,8 +89,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
                 modelVM.InvoicePay.BusinessId = BusinessId;
                 modelVM.InvoicePay.CreateBy = User.Identity.Name;
 
-                var output = new InvoicePayModel();
-                output = _invoicePayProcessor.Create(modelVM.InvoicePay);
+                var output = _invoicePayProcessor.Create(modelVM.InvoicePay);
 
                 if (output.IsSucceeded == true)
                 {

@@ -12,15 +12,12 @@ namespace Paybook.BusinessLayer.Features.Admins
     public class CategoryProcessor : ICategoryProcessor
     {
         private readonly ILogger _logger;
-        private readonly IBusinessProcessor _businessProcessor;
         private readonly ICategoryRepository _categoryRepository;
 
         public CategoryProcessor(
-            ILogger logger,
-            IBusinessProcessor business)
+            ILogger logger)
         {
             _logger = logger;
-            _businessProcessor = business;
             _categoryRepository = new CategoryRepository();
         }
 

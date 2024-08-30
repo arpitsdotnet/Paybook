@@ -9,7 +9,7 @@ using Paybook.ServiceLayer.Logger;
 using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Models.ViewModels;
 
-namespace Paybook.Web.MvcUI.Controllers
+namespace Paybook.Web.MvcUI.Areas.Identity.Controllers
 {
     public class IdentityController : Controller
     {
@@ -37,7 +37,7 @@ namespace Paybook.Web.MvcUI.Controllers
                 SaveUserdataIntoCookies(User.Identity.Name);
                 if (!string.IsNullOrEmpty(returnUrl))
                     return Redirect(returnUrl);
-                return RedirectToAction("Dashboard", "Business", new { area = "Chief" });
+                return RedirectToAction("Dashboard", "Business", new { area = "Admin" });
             }
             return View();
         }
@@ -75,7 +75,7 @@ namespace Paybook.Web.MvcUI.Controllers
             if (!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
 
-            return RedirectToAction("Dashboard", "Business", new { area = "Chief" });
+            return RedirectToAction("Dashboard", "Business", new { area = "Admin" });
 
         }
 

@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Paybook.ServiceLayer.Models.Invoices.InvoicePayModel>
+﻿@using Paybook.ServiceLayer.Models.Invoices;
+
+@model IEnumerable<InvoicePayModel>
 
 @if (Model == null || Model.Count() == 0)
 {

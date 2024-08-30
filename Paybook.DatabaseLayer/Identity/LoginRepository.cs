@@ -20,8 +20,7 @@ namespace Paybook.DatabaseLayer.Identity
         public string IsValid(IdentityUserModel model)
         {
             var p = new { Username = model.Username, PasswordHash = model.PasswordHash };
-
-            var result = _dbContext.SaveDataOutParam("sps_IdentityUsers_IsValid", p, out string message, DbType.String, 20, "Message");
+            _ = _dbContext.SaveDataOutParam("sps_IdentityUsers_IsValid", p, out string message, DbType.String, 20, "Message");
             //DataTable dt = _dbContext.LoadDataByProcedure("sps_IdentityUser_IsValid", parameters);
             //if (dt != null && dt.Rows.Count > 0)
             //{

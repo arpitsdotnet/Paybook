@@ -102,8 +102,7 @@ namespace Paybook.DatabaseLayer.Client
         public int GetCount(int businessId)
         {
             var p = new { BusinessId = businessId };
-
-            var result = _dbContext.SaveDataOutParam("sps_Clients_GetCount", p, out int count, DbType.Int32, null, "Count");
+            _ = _dbContext.SaveDataOutParam("sps_Clients_GetCount", p, out int count, DbType.Int32, null, "Count");
 
             return count;
         }
@@ -118,7 +117,7 @@ namespace Paybook.DatabaseLayer.Client
         public bool IsExist(string createBy, string name)
         {
             var p = new { createBy, Name = name };
-            var result = _dbContext.SaveDataOutParam("sps_Clients_IsExist", p, out bool isExist, DbType.Boolean, null, "IsExist");
+            _ = _dbContext.SaveDataOutParam("sps_Clients_IsExist", p, out bool isExist, DbType.Boolean, null, "IsExist");
             //DataTable dt = _dbContext.LoadDataByProcedure("sps_Customer_IsExist", oParams);
             //if (dt.Rows.Count > 0 && dt != null)
             //{

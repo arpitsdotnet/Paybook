@@ -4,11 +4,11 @@ namespace Paybook.DatabaseLayer.Report
 {
     public class ReportRepository : IReportRepository
     {
-        private readonly IDbContext _dbContext;
+        //private readonly IDbContext _dbContext;
 
         public ReportRepository()
         {
-            _dbContext = DbContextFactory.Instance;
+            //_dbContext = DbContextFactory.Instance;
         }
 
 

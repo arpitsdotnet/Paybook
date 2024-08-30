@@ -18,10 +18,12 @@ namespace Paybook.ServiceLayer.Tests.Extensions
         public void ToDataTable_WhenCalled_ShouldReturnAListToDataTable()
         {
             // Arrange
-            var list = new List<DataModel>();
-            list.Add(new DataModel { Id = 1, Name = "Aarav" });
-            list.Add(new DataModel { Id = 2, Name = "Atharva" });
-            list.Add(new DataModel { Id = 3, Name = "Arpit" });
+            var list = new List<DataModel>
+            {
+                new DataModel { Id = 1, Name = "Aarav" },
+                new DataModel { Id = 2, Name = "Atharva" },
+                new DataModel { Id = 3, Name = "Arpit" }
+            };
 
             // Act
             DataTable dataTable = list.ToDataTable();

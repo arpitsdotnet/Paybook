@@ -1,15 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Newtonsoft.Json;
 using Paybook.BusinessLayer.Abstracts.Admins;
 using Paybook.BusinessLayer.Abstracts.Invoices;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Models.Invoices;
 using Paybook.ServiceLayer.Models.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 
 namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 {
@@ -17,14 +17,14 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
     [Authorize]
     public class InvoiceServiceController : Controller
     {
-        private readonly IInvoiceServiceProcessor _serviceProcessor;
+        //private readonly IInvoiceServiceProcessor _serviceProcessor;
         private readonly ICategoryProcessor _categoryProcessor;
 
         public InvoiceServiceController(
-            IInvoiceServiceProcessor service,
+            //IInvoiceServiceProcessor service,
             ICategoryProcessor category)
         {
-            _serviceProcessor = service;
+            //_serviceProcessor = service;
             _categoryProcessor = category;
         }
 
@@ -223,8 +223,10 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         }
         private void SaveCookie(string cookieName, string data, double expiryDays = 1)
         {
-            HttpCookie InvoiceServiceCookie = new HttpCookie(cookieName, data);
-            InvoiceServiceCookie.Expires = DateTime.Now.AddDays(expiryDays);
+            HttpCookie InvoiceServiceCookie = new HttpCookie(cookieName, data)
+            {
+                Expires = DateTime.Now.AddDays(expiryDays)
+            };
             HttpContext.Response.Cookies.Add(InvoiceServiceCookie);
         }
         private string GetCookie(string cookieName)

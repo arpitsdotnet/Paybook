@@ -12,15 +12,12 @@ namespace Paybook.BusinessLayer.Invoice
     public class InvoicePayProcessor : IInvoicePayProcessor
     {
         private readonly ILogger _logger;
-        private readonly IBusinessProcessor _business;
         private readonly IInvoicePayRepository _payRepo;
        
         public InvoicePayProcessor(
-            ILogger logger,
-            IBusinessProcessor business)
+            ILogger logger)
         {
             _logger = logger;
-            _business = business;
             _payRepo = new InvoicePayRepository();
         }
 

@@ -19,35 +19,20 @@ namespace Paybook.BusinessLayer.Common
     {
         private readonly ILogger _logger;
         private readonly IBusinessProcessor _business;
-        private readonly IInvoiceProcessor _invoice;
-        private readonly IUserProcessor _user;
-        private readonly IClientProcessor _client;
-        private readonly ICategoryProcessor _category;
         private readonly ICountryProcessor _country;
         private readonly IStateProcessor _state;
-        private readonly IActivityProcessor _activity;
         private readonly IDashboardRepository _dashboardRepo;
 
         public DashboardProcessor(
             ILogger logger,
             IBusinessProcessor business,
-            IInvoiceProcessor invoice,
-            IUserProcessor user,
-            IClientProcessor client,
-            ICategoryProcessor category,
             ICountryProcessor country,
-            IStateProcessor state,
-            IActivityProcessor activity)
+            IStateProcessor state)
         {
             _logger = logger;
             _business = business;
-            _invoice = invoice;
-            _user = user;
-            _client = client;
-            _category = category;
             _country = country;
             _state = state;
-            _activity = activity;
             _dashboardRepo = new DashboardRepository();
         }
 

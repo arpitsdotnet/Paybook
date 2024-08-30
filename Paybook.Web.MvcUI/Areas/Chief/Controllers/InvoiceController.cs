@@ -506,8 +506,10 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         }
         private void SaveCookie(string cookieName, string data, double expiryDays = 1)
         {
-            HttpCookie InvoiceServiceCookie = new HttpCookie(cookieName, data);
-            InvoiceServiceCookie.Expires = DateTime.Now.AddDays(expiryDays);
+            HttpCookie InvoiceServiceCookie = new HttpCookie(cookieName, data)
+            {
+                Expires = DateTime.Now.AddDays(expiryDays)
+            };
             HttpContext.Response.Cookies.Add(InvoiceServiceCookie);
         }
         private string GetCookie(string cookieName)

@@ -22,8 +22,7 @@ namespace Paybook.DatabaseLayer.Business
         public bool IsExist(string createBy, string businessName)
         {
             var p = new { CreateBy = createBy, Name = businessName };
-
-            var result = _dbContext.SaveDataOutParam("sps_Businesses_IsExist", p, out dynamic isExist, DbType.Boolean, null, "IsExist");
+            _ = _dbContext.SaveDataOutParam("sps_Businesses_IsExist", p, out dynamic isExist, DbType.Boolean, null, "IsExist");
             //return _dbContext.LoadDataByProcedure("sps_CompanyProfile_IsExist", null);
 
             return (bool)isExist;

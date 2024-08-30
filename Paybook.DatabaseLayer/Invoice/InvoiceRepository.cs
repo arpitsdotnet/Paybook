@@ -10,12 +10,10 @@ namespace Paybook.DatabaseLayer.Invoice
     public class InvoiceRepository : IInvoiceRepository
     {
         private readonly IDbContext _dbContext;
-        private readonly IActivityRepository _activityRepo;
 
         public InvoiceRepository()
         {
             _dbContext = DbContextFactory.Instance;
-            _activityRepo = new ActivityRepository();
         }
 
         public InvoiceCountersModel GetAllCounters(int businessId)
@@ -99,13 +97,13 @@ namespace Paybook.DatabaseLayer.Invoice
         public bool Invoices_Update_CloseStatus(string sParticular, string sCreatedBY, string sCategory_Core, string sStatus_Core, string sReason, string sCustomer_ID)
         {
             //Update Invoice Table Status
-            List<Parameter> oParams = new List<Parameter>
-                {
-                    new Parameter("sParticular", sParticular),
-                    new Parameter("sCategory_Core", sCategory_Core),
-                    new Parameter("sInvoiceStatus_Core", sStatus_Core),
-                    new Parameter("sReason", sReason)
-                };
+            //List<Parameter> oParams = new List<Parameter>
+            //    {
+            //        new Parameter("sParticular", sParticular),
+            //        new Parameter("sCategory_Core", sCategory_Core),
+            //        new Parameter("sInvoiceStatus_Core", sStatus_Core),
+            //        new Parameter("sReason", sReason)
+            //    };
             //_dbContext.LoadDataByProcedure("sps_Invoice_UpdateCloseStatus", oParams);
 
             //Insert Into Activity Table
@@ -126,10 +124,10 @@ namespace Paybook.DatabaseLayer.Invoice
         public bool Invoices_Update_OverdueStatus(string sInvoice_ID, string sCategory_Core, string sStatus_Core)
         {
             //Update Invoice Table Status
-            List<Parameter> oParams = new List<Parameter>();
-            oParams.Add(new Parameter("sInvoice_ID", sInvoice_ID));
-            oParams.Add(new Parameter("sCategory_Core", sCategory_Core));
-            oParams.Add(new Parameter("sInvoiceStatus_Core", sStatus_Core));
+            //List<Parameter> oParams = new List<Parameter>();
+            //oParams.Add(new Parameter("sInvoice_ID", sInvoice_ID));
+            //oParams.Add(new Parameter("sCategory_Core", sCategory_Core));
+            //oParams.Add(new Parameter("sInvoiceStatus_Core", sStatus_Core));
             //_dbContext.LoadDataByProcedure("sps_Invoices_UpdateOverdueStatus", oParams);
 
             return true;

@@ -26,8 +26,7 @@ namespace Paybook.DatabaseLayer.Invoice
         public bool IsExist(string businessId, int id)
         {
             var p = new { BusinessId = businessId, Id = id };
-
-            var result = _dbContext.SaveDataOutParam("sps_InvoiceServices_IsExist", p, out bool isExist, DbType.Boolean, null, "IsExist");
+            _ = _dbContext.SaveDataOutParam("sps_InvoiceServices_IsExist", p, out bool isExist, DbType.Boolean, null, "IsExist");
             //DataTable dt = _dbContext.LoadDataByProcedure("sps_Particular_IsExist", oParams);
             //if (dt != null && dt.Rows.Count > 0)
             //{
