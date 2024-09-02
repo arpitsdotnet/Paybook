@@ -7,7 +7,7 @@ namespace Paybook.BusinessLayer.Abstracts.Admins
     {
         List<BusinessModel> GetAllByUsername(string username);
         BusinessModel GetSelectedByUsername(string username);
-        BusinessModel GetById(int id, string username);
+        BusinessModel GetById(int businessId);
         BusinessModel Create(BusinessModel model);
         BusinessModel Update(BusinessModel model);
         BusinessModel UpdateSelected(int id, string username);

@@ -8,8 +8,8 @@ namespace Paybook.DatabaseLayer.Abstracts.Admins
         bool IsExist(string createBy, string businessName);
 
         List<BusinessModel> GetAllByUsername(string username);
-        BusinessModel GetSelectedByUsername(string username);
-        BusinessModel GetById(int id, string username);
+        BusinessModel GetFirstBusinessByUsername(string username);
+        BusinessModel GetById(int businessId);
         int Create(BusinessModel model);
         int Update(BusinessModel model);
         int UpdateSelected(int id, string username);

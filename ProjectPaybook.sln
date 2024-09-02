@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paybook.ServiceLayer.Tests"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A547D48D-B6A1-49AE-87F9-71541307B1F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paybook.BusinessLayer.Tests", "Paybook.BusinessLayer.Tests\Paybook.BusinessLayer.Tests.csproj", "{920AA622-7E7D-4D65-9DFE-6E4DCBECF216}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{F8E3E81A-385D-4022-9D33-425276E806DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8E3E81A-385D-4022-9D33-425276E806DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8E3E81A-385D-4022-9D33-425276E806DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{920AA622-7E7D-4D65-9DFE-6E4DCBECF216}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{920AA622-7E7D-4D65-9DFE-6E4DCBECF216}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{920AA622-7E7D-4D65-9DFE-6E4DCBECF216}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{920AA622-7E7D-4D65-9DFE-6E4DCBECF216}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{90675196-4FF9-427D-A280-4CB3AEF028B2} = {F25F95CB-43FE-4714-B7CD-22A145D8CCAC}
 		{D0771108-2DE5-4049-A9FF-FCA710539AD9} = {E2AD70F5-6DBF-4A14-A582-B4D8AA7B4FDB}
 		{F8E3E81A-385D-4022-9D33-425276E806DF} = {A547D48D-B6A1-49AE-87F9-71541307B1F3}
+		{920AA622-7E7D-4D65-9DFE-6E4DCBECF216} = {A547D48D-B6A1-49AE-87F9-71541307B1F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C57E63F4-3930-4818-A1EF-2511AABF8A20}

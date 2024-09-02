@@ -47,7 +47,7 @@ namespace Paybook.BusinessLayer.Features.Admins
         {
             try
             {
-                return _businessRepo.GetSelectedByUsername(username);
+                return _businessRepo.GetFirstBusinessByUsername(username);
             }
             catch (Exception ex)
             {
@@ -56,11 +56,11 @@ namespace Paybook.BusinessLayer.Features.Admins
                 throw;
             }
         }
-        public BusinessModel GetById(int id, string username)
+        public BusinessModel GetById(int businessId)
         {
             try
             {
-                return _businessRepo.GetById(id, username);
+                return _businessRepo.GetById(businessId);
             }
             catch (Exception ex)
             {

@@ -52,13 +52,13 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
             _activity = activity;
         }
 
-        private int BusinessId { get { return Convert.ToInt32(Request.Cookies[CookieNames.SelectedBusinessId].Value); } }
+        public int BusinessId { get { return Convert.ToInt32(Request.Cookies[CookieNames.SelectedBusinessId].Value); } }
 
 
         [HttpGet]
         public ActionResult Dashboard()
         {
-            DashboardViewModel dashboardVM = _dashboard.GetAllCounters(User.Identity.Name);
+            DashboardViewModel dashboardVM = _dashboard.GetAllCounters(BusinessId);
 
             return View(dashboardVM);
         }
@@ -118,8 +118,7 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         [HttpGet]
         public ActionResult Edit(int id)
         {
-            string username = User.Identity.Name;
-            BusinessModel businessData = _business.GetById(id, username);
+            BusinessModel businessData = _business.GetById(id);
 
             var countries = _country.GetAllByPage(0, "", "");
             int countryId = countries[0].Id;
@@ -163,40 +162,40 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 
 
         [HttpGet, AllowAnonymous]
-        public ActionResult GetCountOfInvoicesAndPaymentsByLastWeek(string username)
+        public ActionResult GetCountOfInvoicesAndPaymentsByLastWeek(int businessId)
         {
-            List<DashboardInvoiceChartModel> model = _dashboard.GetCountOfInvoicesAndPaymentsByLastWeek(username);
+            List<DashboardInvoiceChartModel> model = _dashboard.GetCountOfInvoicesAndPaymentsByLastWeek(businessId);
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet, AllowAnonymous]
-        public ActionResult GetInvoiceAmountsAndPaymentsByLastWeek(string username)
+        public ActionResult GetInvoiceAmountsAndPaymentsByLastWeek(int businessId)
         {
-            List<DashboardInvoiceChartModel> model = _dashboard.GetInvoiceAmountsAndPaymentsByDays(username, 7);
+            List<DashboardInvoiceChartModel> model = _dashboard.GetInvoiceAmountsAndPaymentsByDays(businessId, 7);
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet, AllowAnonymous]
-        public ActionResult GetPaymentsLast10(string username)
+        public ActionResult GetPaymentsLast10(int businessId)
         {
-            List<DashboardInvoiceChartModel> model = _dashboard.GetPaymentsLast10(username);
+            List<DashboardInvoiceChartModel> model = _dashboard.GetPaymentsLast10(businessId);
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet, AllowAnonymous]
-        public ActionResult GetClientCountByLastWeek(string username)
+        public ActionResult GetClientCountByLastWeek(int businessId)
         {
-            List<DashboardClientChartModel> model = _dashboard.GetClientCountByDays(username);
+            List<DashboardClientChartModel> model = _dashboard.GetClientCountByDays(businessId);
             return Json(new { data = model }, JsonRequestBehavior.AllowGet);
         }
 
 
         [HttpGet, AllowAnonymous]
-        public ActionResult GetLast5Invoices(string username)
+        public ActionResult GetLast5Invoices(int businessId)
         {
-            var business = _business.GetSelectedByUsername(username);
+            var business = _business.GetById(businessId);
 
-            List<InvoiceModel> model = _dashboard.GetLast5Invoices(username);
+            List<InvoiceModel> model = _dashboard.GetLast5Invoices(businessId);
             foreach (var item in model)
             {
                 item.Client = _client.GetById(business.Id, item.ClientId);
@@ -206,11 +205,11 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public ActionResult GetLast5Payments(string username)
+        public ActionResult GetLast5Payments(int businessId)
         {
-            var business = _business.GetSelectedByUsername(username);
+            var business = _business.GetById(businessId);
 
-            List<PaymentModel> model = _dashboard.GetLast5Payments(username);
+            List<PaymentModel> model = _dashboard.GetLast5Payments(businessId);
             foreach (var item in model)
             {
                 item.Client = _client.GetById(business.Id, item.ClientId);
@@ -220,11 +219,11 @@ namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 
 
         [HttpGet, AllowAnonymous]
-        public ActionResult GetAllActivities(string username)
+        public ActionResult GetAllActivities(int businessId)
         {
-            var business = _business.GetSelectedByUsername(username);
+            var business = _business.GetById(businessId);
 
-            List<ActivityModel> model = _activity.GetAllByPage(business.Id, 0, "", "");
+            List<ActivityModel> model = _activity.GetAllByPage(businessId, 0, "", "");
 
             return PartialView("_DashboardActivityTablePartial", model);
         }

@@ -34,7 +34,7 @@ namespace Paybook.DatabaseLayer.Features.Admins
             return result;
         }
 
-        public BusinessModel GetSelectedByUsername(string username)
+        public BusinessModel GetFirstBusinessByUsername(string username)
         {
             var p = new { Username = username };
 
@@ -44,9 +44,9 @@ namespace Paybook.DatabaseLayer.Features.Admins
             return result.FirstOrDefault();
         }
 
-        public BusinessModel GetById(int id, string username)
+        public BusinessModel GetById(int businessId)
         {
-            var p = new { Id = id, Username = username };
+            var p = new { Id = businessId };
 
             var result = _dbContext.LoadData<BusinessModel, dynamic>("sps_Businesses_GetById", p);
 

@@ -8,13 +8,13 @@ namespace Paybook.BusinessLayer.Abstracts.Customers
 {
     public interface IDashboardProcessor
     {
-        DashboardViewModel GetAllCounters(string username);
         List<BusinessModel> GetAllBusinesses(string username);
-        List<DashboardClientChartModel> GetClientCountByDays(string username, int days = 7);
-        List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(string username, int days = 7);
-        List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(string username);
-        List<DashboardInvoiceChartModel> GetPaymentsLast10(string username);
-        List<InvoiceModel> GetLast5Invoices(string username);
-        List<PaymentModel> GetLast5Payments(string username);
+        DashboardViewModel GetAllCounters(int businessId);
+        List<DashboardClientChartModel> GetClientCountByDays(int businessId, int days = 7);
+        List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(int businessId, int days = 7);
+        List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(int businessId);
+        List<DashboardInvoiceChartModel> GetPaymentsLast10(int businessId);
+        List<InvoiceModel> GetLast5Invoices(int businessId);
+        List<PaymentModel> GetLast5Payments(int businessId);
     }
 }

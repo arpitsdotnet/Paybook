@@ -127,8 +127,9 @@
     <script>
         $(document).ready(function () {
             var username = "@User.Identity.Name";
+            var businessId = "@Model.Business.Id";
 
-            var jsonVar = "?username=" + username;
+            var jsonVar = "?businessId=" + businessId;
 
             CallAjaxMethod("/Chief/Business/GetCountOfInvoicesAndPaymentsByLastWeek", jsonVar, function (data) {
                 try {
@@ -317,18 +318,18 @@
                 }
             });
 
-            GetLast5Invoices(username);
-            GetLast5Payments(username);
+            GetLast5Invoices(businessId);
+            GetLast5Payments(businessId);
 
-            GetAllActivities(username);
+            GetAllActivities(businessId);
         });
 
-        function GetLast5Invoices(username) {
+        function GetLast5Invoices(businessId) {
             $.ajax({
                 type: "GET",
                 url: "/Chief/Business/GetLast5Invoices",
                 contentType: "application/json; chatset=utf-8",
-                data: { "username": username },
+                data: { "businessId": businessId },
                 cache: false,
                 dataType: "html",
                 success: function (data) {
@@ -341,12 +342,12 @@
                 }
             });
         }
-        function GetLast5Payments(username) {
+        function GetLast5Payments(businessId) {
             $.ajax({
                 type: "GET",
                 url: "/Chief/Business/GetLast5Payments",
                 contentType: "application/json; chatset=utf-8",
-                data: { "username": username },
+                data: { "businessId": businessId },
                 cache: false,
                 dataType: "html",
                 success: function (data) {
@@ -360,12 +361,12 @@
             });
         }
 
-        function GetAllActivities(username) {
+        function GetAllActivities(businessId) {
             $.ajax({
                 type: "GET",
                 url: "/Chief/Business/GetAllActivities",
                 contentType: "application/json; chatset=utf-8",
-                data: { "username": username },
+                data: { "businessId": businessId },
                 cache: false,
                 dataType: "html",
                 success: function (data) {

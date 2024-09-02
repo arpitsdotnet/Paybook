@@ -13,56 +13,57 @@ BEGIN
 	SELECT (SELECT COUNT(Id) FROM Invoices 
 				WHERE BusinessId = @BusinessId AND IsActive = 1 AND 
 				StatusId <> @InvoiceVoidId) 
-			AS CountTotalOpenInvoice,
+			AS OpenInvoiceCount,
 			(SELECT SUM(ISNULL(Total,0)) FROM Invoices 
 				WHERE BusinessId = @BusinessId AND IsActive = 1 AND 
 				StatusId <> @InvoiceVoidId) 
-			AS SumofTotalOpenInvoice,
+			AS OpenInvoiceTotal,
 
 			(SELECT COUNT(Id) FROM Invoices 
 				WHERE BusinessId = @BusinessId AND IsActive = 1 AND 
 				StatusId <> @InvoiceVoidId AND (InvoiceDate BETWEEN DATEADD(DAY, -7, GETDATE()) AND GETDATE())) 				
-			AS CountLastWeekOpenInvoice,
+			AS OpenInvoiceLastWeekCount,
 			(SELECT SUM(ISNULL(Total,0)) FROM Invoices
 				WHERE BusinessId = @BusinessId AND IsActive = 1 AND 
 				StatusId <> @InvoiceVoidId AND (InvoiceDate BETWEEN DATEADD(DAY, -7, GETDATE()) AND GETDATE())) 
-			AS SumLastWeekOpenInvoice,
+			AS OpenInvoiceLastWeekTotal,
 
 			(SELECT COUNT(Id) FROM Invoices 
 				WHERE BusinessId = @BusinessId AND IsActive = 1 AND 
 				StatusId <> @InvoicePaidId AND StatusId <> @InvoiceVoidId AND (DueDate < GETDATE())) 
-			AS CountOfOverdue,
+			AS OverdueInvoiceCount,
 			(SELECT SUM(ISNULL(Total,0)) FROM Invoices 
 				WHERE  BusinessId = @BusinessId AND IsActive = 1 AND 
 				StatusId <> @InvoicePaidId AND StatusId <> @InvoiceVoidId AND (DueDate < GETDATE()))
-			AS SumOfOverdue,
+			AS OverdueInvoiceTotal,
 
-			(SELECT Count(pay.Id) FROM Payments AS pay 
+			(SELECT Count(pay.Id) FROM InvoicePayments AS pay 
 				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND 
-				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()))
-			AS CountOfPaidPartial,
-			(SELECT SUM(ISNULL(pay.Amount,0)) FROM Payments AS pay 
+				(pay.PayDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()))
+			AS PartialPaidInvoiceCount,
+			(SELECT SUM(ISNULL(pay.PayAmount,0)) FROM InvoicePayments AS pay 
 				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND 
-				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()))
-			AS SumOfPaidPartialAmount,
+				(pay.PayDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()))
+			AS PartialPaidInvoiceTotal,
 
-			(SELECT Count(pay.Id) FROM Payments AS pay 
+			(SELECT Count(pay.Id) FROM InvoicePayments AS pay 
 				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND 
-				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE())) 
-			AS CountOfPaidAmount,
-			(SELECT SUM(ISNULL(pay.Amount,0)) FROM Payments AS pay 
+				(pay.PayDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE())) 
+			AS PaidInvoiceCount,
+			(SELECT SUM(ISNULL(pay.PayAmount,0)) FROM InvoicePayments AS pay 
 				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1 AND 
-				(pay.PaymentDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()) ) 
-			AS SumOfPaidAmount,
+				(pay.PayDate BETWEEN DATEADD(MONTH, -1, GETDATE()) AND GETDATE()) ) 
+			AS PaidInvoiceTotal,
 
 			(SELECT Count(pay.Id) FROM Payments AS pay 
 				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1) 
-			AS CountOfPaymentTotal,
+			AS DepositCount,
 			(SELECT SUM(ISNULL(pay.Amount,0)) FROM Payments AS pay 
 				WHERE pay.BusinessId = @BusinessId AND pay.IsActive = 1) 
-			AS SumOfPaymentTotal,
+			AS DepositTotal,
 
 			(SELECT Count(Id) FROM Clients 
 				WHERE BusinessId = @BusinessId AND IsActive = 1 AND 
-				(CreateDate BETWEEN  DATEADD(DAY, -7, GETDATE()) AND GETDATE())) as CountofCustomers;
+				(CreateDate BETWEEN  DATEADD(DAY, -7, GETDATE()) AND GETDATE())) as CustomerCount;
+
 END

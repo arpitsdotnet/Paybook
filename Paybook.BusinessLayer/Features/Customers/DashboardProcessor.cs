@@ -34,13 +34,24 @@ namespace Paybook.BusinessLayer.Features.Customers
             _dashboardRepo = new DashboardRepository();
         }
 
-        public DashboardViewModel GetAllCounters(string username)
+        public List<BusinessModel> GetAllBusinesses(string username)
+        {
+            List<BusinessModel> businesses = _business.GetAllByUsername(username);
+            foreach (var business in businesses)
+            {
+                business.CountryMaster = _country.GetById(business.CountryId);
+                business.StateMaster = _state.GetById(business.StateId);
+            }
+
+            return businesses;
+        }
+        public DashboardViewModel GetAllCounters(int businessId)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
+                var business = _business.GetById(businessId);
 
-                DashboardCountersModel model = _dashboardRepo.GetAllCounters(business.Id);
+                DashboardCountersModel model = _dashboardRepo.GetAllCounters(businessId);
 
                 DashboardViewModel dashboardVM = new DashboardViewModel
                 {
@@ -122,25 +133,11 @@ namespace Paybook.BusinessLayer.Features.Customers
             }
         }
 
-        public List<BusinessModel> GetAllBusinesses(string username)
-        {
-            List<BusinessModel> businesses = _business.GetAllByUsername(username);
-            foreach (var business in businesses)
-            {
-                business.CountryMaster = _country.GetById(business.CountryId);
-                business.StateMaster = _state.GetById(business.StateId);
-            }
-
-            return businesses;
-        }
-
-        public List<DashboardClientChartModel> GetClientCountByDays(string username, int days = 7)
+        public List<DashboardClientChartModel> GetClientCountByDays(int businessId, int days = 7)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                var clients = _dashboardRepo.GetClientCounterByDays(business.Id, days);
+                var clients = _dashboardRepo.GetClientCounterByDays(businessId, days);
 
                 var charts = new List<DashboardClientChartModel>();
 
@@ -183,15 +180,13 @@ namespace Paybook.BusinessLayer.Features.Customers
                 throw;
             }
         }
-        public List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(string username, int days = 7)
+        public List<DashboardInvoiceChartModel> GetInvoiceAmountsAndPaymentsByDays(int businessId, int days = 7)
         {
             List<DashboardInvoiceChartModel> charts = new List<DashboardInvoiceChartModel>();
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                List<DashboardChartModel> invoices = _dashboardRepo.GetInvoiceCountAndTotalByDays(business.Id, days);
-                List<DashboardChartModel> payments = _dashboardRepo.GetPaymentCountAndTotalByDays(business.Id, days);
+                List<DashboardChartModel> invoices = _dashboardRepo.GetInvoiceCountAndTotalByDays(businessId, days);
+                List<DashboardChartModel> payments = _dashboardRepo.GetPaymentCountAndTotalByDays(businessId, days);
 
                 DataTable dt = new DataTable();
                 dt.Columns.Add("Date");
@@ -267,15 +262,14 @@ namespace Paybook.BusinessLayer.Features.Customers
             }
             return charts;
         }
-        public List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(string username)
+        public List<DashboardInvoiceChartModel> GetCountOfInvoicesAndPaymentsByLastWeek(int businessId)
         {
             try
             {
                 List<DashboardInvoiceChartModel> charts = new List<DashboardInvoiceChartModel>();
 
-                var business = _business.GetSelectedByUsername(username);
-                var invoiceCount = _dashboardRepo.GetInvoiceCountByDays(business.Id, 7);
-                var paymentCount = _dashboardRepo.GetPaymentCountByDays(business.Id, 7);
+                var invoiceCount = _dashboardRepo.GetInvoiceCountByDays(businessId, 7);
+                var paymentCount = _dashboardRepo.GetPaymentCountByDays(businessId, 7);
 
                 var chart = new DashboardInvoiceChartModel
                 {
@@ -299,14 +293,12 @@ namespace Paybook.BusinessLayer.Features.Customers
                 throw;
             }
         }
-        public List<DashboardInvoiceChartModel> GetPaymentsLast10(string username)
+        public List<DashboardInvoiceChartModel> GetPaymentsLast10(int businessId)
         {
             List<DashboardInvoiceChartModel> charts = new List<DashboardInvoiceChartModel>();
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                List<DashboardChartModel> payments = _dashboardRepo.GetPaymentTotalByLast10(business.Id);
+                List<DashboardChartModel> payments = _dashboardRepo.GetPaymentTotalByLast10(businessId);
 
                 if (payments != null && payments.Count > 0)
                 {
@@ -330,13 +322,11 @@ namespace Paybook.BusinessLayer.Features.Customers
             return charts;
 
         }
-        public List<InvoiceModel> GetLast5Invoices(string username)
+        public List<InvoiceModel> GetLast5Invoices(int businessId)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                return _dashboardRepo.GetLast5Invoices(business.Id);
+                return _dashboardRepo.GetLast5Invoices(businessId);
             }
             catch (Exception ex)
             {
@@ -344,13 +334,11 @@ namespace Paybook.BusinessLayer.Features.Customers
                 throw;
             }
         }
-        public List<PaymentModel> GetLast5Payments(string username)
+        public List<PaymentModel> GetLast5Payments(int businessId)
         {
             try
             {
-                var business = _business.GetSelectedByUsername(username);
-
-                return _dashboardRepo.GetLast5Payments(business.Id);
+                return _dashboardRepo.GetLast5Payments(businessId);
             }
             catch (Exception ex)
             {
