@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using Paybook.BusinessLayer.Abstracts.Admins;
-using Paybook.BusinessLayer.Abstracts.Invoices;
 using Paybook.ServiceLayer.Constants;
 using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Models.Invoices;

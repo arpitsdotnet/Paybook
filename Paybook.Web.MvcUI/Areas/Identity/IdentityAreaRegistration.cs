@@ -1,23 +1,23 @@
 ﻿using System.Web.Mvc;
 
-namespace Paybook.Web.MvcUI.Areas.Chief
+namespace Paybook.Web.MvcUI.Areas.Identity
 {
-    public class IdentityAreaRegistration : AreaRegistration 
+    public class IdentityAreaRegistration : AreaRegistration
     {
-        public override string AreaName 
+        public override string AreaName
         {
-            get 
+            get
             {
                 return "Identity";
             }
         }
 
-        public override void RegisterArea(AreaRegistrationContext context) 
+        public override void RegisterArea(AreaRegistrationContext context)
         {
             context.MapRoute(
                 "Identity_default",
                 "Identity/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }
+                new { controller = "User", action = "Login", id = UrlParameter.Optional }
             );
         }
     }

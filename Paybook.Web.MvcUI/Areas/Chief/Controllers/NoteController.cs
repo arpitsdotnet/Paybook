@@ -1,13 +1,10 @@
-﻿using Paybook.ServiceLayer.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using Paybook.ServiceLayer.Models;
 
 namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 {
     [RouteArea("Chief")]
+    [Authorize]
     public class NoteController : Controller
     {
         // GET: Chief/Notes

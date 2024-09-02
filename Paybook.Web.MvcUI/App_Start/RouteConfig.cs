@@ -16,8 +16,8 @@ namespace Paybook.Web.MvcUI
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Identity", action = "Login", id = UrlParameter.Optional }
-            );
+                defaults: new { controller = "User", action = "Login", id = UrlParameter.Optional }
+            ).DataTokens = new RouteValueDictionary(new { area = "Identity" });
         }
     }
 }

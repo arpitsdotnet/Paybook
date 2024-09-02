@@ -9,25 +9,25 @@ namespace Paybook.ServiceLayer.Models.Dashboards
     {
         public int BusinessId { get; set; }
 
-        public int CountTotalOpenInvoice { get; set; }
-        public decimal SumofTotalOpenInvoice { get; set; }
+        public int OpenInvoiceCount { get; set; }
+        public decimal OpenInvoiceTotal { get; set; }
 
-        public int CountLastWeekOpenInvoice { get; set; }
-        public decimal SumLastWeekOpenInvoice { get; set; }
+        public int OpenInvoiceLastWeekCount { get; set; }
+        public decimal OpenInvoiceLastWeekTotal { get; set; }
 
-        public int CountOfOverdue { get; set; }
-        public decimal SumOfOverdue { get; set; }
+        public int OverdueInvoiceCount { get; set; }
+        public decimal OverdueInvoiceTotal { get; set; }
 
-        public int CountOfPaidPartial { get; set; }
-        public decimal SumOfPaidPartialAmount { get; set; }
+        public int PartialPaidInvoiceCount { get; set; }
+        public decimal PartialPaidInvoiceTotal { get; set; }
 
-        public int CountOfPaidAmount { get; set; }
-        public decimal SumOfPaidAmount { get; set; }
+        public int PaidInvoiceCount { get; set; }
+        public decimal PaidInvoiceTotal { get; set; }
 
-        public int CountOfPaymentTotal { get; set; }
-        public decimal SumOfPaymentTotal { get; set; }
+        public int DepositCount { get; set; }
+        public decimal DepositTotal { get; set; }
 
-        public int CountofCustomers { get; set; }
+        public int CustomerCount { get; set; }
 
     }
 }

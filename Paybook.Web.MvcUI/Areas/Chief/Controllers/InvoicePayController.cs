@@ -1,16 +1,12 @@
-﻿using Paybook.BusinessLayer.Abstracts.Customers;
+﻿using System;
+using System.Web.Mvc;
+using Paybook.BusinessLayer.Abstracts.Customers;
 using Paybook.BusinessLayer.Abstracts.Invoices;
 using Paybook.BusinessLayer.Abstracts.Outbox;
 using Paybook.ServiceLayer.Constants;
-using Paybook.ServiceLayer.Models;
 using Paybook.ServiceLayer.Models.Activities;
 using Paybook.ServiceLayer.Models.Invoices;
 using Paybook.ServiceLayer.Models.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 
 namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 {

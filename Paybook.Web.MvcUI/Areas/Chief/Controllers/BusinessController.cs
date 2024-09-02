@@ -14,9 +14,9 @@ using Paybook.ServiceLayer.Models.Invoices;
 using Paybook.ServiceLayer.Models.ViewModels;
 using Paybook.ServiceLayer.Services;
 
-namespace Paybook.Web.MvcUI.Areas.Admin.Controllers
+namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 {
-    [RouteArea("Admin")]
+    [RouteArea("Chief")]
     [Authorize]
     public class BusinessController : Controller
     {

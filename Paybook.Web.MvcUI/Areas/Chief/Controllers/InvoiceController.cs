@@ -1,4 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Newtonsoft.Json;
 using Paybook.BusinessLayer.Abstracts.Admins;
 using Paybook.BusinessLayer.Abstracts.Customers;
 using Paybook.BusinessLayer.Abstracts.Invoices;
@@ -13,12 +18,6 @@ using Paybook.ServiceLayer.Models.Clients;
 using Paybook.ServiceLayer.Models.Invoices;
 using Paybook.ServiceLayer.Models.ViewModels;
 using Paybook.ServiceLayer.Paging;
-using Paybook.ServiceLayer.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 
 namespace Paybook.Web.MvcUI.Areas.Chief.Controllers
 {

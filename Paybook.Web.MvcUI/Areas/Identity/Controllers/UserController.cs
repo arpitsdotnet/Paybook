@@ -11,14 +11,15 @@ using Paybook.ServiceLayer.Models.ViewModels;
 
 namespace Paybook.Web.MvcUI.Areas.Identity.Controllers
 {
-    public class IdentityController : Controller
+    [RouteArea("Identity")]
+    public class UserController : Controller
     {
         private readonly ILogger _logger;
         private readonly ILoginProcessor _login;
         private readonly IUserProcessor _user;
         private readonly IBusinessProcessor _business;
 
-        public IdentityController(
+        public UserController(
             ILogger logger,
             ILoginProcessor login,
             IUserProcessor user,
@@ -30,16 +31,22 @@ namespace Paybook.Web.MvcUI.Areas.Identity.Controllers
             _business = business;
         }
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         public ActionResult Login(string returnUrl)
         {
-            if (!string.IsNullOrEmpty(User.Identity.Name))
+            if (string.IsNullOrEmpty(User.Identity.Name))
             {
-                SaveUserdataIntoCookies(User.Identity.Name);
-                if (!string.IsNullOrEmpty(returnUrl))
-                    return Redirect(returnUrl);
-                return RedirectToAction("Dashboard", "Business", new { area = "Admin" });
+                return View();
             }
-            return View();
+
+            SaveUserdataIntoCookies(User.Identity.Name);
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+            return RedirectToAction("Dashboard", "Business", new { area = "Chief" });
         }
 
         [HttpPost]
@@ -75,7 +82,7 @@ namespace Paybook.Web.MvcUI.Areas.Identity.Controllers
             if (!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
 
-            return RedirectToAction("Dashboard", "Business", new { area = "Admin" });
+            return RedirectToAction("Dashboard", "Business", new { area = "Chief" });
 
         }
 

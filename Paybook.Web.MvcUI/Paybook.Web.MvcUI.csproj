@@ -141,7 +141,7 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Chief\ChiefAreaRegistration.cs" />
-    <Compile Include="Areas\Admin\Controllers\BusinessController.cs" />
+    <Compile Include="Areas\Chief\Controllers\BusinessController.cs" />
     <Compile Include="Areas\Chief\Controllers\ClientController.cs" />
     <Compile Include="Areas\Chief\Controllers\InvoiceController.cs" />
     <Compile Include="Areas\Chief\Controllers\InvoicePayController.cs" />
@@ -149,8 +149,9 @@
     <Compile Include="Areas\Chief\Controllers\NoteController.cs" />
     <Compile Include="Areas\Chief\Controllers\PaymentController.cs" />
     <Compile Include="Areas\Chief\Controllers\ReportStandardController.cs" />
+    <Compile Include="Areas\Customer\CustomerAreaRegistration.cs" />
     <Compile Include="Areas\Identity\IdentityAreaRegistration.cs" />
-    <Compile Include="Areas\Identity\Controllers\IdentityController.cs" />
+    <Compile Include="Areas\Identity\Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -177,10 +178,10 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Chief\Views\web.config" />
-    <Content Include="Areas\Admin\Views\Business\Dashboard.cshtml" />
-    <Content Include="Areas\Admin\Views\Business\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Business\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\Business\Edit.cshtml" />
+    <Content Include="Areas\Chief\Views\Business\Dashboard.cshtml" />
+    <Content Include="Areas\Chief\Views\Business\Index.cshtml" />
+    <Content Include="Areas\Chief\Views\Business\Create.cshtml" />
+    <Content Include="Areas\Chief\Views\Business\Edit.cshtml" />
     <Content Include="Areas\Chief\Views\Client\Index.cshtml" />
     <Content Include="Areas\Chief\Views\Client\Create.cshtml" />
     <Content Include="Areas\Chief\Views\Client\Edit.cshtml" />
@@ -208,6 +209,9 @@
     <Content Include="Areas\Chief\Views\Invoice\Edit.cshtml" />
     <Content Include="Areas\Chief\Views\Client\Details.cshtml" />
     <Content Include="Areas\Chief\Views\ReportStandard\Index.cshtml" />
+    <Content Include="Areas\Identity\Views\User\Index.cshtml" />
+    <Content Include="Areas\Identity\Views\web.config" />
+    <Content Include="Areas\Customer\Views\web.config" />
     <None Include="Properties\PublishProfiles\PaybookFtpProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -234,8 +238,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Identity\Views\Identity\Login.cshtml" />
-    <Content Include="Areas\Identity\Views\Identity\Logout.cshtml" />
+    <Content Include="Areas\Identity\Views\User\Login.cshtml" />
+    <Content Include="Areas\Identity\Views\User\Logout.cshtml" />
     <Content Include="Views\Shared\_DashboardCounterWidgetPartial.cshtml" />
     <Content Include="Views\Shared\_PageHeaderListPartial.cshtml" />
     <Content Include="Views\Shared\_InvoiceServicesTablePartial.cshtml" />
@@ -253,9 +257,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Controllers\" />
     <Folder Include="Areas\Chief\Views\InvoicePay\" />
     <Folder Include="Areas\Chief\Views\InvoiceService\" />
     <Folder Include="Areas\Chief\Views\Notes\" />
+    <Folder Include="Areas\Customer\Controllers\" />
+    <Folder Include="Areas\Identity\Views\Shared\" />
     <Folder Include="Content\IMG\" />
   </ItemGroup>
   <ItemGroup>

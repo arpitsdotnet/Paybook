@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="ICON" href="/_Documents/Logo/CompanyIco.png" type="image/ico" />
     @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/modernizr")
 
 </head>
@@ -28,7 +30,7 @@
             {
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="@Url.Action("Login", "Identity", new { area = "" })"><i class="fa fa-dashboard"></i>&nbsp; Login</a></li>
+                        <li><a href="@Url.Action("Login", "User", new { area = "Identity" })"><i class="fa fa-dashboard"></i>&nbsp; Login</a></li>
                     </ul>
                 </div>
             }
@@ -76,8 +78,8 @@
                                 <i class="glyphicon glyphicon-cog"></i>&nbsp; Settings <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="@Url.Action("Index", "CategoryType", new { area = "Chief" })"><i class="glyphicon glyphicon-list"></i>&nbsp; Category Type List</a></li>
-                                <li><a href="@Url.Action("Index", "Category", new { area = "Chief" })"><i class="glyphicon glyphicon-list"></i>&nbsp; Category List</a></li>
+                                <li><a href="@Url.Action("Index", "CategoryType", new { area = "Admin" })"><i class="glyphicon glyphicon-list"></i>&nbsp; Category Type List</a></li>
+                                <li><a href="@Url.Action("Index", "Category", new { area = "Admin" })"><i class="glyphicon glyphicon-list"></i>&nbsp; Category List</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -101,10 +103,10 @@
                                 </div>
                             </div>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="@Url.Action("Index","Business",new { area = "Chief" })">Businesses</a></li>
+                                <li><a href="@Url.Action("Index","Client",new { area = "Chief" })">Businesses</a></li>
                                 <li id="divSelectedBusinessLink"></li>
                                 <li class="divider"></li>
-                                <li><a href="@Url.Action("Logout","Identity",new { area = "" })">Logout</a></li>
+                                <li><a href="@Url.Action("Logout","User",new { area = "Identity" })">Logout</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -171,7 +173,7 @@
             //console.log($("#divUserChip").html())
         }
         function GenerateSelectedBusinessLink() {
-            $("#divSelectedBusinessLink").html("<a href=\"@Url.Action("Edit","Business",new { area = "Chief" })/" + readCookie('@CookieNames.SelectedBusinessId') + "\">" + readCookie('@CookieNames.SelectedBusinessName') + "</a></li>");
+            $("#divSelectedBusinessLink").html("<a href=\"@Url.Action("Edit","Business",new { area = "Admin" })/" + readCookie('@CookieNames.SelectedBusinessId') + "\">" + readCookie('@CookieNames.SelectedBusinessName') + "</a></li>");
             //console.log($("#divSelectedBusinessLink").html())
         }
     </script>

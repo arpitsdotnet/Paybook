@@ -50,10 +50,11 @@ namespace Paybook.BusinessLayer.Features.Customers
                     {
                         BgColorClass = "fwt-blue",
                         BgColorHoverClass = "fwt-hover-black",
-                        RsSymbolColor = "color: #4d5f68;",
+                        WidgetIcon = "fa-rupee",
+                        WidgetIconColor = "color: #4d5f68;",
                         CountText = "Invoices",
-                        Count = model.CountTotalOpenInvoice,
-                        Total = model.SumofTotalOpenInvoice
+                        Count = model.OpenInvoiceCount,
+                        Total = model.OpenInvoiceTotal
                     },
                     //CounterInvoicesOpenLastWeek = new DashboardCounterWidgetModel
                     //{
@@ -68,19 +69,21 @@ namespace Paybook.BusinessLayer.Features.Customers
                     {
                         BgColorClass = "fwt-deep-orange",
                         BgColorHoverClass = "fwt-hover-black",
-                        RsSymbolColor = "color: #bd4339;",
+                        WidgetIcon = "fa-exclamation-triangle",
+                        WidgetIconColor = "color: #bd4339;",
                         CountText = "Overdues",
-                        Count = model.CountOfOverdue,
-                        Total = model.SumOfOverdue
+                        Count = model.OverdueInvoiceCount,
+                        Total = model.OverdueInvoiceTotal
                     },
                     CounterPaymentPaidPartial = new DashboardCounterWidgetModel
                     {
                         BgColorClass = "fwt-blue-grey",
                         BgColorHoverClass = "fwt-hover-black",
-                        RsSymbolColor = "color: #007469;",
+                        WidgetIcon = "fa-file-invoice",
+                        WidgetIconColor = "color: #007469;",
                         CountText = "Invoice Paid",
-                        Count = model.CountOfPaidPartial,
-                        Total = model.SumOfPaidPartialAmount
+                        Count = model.PartialPaidInvoiceCount,
+                        Total = model.PartialPaidInvoiceTotal
                     },
                     //CounterPaymentPaidLastMonth = new DashboardCounterWidgetModel
                     //{
@@ -95,16 +98,17 @@ namespace Paybook.BusinessLayer.Features.Customers
                     {
                         BgColorClass = "fwt-green",
                         BgColorHoverClass = "fwt-hover-black",
-                        RsSymbolColor = "color: #2d8630;",
+                        WidgetIcon = "fa-circle-down",
+                        WidgetIconColor = "color: #2d8630;",
                         CountText = "Deposits",
-                        Count = model.CountOfPaymentTotal,
-                        Total = model.SumOfPaymentTotal
+                        Count = model.DepositCount,
+                        Total = model.DepositTotal
                     },
 
                     ClientCounter = new DashboardCounterWidgetModel
                     {
-                        Count = model.CountofCustomers,
-                        Total = model.SumOfPaymentTotal
+                        Count = model.CustomerCount,
+                        Total = model.DepositTotal
                     }
                 };
 

@@ -2,13 +2,13 @@
 @model DashboardCounterWidgetModel
 
 <div class="col-lg-3 col-md-6 @Model.BgColorClass @Model.BgColorHoverClass" style="border-bottom: solid 5px rgba(0, 0, 0, .3);">
-    <div class="p-3" style="position: relative;">
+    <div class="p-2" style="position: relative;">
         <div class="large">
             @Model.Total
         </div>
         <div class="tiny">
             @Model.Count&nbsp;@Model.CountText
         </div>
-        <div style="font-size: 30px; position: absolute; top: 0px; right: -5px; @Model.RsSymbolColor"><i class="fa fa-rupee fa-2x"></i>₹</div>
+        <div style="font-size: 40px; position: absolute; top: 0px; right: -5px; @Model.WidgetIconColor"><i class="fa @Model.WidgetIcon"></i></div>
     </div>
 </div>
